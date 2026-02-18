@@ -1,4 +1,4 @@
-# Project Idea: EventHive
+# EventHive
 
 ## 1. Overview
 **EventHive** is a comprehensive full-stack web application designed to facilitate the discovery, organization, and management of events. It connects event organizers with attendees, providing a seamless experience for creating events, booking tickets, and managing attendance.
