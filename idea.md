@@ -33,12 +33,11 @@ The backend will be the core of the system, handling authentication, business lo
 ## 4. Technology Stack
 -   **Backend**: Node.js, Express, TypeScript (Strict typing for robustness).
 -   **Database**: MongoDB (Flexible schema for events).
--   **Frontend**: React (for the 25% component).
+-   **Frontend**: React.
 -   **Architecture**: Layered Architecture (Controller-Service-Repository).
 
 
-## 5. Software Engineering Practices & OOP Focus (75% Backend Score)
-To maximize the backend score, we will strictly follow **SOLID principles** and **OOP**.
+## 5. Software Engineering Practices & OOP Focus
 
 ### Key OOP Concepts Implementation:
 1.  **Encapsulation**: 
@@ -53,8 +52,3 @@ To maximize the backend score, we will strictly follow **SOLID principles** and 
 ### Design Patterns
 -   **Factory Pattern**: To create `Ticket` objects (VIP vs Regular) based on user selection.
 -   **Singleton Pattern**: For the Database Connection instance.
-
-## 6. Why EventHive?
--   **Complex Relationships**: `User` 1:N `Booking` N:1 `Ticket` N:1 `Event` (Excellent for ER Diagrams).
--   **Business Logic**: Handling ticket availability (locking tickets during checkout) shows real system design depth.
--   **Scalability**: The modular structure allows easy addition of features (e.g., waiting lists).
