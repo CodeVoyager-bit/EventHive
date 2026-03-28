@@ -20,7 +20,7 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// DB Connection Middleware (Crucial for Vercel Serverless)
+
 app.use(async (req, res, next) => {
   try {
     const mongoUri = process.env.MONGODB_URI || "mongodb://localhost:27017/eventhive";
