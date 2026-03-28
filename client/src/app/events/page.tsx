@@ -1,12 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { api } from "@/lib/api";
 import { Event } from "@/types";
 import EventCard from "@/components/EventCard";
 
 export default function EventsPage() {
+  return (
+    <Suspense fallback={<div className="loading-spinner">Loading...</div>}>
+      <EventsContent />
+    </Suspense>
+  );
+}
+
+function EventsContent() {
   const searchParams = useSearchParams();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
