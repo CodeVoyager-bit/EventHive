@@ -20,6 +20,17 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// DB Connection Middleware (Crucial for Vercel Serverless)
+app.use(async (req, res, next) => {
+  try {
+    const mongoUri = process.env.MONGODB_URI || "mongodb://localhost:27017/eventhive";
+    await Database.getInstance().connect(mongoUri);
+    next();
+  } catch (err) {
+    res.status(500).json({ success: false, error: "Database Connection Failed" });
+  }
+});
+
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/events", eventRoutes);
@@ -31,19 +42,11 @@ app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
-// Start server
-async function startServer(): Promise<void> {
-  const mongoUri = process.env.MONGODB_URI || "mongodb://localhost:27017/eventhive";
-
-  // Singleton Database connection
-  const db = Database.getInstance();
-  await db.connect(mongoUri);
-
+// Only listen locally, Vercel handles the exported app
+if (process.env.NODE_ENV !== "production") {
   app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
   });
 }
-
-startServer().catch(console.error);
 
 export default app;

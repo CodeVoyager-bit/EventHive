@@ -65,18 +65,16 @@ npm run dev             # Starts on http://localhost:3000
 
 ## Deployment
 
-### Backend (Render / Railway)
+### Backend (Vercel)
 1. Push code to GitHub
-2. Create a new Web Service on [Render](https://render.com)
+2. Create a new Project on [Vercel](https://vercel.com)
 3. Set root directory to `server`
-4. Build command: `npm install && npm run build`
-5. Start command: `npm run start`
-6. Add environment variables in dashboard:
-   - `PORT` = `5001`
+4. Add environment variables in settings:
    - `MONGODB_URI` = your MongoDB Atlas connection string
    - `JWT_SECRET` = a strong random string
    - `JWT_EXPIRES_IN` = `7d`
    - `CORS_ORIGIN` = your Vercel frontend URL
+5. Deploy (Vercel will use `vercel.json` to deploy it as a Serverless API)
 
 ### Frontend (Vercel)
 1. Import the GitHub repo on [Vercel](https://vercel.com)
