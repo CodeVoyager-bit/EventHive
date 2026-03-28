@@ -35,8 +35,6 @@ yarn-error.log*
 !.env.example
 !.env.example
 
-# Environment variables (contain secrets)
-client/.env
 
 # vercel
 .vercel
