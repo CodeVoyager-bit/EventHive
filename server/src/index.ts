@@ -11,7 +11,7 @@ import reviewRoutes from "./routes/reviewRoutes";
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 // Middleware
 app.use(cors({
@@ -32,21 +32,21 @@ app.use(async (req, res, next) => {
 });
 
 // Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/events", eventRoutes);
-app.use("/api/bookings", bookingRoutes);
-app.use("/api/reviews", reviewRoutes);
+app.use("/auth", authRoutes);
+app.use("/events", eventRoutes);
+app.use("/bookings", bookingRoutes);
+app.use("/reviews", reviewRoutes);
 
 // Health check
-app.get("/api/health", (_req, res) => {
+app.get("/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
 // // Only listen locally, Vercel handles the exported app
 // if (process.env.NODE_ENV !== "production") {
-//   app.listen(PORT, () => {
-//     console.log(`Server running on http://localhost:${PORT}`);
-//   });
+  // app.listen(PORT, () => {
+  //   console.log(`Server running on http://localhost:${PORT}`);
+  // });
 // }
 
 export default app;
