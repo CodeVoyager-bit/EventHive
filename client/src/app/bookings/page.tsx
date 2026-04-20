@@ -62,7 +62,9 @@ export default function BookingsPage() {
         <div className="bookings-list">
           {bookings.map((booking, i) => {
             const event = booking.eventId && typeof booking.eventId === "object" ? booking.eventId as Event : null;
-            const isConfirmed = booking.status === "confirmed";
+            // If the event was deleted, treat the booking as cancelled regardless of stored status
+            const displayStatus = !event && booking.status === "confirmed" ? "cancelled" : booking.status;
+            const isConfirmed = displayStatus === "confirmed";
             const categoryEmoji = !event ? "🎟️" : event.category === "music" ? "🎵" : event.category === "tech" ? "💻" : event.category === "sports" ? "⚽" : "🎉";
             return (
               <div
@@ -100,7 +102,7 @@ export default function BookingsPage() {
                       </div>
                       <div className="detail-item">
                         <span className="detail-label">Status</span>
-                        <span className={`badge badge-${booking.status}`}>{booking.status}</span>
+                        <span className={`badge badge-${displayStatus}`}>{displayStatus}</span>
                       </div>
                     </div>
                   </div>
