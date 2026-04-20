@@ -55,6 +55,8 @@ class EventService {
     if (eventOrgId !== organizerId) {
       throw new Error("Unauthorized: You can only delete your own events");
     }
+    // Cancel all confirmed bookings before deleting the event
+    await BookingRepository.cancelAllByEvent(id);
     return EventRepository.delete(id);
   }
 }

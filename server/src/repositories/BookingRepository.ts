@@ -40,6 +40,13 @@ class BookingRepository {
     ]);
     return result[0]?.total ?? 0;
   }
+
+  async cancelAllByEvent(eventId: string): Promise<void> {
+    await Booking.updateMany(
+      { eventId, status: "confirmed" },
+      { $set: { status: "cancelled" } }
+    );
+  }
 }
 
 export default new BookingRepository();
