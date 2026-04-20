@@ -41,6 +41,14 @@ export default function BookingsPage() {
     }
   }
 
+  // Generate a stable QR-like pattern from a string (no Math.random in render)
+  function getQrPattern(seed: string): boolean[] {
+    return Array.from({ length: 25 }).map((_, i) => {
+      const ch = seed.charCodeAt(i % seed.length);
+      return (ch + i * 7) % 10 > 3;
+    });
+  }
+
   return (
     <div className="bookings-page container">
       <div className="page-header fade-in-up">
@@ -53,8 +61,9 @@ export default function BookingsPage() {
       ) : bookings.length > 0 ? (
         <div className="bookings-list">
           {bookings.map((booking, i) => {
-            const event = booking.eventId as Event;
+            const event = booking.eventId && typeof booking.eventId === "object" ? booking.eventId as Event : null;
             const isConfirmed = booking.status === "confirmed";
+            const categoryEmoji = !event ? "🎟️" : event.category === "music" ? "🎵" : event.category === "tech" ? "💻" : event.category === "sports" ? "⚽" : "🎉";
             return (
               <div
                 key={booking._id}
@@ -67,13 +76,13 @@ export default function BookingsPage() {
                   <div className="booking-main">
                     <div className="booking-event">
                       <div className="event-icon-box">
-                        <span>{event.category === "music" ? "🎵" : event.category === "tech" ? "💻" : event.category === "sports" ? "⚽" : "🎉"}</span>
+                        <span>{categoryEmoji}</span>
                       </div>
                       <div>
-                        <h3>{event.title || "Event"}</h3>
+                        <h3>{event?.title || "Event Deleted"}</h3>
                         <div className="booking-meta">
-                          <span>📅 {new Date(event.date || booking.bookingDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
-                          <span>📍 {event.location || "—"}</span>
+                          <span>📅 {new Date(event?.date || booking.bookingDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
+                          <span>📍 {event?.location || "—"}</span>
                         </div>
                       </div>
                     </div>
@@ -97,22 +106,22 @@ export default function BookingsPage() {
                   </div>
 
                   <div className="booking-ticket-code">
-                    <div className="ticket-code-box">
-                      <span className="code-label">TICKET CODE</span>
-                      <span className="code-value">{booking.ticketCode}</span>
-                      <div className="qr-placeholder">
-                        <div className="qr-grid">
-                          {Array.from({ length: 25 }).map((_, j) => (
-                            <div key={j} className={`qr-cell ${Math.random() > 0.4 ? "filled" : ""}`}></div>
-                          ))}
+                      <div className="ticket-code-box">
+                        <span className="code-label">TICKET CODE</span>
+                        <span className="code-value">{booking.ticketCode}</span>
+                        <div className="qr-placeholder">
+                          <div className="qr-grid">
+                            {getQrPattern(booking.ticketCode).map((filled, j) => (
+                              <div key={j} className={`qr-cell ${filled ? "filled" : ""}`}></div>
+                            ))}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
 
-                  {isConfirmed && (
+                  {isConfirmed && event && (
                     <div className="booking-actions">
-                      <Link href={`/events/${typeof booking.eventId === "object" ? booking.eventId._id : booking.eventId}`} className="btn btn-secondary btn-sm">
+                      <Link href={`/events/${event._id}`} className="btn btn-secondary btn-sm">
                         View Event
                       </Link>
                       <button onClick={() => handleCancel(booking._id)} className="btn btn-danger btn-sm">
