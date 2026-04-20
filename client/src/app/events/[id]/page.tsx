@@ -210,9 +210,18 @@ export default function EventDetailPage() {
           <div className="booking-card glass-card" style={{ transform: "none" }}>
             <div className="booking-price">
               <span className="price-label">Price</span>
-              <span className="price-amount gradient-text">
-                {event.price === 0 ? "FREE" : `$${event.price}`}
-              </span>
+              <div style={{ textAlign: "right" }}>
+                <span className="price-amount gradient-text">
+                  {event.price === 0
+                    ? "FREE"
+                    : `$${ticketType === "vip" ? event.price * 2 : event.price}`}
+                </span>
+                {ticketType === "vip" && event.price > 0 && (
+                  <span style={{ display: "block", fontSize: "0.72rem", color: "var(--text-muted)", marginTop: "2px" }}>
+                    ✨ VIP — includes perks
+                  </span>
+                )}
+              </div>
             </div>
 
             <div className="ticket-select">

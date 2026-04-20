@@ -1,4 +1,5 @@
 import Booking, { IBooking } from "../models/Booking";
+import mongoose from "mongoose";
 
 class BookingRepository {
   async create(data: Partial<IBooking>): Promise<IBooking> {
@@ -30,6 +31,14 @@ class BookingRepository {
 
   async countByEvent(eventId: string): Promise<number> {
     return Booking.countDocuments({ eventId, status: "confirmed" });
+  }
+
+  async getRevenueByEvent(eventId: string): Promise<number> {
+    const result = await Booking.aggregate([
+      { $match: { eventId: new mongoose.Types.ObjectId(eventId), status: "confirmed" } },
+      { $group: { _id: null, total: { $sum: "$amount" } } },
+    ]);
+    return result[0]?.total ?? 0;
   }
 }
 

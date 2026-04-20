@@ -21,12 +21,14 @@ export default function Footer() {
               <Link href="/events?category=music">Music</Link>
               <Link href="/events?category=tech">Tech</Link>
               <Link href="/events?category=sports">Sports</Link>
+              <Link href="/events?category=art">Art</Link>
+              <Link href="/events?category=food">Food</Link>
             </div>
             <div className="footer-col">
-              <h4>Company</h4>
-              <Link href="#">About</Link>
-              <Link href="#">Careers</Link>
-              <Link href="#">Contact</Link>
+              <h4>Account</h4>
+              <Link href="/auth/login">Log In</Link>
+              <Link href="/auth/register">Sign Up</Link>
+              <Link href="/bookings">My Tickets</Link>
             </div>
           </div>
         </div>

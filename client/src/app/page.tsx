@@ -49,7 +49,7 @@ export default function HomePage() {
         <div className="container hero-content fade-in-up">
           <div className="hero-tag">
             <span className="tag-dot"></span>
-            Live Now — 500+ events happening
+            Live Now — Find Events Near You
           </div>
           <h1 className="hero-title">
             Find Your Next<br />
@@ -74,20 +74,7 @@ export default function HomePage() {
             </div>
           </form>
 
-          <div className="hero-stats">
-            <div className="hstat">
-              <span className="hstat-num">500+</span>
-              <span className="hstat-label">Events</span>
-            </div>
-            <div className="hstat">
-              <span className="hstat-num">10K+</span>
-              <span className="hstat-label">Happy Attendees</span>
-            </div>
-            <div className="hstat">
-              <span className="hstat-num">200+</span>
-              <span className="hstat-label">Organizers</span>
-            </div>
-          </div>
+          
         </div>
       </section>
 
@@ -103,7 +90,7 @@ export default function HomePage() {
                 <span className="cat-icon">{cat.icon}</span>
                 <div className="cat-info">
                   <strong>{cat.name}</strong>
-                  <span className="cat-count">{cat.count} events</span>
+                  <span className="cat-count">Browse events</span>
                 </div>
               </div>
               <div className="cat-arrow">→</div>

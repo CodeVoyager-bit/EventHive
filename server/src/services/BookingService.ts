@@ -64,9 +64,20 @@ class BookingService {
   async cancelBooking(bookingId: string, userId: string): Promise<IBooking | null> {
     const booking = await BookingRepository.findById(bookingId);
     if (!booking) throw new Error("Booking not found");
-    if (booking.userId.toString() !== userId) {
+    if (booking.status === "cancelled") throw new Error("Booking is already cancelled");
+
+    // booking.userId may be a populated User object — extract _id safely
+    const rawUserId = booking.userId as any;
+    const bookingOwnerId: string =
+      rawUserId?._id ? rawUserId._id.toString() : rawUserId?.toString() ?? "";
+
+    if (bookingOwnerId !== userId) {
       throw new Error("Unauthorized");
     }
+
+    // Restore the ticket slot on the event
+    await EventRepository.incrementAvailableTickets(booking.eventId.toString());
+
     return BookingRepository.update(bookingId, { status: "cancelled" });
   }
 }

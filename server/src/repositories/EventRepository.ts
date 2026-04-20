@@ -47,6 +47,14 @@ class EventRepository {
       { new: true }
     );
   }
+
+  async incrementAvailableTickets(id: string): Promise<IEvent | null> {
+    return Event.findOneAndUpdate(
+      { _id: id, bookedCount: { $gt: 0 } },
+      { $inc: { bookedCount: -1 } },
+      { new: true }
+    );
+  }
 }
 
 export default new EventRepository();

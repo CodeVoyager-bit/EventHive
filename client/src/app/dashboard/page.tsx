@@ -41,7 +41,7 @@ export default function DashboardPage() {
     }
   }
 
-  const totalRevenue = events.reduce((sum, e) => sum + e.bookedCount * e.price, 0);
+  const totalRevenue = events.reduce((sum, e) => sum + ((e as any).revenue ?? e.bookedCount * e.price), 0);
   const totalBookings = events.reduce((sum, e) => sum + e.bookedCount, 0);
   const totalCapacity = events.reduce((sum, e) => sum + e.capacity, 0);
 
@@ -147,7 +147,7 @@ export default function DashboardPage() {
                         </div>
                       </div>
                     </td>
-                    <td className="revenue-cell">${(event.bookedCount * event.price).toLocaleString()}</td>
+                    <td className="revenue-cell">${((event as any).revenue ?? event.bookedCount * event.price).toLocaleString()}</td>
                     <td><span className={`badge badge-${event.status === "published" ? "confirmed" : "cancelled"}`}>{event.status}</span></td>
                     <td>
                       <div className="action-btns">

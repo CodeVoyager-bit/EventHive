@@ -1,4 +1,5 @@
 import EventRepository from "../repositories/EventRepository";
+import BookingRepository from "../repositories/BookingRepository";
 import { IEvent } from "../models/Event";
 
 class EventService {
@@ -17,8 +18,14 @@ class EventService {
     return EventRepository.findAll(query);
   }
 
-  async getEventsByOrganizer(organizerId: string): Promise<IEvent[]> {
-    return EventRepository.findByOrganizer(organizerId);
+  async getEventsByOrganizer(organizerId: string): Promise<(IEvent & { revenue: number })[]> {
+    const events = await EventRepository.findByOrganizer(organizerId);
+    return Promise.all(
+      events.map(async (event) => {
+        const revenue = await BookingRepository.getRevenueByEvent(event._id.toString());
+        return Object.assign(event.toObject(), { revenue }) as IEvent & { revenue: number };
+      })
+    );
   }
 
   async searchEvents(query: string): Promise<IEvent[]> {
