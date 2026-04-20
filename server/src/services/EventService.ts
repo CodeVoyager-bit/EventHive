@@ -39,7 +39,9 @@ class EventService {
   ): Promise<IEvent | null> {
     const event = await EventRepository.findById(id);
     if (!event) throw new Error("Event not found");
-    if (event.organizerId.toString() !== organizerId) {
+    const rawOrg = event.organizerId as any;
+    const eventOrgId: string = rawOrg?._id ? rawOrg._id.toString() : rawOrg?.toString() ?? "";
+    if (eventOrgId !== organizerId) {
       throw new Error("Unauthorized: You can only edit your own events");
     }
     return EventRepository.update(id, data);
@@ -48,7 +50,9 @@ class EventService {
   async deleteEvent(id: string, organizerId: string): Promise<IEvent | null> {
     const event = await EventRepository.findById(id);
     if (!event) throw new Error("Event not found");
-    if (event.organizerId.toString() !== organizerId) {
+    const rawOrg = event.organizerId as any;
+    const eventOrgId: string = rawOrg?._id ? rawOrg._id.toString() : rawOrg?.toString() ?? "";
+    if (eventOrgId !== organizerId) {
       throw new Error("Unauthorized: You can only delete your own events");
     }
     return EventRepository.delete(id);
