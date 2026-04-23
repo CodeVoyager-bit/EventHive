@@ -12,28 +12,28 @@ sequenceDiagram
     participant User
     participant Frontend
     participant "Booking Controller" as Controller
-    participant "Event Service" as Service
+    participant "Booking Service" as Service
     participant "Data Access Layer" as DB
 
     User->>Frontend: Select Event & Ticket Type
     Frontend->>Controller: POST /api/bookings (eventId, ticketType)
     activate Controller
     
-    Controller->>Service: createBooking(userId, eventId, ticketType)
+    Controller->>Service: createBooking(req.user.id, eventId, ticketType || "general")
     activate Service
     
     Service->>DB: findEventById(eventId)
     activate DB
-    DB-->>Service: Event Details (capacity, sold)
+    DB-->>Service: Event Details (capacity, bookedCount)
     deactivate DB
 
     alt Ticket Available
-        Service->>DB: decrementAvailableTickets(eventId)
+        Service->>DB: incrementBookedCount(eventId)
         activate DB
         DB-->>Service: Success
         deactivate DB
 
-        Service->>DB: saveBooking(userId, eventId)
+        Service->>DB: saveBooking(userId, eventId, ticketType, amount)
         activate DB
         DB-->>Service: Booking Object
         deactivate DB

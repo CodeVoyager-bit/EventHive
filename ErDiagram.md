@@ -13,9 +13,9 @@ erDiagram
         ObjectId _id PK
         string name
         string email
-        string password_hash
-        string role "Admin | Organizer | Attendee"
-        date created_at
+        string password
+        string role "attendee | organizer | admin"
+        date createdAt
     }
 
     events {
@@ -25,27 +25,38 @@ erDiagram
         date date
         string location
         int capacity
-        int booked_count
+        int bookedCount
         double price
-        ObjectId organizer_id FK
-        string status "Draft | Published | Cancelled"
+        string category
+        string imageUrl
+        ObjectId organizerId FK
+        string eventType "online | venue"
+        string meetingLink
+        string platform
+        string address
+        string mapLocation
+        string status "draft | published | cancelled"
+        date createdAt
     }
 
     bookings {
         ObjectId _id PK
-        ObjectId user_id FK
-        ObjectId event_id FK
-        date booking_date
-        string status "Confirmed | Cancelled"
-        string ticket_code
+        ObjectId userId FK
+        ObjectId eventId FK
+        date bookingDate
+        string status "confirmed | cancelled"
+        string ticketType "general | vip"
+        string ticketCode
+        double amount
     }
 
     reviews {
         ObjectId _id PK
-        ObjectId event_id FK
-        ObjectId user_id FK
+        ObjectId eventId FK
+        ObjectId userId FK
         int rating
         string comment
+        date createdAt
     }
 
     users ||--o{ events : "organizes"

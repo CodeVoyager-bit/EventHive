@@ -41,13 +41,14 @@ The backend will be the core of the system, handling authentication, business lo
 
 ### Key OOP Concepts Implementation:
 1.  **Encapsulation**: 
-    -   `BaseController` class to handle common responses (success/error).
-    -   Services (e.g., `EventService`) hide business logic from Controllers.
+    -   `BaseController` class handles common responses (success/error).
+    -   Services (e.g., `EventService`, `BookingService`) hide business logic from Controllers.
 2.  **Inheritance**:
-    -   `User` (Base) -> `Organizer`, `Atendee`, `Admin`. All share `login()` but have different `permissions`.
-    -   `Event` (Base) -> `OnlineEvent` (has `meetingLink`), `VenueEvent` (has `address`, `mapLocation`).
+    -   `BaseUser` -> `Organizer`, `Attendee`, `Admin`. All share basic properties but have different implementations of `getPermissions()`.
+    -   `BaseEvent` -> `OnlineEvent` (has `meetingLink`), `VenueEvent` (has `address`, `mapLocation`). They implement abstract methods like `getDetails()`.
 3.  **Abstraction**:
     -   `IPaymentGateway` interface (e.g., `MockStripe`, `MockPayPal`) to process payments without coupling to a specific provider.
+    -   `Ticket` interface defining common fields (`price`, `label`, `type`) with specific concrete classes.
 
 ### Design Patterns
 -   **Factory Pattern**: To create `Ticket` objects (VIP vs Regular) based on user selection.

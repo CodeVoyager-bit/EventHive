@@ -12,24 +12,29 @@ graph TD
     %% Actors
     A[👤 Attendee]
     O[👤 Organizer]
-    S[🖥️ System]
+    AD[👤 Admin]
 
     %% System Boundary
     subgraph EventHive_System [EventHive System]
         direction TB
-        UC1([Register/Login])
-        UC2([View Profile])
+        UC1([Register / Login])
         
-        UC3([Browse Events])
-        UC4([Search for Events])
-        UC5([Book Ticket])
-        UC6([View My Tickets])
+        UC2([Browse & Search Events])
+        UC3([View Event Details])
+        UC4([Book Ticket])
+        UC5([View My Bookings])
+        UC6([Cancel Booking])
         UC7([Leave Review])
+        UC8([View Reviews])
 
-        UC8([Create Event])
-        UC9([Update Event])
-        UC10([Delete Event])
-        UC11([View Dashboard])
+        UC9([Create Event])
+        UC10([Update Event])
+        UC11([Delete Event])
+        UC12([View My Events])
+        UC13([View Event Bookings])
+
+        UC14([Ban User])
+        UC15([Approve Event])
     end
 
     %% Relationships
@@ -40,25 +45,34 @@ graph TD
     A --> UC5
     A --> UC6
     A --> UC7
+    A --> UC8
 
     O --> UC1
-    O --> UC2
-    O --> UC8
     O --> UC9
     O --> UC10
     O --> UC11
-
-    %% Includes (represented as dotted lines)
-    UC5 -.->|include| UC1
-    UC8 -.->|include| UC1
+    O --> UC12
+    O --> UC13
     
-    S --> UC1
+    AD --> UC1
+    AD --> UC14
+    AD --> UC15
 
-    %% Styling to mimic Use Case Diagram
+    %% Includes
+    UC4 -.->|include| UC1
+    UC6 -.->|include| UC1
+    UC7 -.->|include| UC1
+    UC9 -.->|include| UC1
+    UC10 -.->|include| UC1
+    UC11 -.->|include| UC1
+    UC12 -.->|include| UC1
+    UC13 -.->|include| UC1
+
+    %% Styling
     classDef actor fill:#fff,stroke:#333,stroke-width:2px;
     classDef usecase fill:#f9f9f9,stroke:#333,stroke-width:2px,rx:20,ry:20;
     
-    class A,O,S actor;
-    class UC1,UC2,UC3,UC4,UC5,UC6,UC7,UC8,UC9,UC10,UC11 usecase;
+    class A,O,AD actor;
+    class UC1,UC2,UC3,UC4,UC5,UC6,UC7,UC8,UC9,UC10,UC11,UC12,UC13,UC14,UC15 usecase;
 ```
 </details>

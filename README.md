@@ -90,11 +90,15 @@ npm run dev             # Starts on http://localhost:3000
 | POST | `/api/auth/register` | No | Register user |
 | POST | `/api/auth/login` | No | Login |
 | GET | `/api/events` | No | List events |
+| GET | `/api/events/search` | No | Search events |
 | GET | `/api/events/:id` | No | Event detail |
-| POST | `/api/events` | Organizer | Create event |
-| PUT | `/api/events/:id` | Organizer | Update event |
-| DELETE | `/api/events/:id` | Organizer | Delete event |
-| POST | `/api/bookings` | Attendee | Book ticket |
+| POST | `/api/events` | Organizer/Admin | Create event |
+| GET | `/api/events/my/events` | Organizer/Admin | My managed events |
+| PUT | `/api/events/:id` | Organizer/Admin | Update event |
+| DELETE | `/api/events/:id` | Organizer/Admin | Delete event |
+| POST | `/api/bookings` | User | Book ticket |
 | GET | `/api/bookings/my` | User | My bookings |
+| PATCH | `/api/bookings/:id/cancel` | User | Cancel booking |
+| GET | `/api/bookings/event/:eventId` | Organizer/Admin | Event attendees/bookings |
 | POST | `/api/reviews` | User | Leave review |
-| GET | `/api/health` | No | Health check |
+| GET | `/api/reviews/event/:eventId` | No | List reviews for event |
