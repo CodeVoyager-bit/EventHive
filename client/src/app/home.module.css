@@ -58,7 +58,7 @@
   transition: border-color var(--dur), box-shadow var(--dur);
 }
 .search:focus-within {
-  border-color: var(--brand);
+  border-color: var(--brand-ink);
   box-shadow: 0 0 0 3px var(--brand-soft);
 }
 .searchInput {
@@ -94,7 +94,7 @@
   text-underline-offset: 3px;
 }
 .quick a:hover {
-  color: var(--brand);
+  color: var(--brand-ink);
 }
 .cats {
   display: grid;
@@ -147,7 +147,7 @@
   overflow: hidden;
   padding: 56px 24px;
   border-radius: var(--radius-xl);
-  background: linear-gradient(135deg, var(--brand), #ff2d55 60%, var(--purple));
+  background: linear-gradient(135deg, var(--brand-dark), #e0245a 60%, var(--purple));
   color: #fff;
   text-align: center;
 }
@@ -173,7 +173,7 @@
 }
 .ctaBtn {
   background: #fff;
-  color: var(--brand);
+  color: var(--brand-ink);
 }
 .ctaBtn:hover:not(:disabled) {
   background: #fff3ee;

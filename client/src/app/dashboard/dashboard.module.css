@@ -59,7 +59,7 @@
   font-weight: 700;
 }
 .evTitle:hover {
-  color: var(--brand);
+  color: var(--brand-ink);
 }
 .evLoc {
   font-size: 0.78rem;
@@ -115,5 +115,5 @@
   margin-bottom: 12px;
 }
 .back:hover {
-  color: var(--brand);
+  color: var(--brand-ink);
 }

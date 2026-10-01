@@ -17,7 +17,7 @@ export default async function DashboardPage() {
   const upcoming = events.filter((e) => !isPast(e.date)).length;
 
   const stats = [
-    { label: "Events", value: events.length, icon: LayoutGrid, color: "var(--brand)" },
+    { label: "Events", value: events.length, icon: LayoutGrid, color: "var(--brand-dark)" },
     { label: "Upcoming", value: upcoming, icon: CalendarPlus, color: "var(--blue)" },
     { label: "Tickets sold", value: sold, icon: Ticket, color: "var(--purple)" },
     { label: "Revenue", value: formatPrice(revenue), icon: DollarSign, color: "var(--green)" },

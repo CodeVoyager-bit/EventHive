@@ -31,7 +31,7 @@
   transition: border-color var(--dur), background var(--dur);
 }
 .type[aria-pressed="true"] {
-  border-color: var(--brand);
+  border-color: var(--brand-ink);
   background: var(--brand-soft);
 }
 .type strong {

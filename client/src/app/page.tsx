@@ -16,17 +16,17 @@ export default async function HomePage() {
     <>
       <section className={s.hero}>
         <div className="container">
-          <div className={`${s.pill} fade-up`}>
+          <div className={s.pill}>
             <span className={s.dot} aria-hidden="true" />
             Live now — find events near you
           </div>
-          <h1 className={`h1 ${s.title} fade-up`}>
+          <h1 className={`h1 ${s.title}`}>
             Find your next <span className="gradient-text">unforgettable</span> event
           </h1>
-          <p className={`lead ${s.lead} fade-up`}>
+          <p className={`lead ${s.lead}`}>
             Concerts, meetups, workshops, and more. Discover what is happening and book a seat in seconds.
           </p>
-          <form className={`${s.search} fade-up`} action="/events" method="get" role="search">
+          <form className={s.search} action="/events" method="get" role="search">
             <label className={s.searchInput}>
               <Search size={20} aria-hidden="true" />
               <span className="sr-only">Search events</span>
@@ -85,8 +85,8 @@ export default async function HomePage() {
           </div>
         ) : (
           <div className="grid-cards">
-            {upcoming.map((event, i) => (
-              <EventCard key={event._id} event={event} priority={i < 3} />
+            {upcoming.map((event) => (
+              <EventCard key={event._id} event={event} />
             ))}
           </div>
         )}

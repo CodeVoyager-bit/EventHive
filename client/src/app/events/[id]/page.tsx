@@ -68,16 +68,16 @@ export default async function EventDetailPage({ params }: Props) {
           <p className="eyebrow">{formatDate(event.date, { weekday: "long", month: "long", day: "numeric" })}</p>
           <h1 className={`h2 ${s.title}`}>{event.title}</h1>
 
-          <dl className={s.metaGrid}>
-            <div className={s.metaItem}>
+          <ul className={s.metaGrid}>
+            <li className={s.metaItem}>
               <span className={s.metaIcon}><CalendarDays size={18} aria-hidden="true" /></span>
-              <div><dt>Date and time</dt><dd>{formatDateTime(event.date)}</dd></div>
-            </div>
-            <div className={s.metaItem}>
+              <div><span className={s.metaLabel}>Date and time</span><span className={s.metaValue}>{formatDateTime(event.date)}</span></div>
+            </li>
+            <li className={s.metaItem}>
               <span className={s.metaIcon}>{event.eventType === "online" ? <Globe size={18} aria-hidden="true" /> : <MapPin size={18} aria-hidden="true" />}</span>
               <div>
-                <dt>{event.eventType === "online" ? "Platform" : "Location"}</dt>
-                <dd>
+                <span className={s.metaLabel}>{event.eventType === "online" ? "Platform" : "Location"}</span>
+                <span className={s.metaValue}>
                   {event.eventType === "online" ? event.platform || event.location : event.location}
                   {event.eventType === "venue" && event.address && <span className={s.sub}>{event.address}</span>}
                   {event.eventType === "online" && event.meetingLink && (
@@ -91,18 +91,18 @@ export default async function EventDetailPage({ params }: Props) {
                       )}
                     </span>
                   )}
-                </dd>
+                </span>
               </div>
-            </div>
-            <div className={s.metaItem}>
+            </li>
+            <li className={s.metaItem}>
               <span className={s.metaIcon}><UserRound size={18} aria-hidden="true" /></span>
-              <div><dt>Organized by</dt><dd>{organizerName(event)}</dd></div>
-            </div>
-            <div className={s.metaItem}>
+              <div><span className={s.metaLabel}>Organized by</span><span className={s.metaValue}>{organizerName(event)}</span></div>
+            </li>
+            <li className={s.metaItem}>
               <span className={s.metaIcon}><Ticket size={18} aria-hidden="true" /></span>
-              <div><dt>Capacity</dt><dd className="num">{event.bookedCount} of {event.capacity} seats booked</dd></div>
-            </div>
-          </dl>
+              <div><span className={s.metaLabel}>Capacity</span><span className={`${s.metaValue} num`}>{event.bookedCount} of {event.capacity} seats booked</span></div>
+            </li>
+          </ul>
 
           <h2 className="h3" style={{ marginBottom: 10 }}>About this event</h2>
           <p className={s.desc}>{event.description}</p>

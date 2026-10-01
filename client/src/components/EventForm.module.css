@@ -10,7 +10,7 @@
   margin-bottom: 12px;
 }
 .back:hover {
-  color: var(--brand);
+  color: var(--brand-ink);
 }
 .head {
   margin-bottom: 24px;
@@ -39,7 +39,7 @@
   border-bottom: 1px solid var(--border);
 }
 .section h2 svg {
-  color: var(--brand);
+  color: var(--brand-ink);
 }
 .grid {
   display: grid;
@@ -73,7 +73,7 @@
   transition: border-color var(--dur), background var(--dur), color var(--dur);
 }
 .toggleBtn[aria-pressed="true"] {
-  border-color: var(--brand);
+  border-color: var(--brand-ink);
   background: var(--brand-soft);
   color: var(--text);
 }

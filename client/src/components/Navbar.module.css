@@ -23,7 +23,7 @@
   flex-shrink: 0;
 }
 .logo b {
-  color: var(--brand);
+  color: var(--brand-ink);
 }
 .links {
   display: flex;
@@ -48,7 +48,7 @@
 }
 .active,
 .active:hover {
-  background: var(--brand);
+  background: var(--brand-dark);
   color: #fff;
 }
 .right {

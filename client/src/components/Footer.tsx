@@ -15,14 +15,14 @@ export default function Footer() {
             <p>Discover, create, and attend events that matter. Your gateway to unforgettable experiences.</p>
           </div>
           <div className={s.col}>
-            <h4>Explore</h4>
+            <h2>Explore</h2>
             <Link href="/events">All events</Link>
             {Object.entries(CATEGORY_META).slice(0, 5).map(([key, meta]) => (
               <Link key={key} href={`/events?category=${key}`}>{meta.label}</Link>
             ))}
           </div>
           <div className={s.col}>
-            <h4>Account</h4>
+            <h2>Account</h2>
             <Link href="/auth/login">Log in</Link>
             <Link href="/auth/register">Sign up</Link>
             <Link href="/bookings">My tickets</Link>
