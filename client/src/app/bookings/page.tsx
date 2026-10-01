@@ -1,310 +1,91 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
-import { api, getUser } from "@/lib/api";
-import { Booking, Event } from "@/types";
+import { Calendar, MapPin, Sparkles, Ticket } from "lucide-react";
+import TicketQR from "@/components/TicketQR";
+import CancelBookingButton from "./CancelBookingButton";
+import { apiFetch } from "@/lib/server";
+import { categoryMeta, catStyle } from "@/lib/categories";
+import { formatDate, formatPrice, formatTime, isPast } from "@/lib/format";
+import type { Booking } from "@/types";
+import s from "./bookings.module.css";
 
-export default function BookingsPage() {
-  const router = useRouter();
-  const [bookings, setBookings] = useState<Booking[]>([]);
-  const [loading, setLoading] = useState(true);
-  const user = getUser();
+export const metadata: Metadata = { title: "My tickets" };
 
-  useEffect(() => {
-    if (!user) {
-      router.push("/auth/login");
-      return;
-    }
-    loadBookings();
-  }, []);
+export default async function BookingsPage() {
+  const bookings = await apiFetch<Booking[]>("/bookings/my");
+  const isLive = (b: Booking) => b.status === "confirmed" && !!b.eventId && !isPast(b.eventId.date);
+  const upcoming = bookings.filter(isLive);
+  const history = bookings.filter((b) => !isLive(b));
 
-  async function loadBookings() {
-    try {
-      const data = (await api.getMyBookings()) as Booking[];
-      setBookings(data);
-    } catch {
-      setBookings([]);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const ticket = (booking: Booking) => {
+    const event = booking.eventId;
+    const meta = categoryMeta(event?.category ?? "other");
+    const Icon = meta.icon;
+    const live = isLive(booking);
+    const status = !event ? "Event removed" : booking.status === "cancelled" ? "Cancelled" : isPast(event.date) ? "Attended" : "Confirmed";
+    const statusClass = status === "Confirmed" ? "badge-success" : status === "Attended" ? "badge-brand" : "badge-danger";
 
-  async function handleCancel(id: string) {
-    if (!confirm("Cancel this booking?")) return;
-    try {
-      await api.cancelBooking(id);
-      loadBookings();
-    } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : "Failed to cancel");
-    }
-  }
-
-  // Generate a stable QR-like pattern from a string (no Math.random in render)
-  function getQrPattern(seed: string): boolean[] {
-    return Array.from({ length: 25 }).map((_, i) => {
-      const ch = seed.charCodeAt(i % seed.length);
-      return (ch + i * 7) % 10 > 3;
-    });
-  }
+    return (
+      <li key={booking._id} className={`card ${s.ticket} ${live ? "" : s.past}`} style={catStyle(event?.category ?? "other")}>
+        <div className={s.thumb}>
+          {event?.imageUrl ? <Image src={event.imageUrl} alt="" fill sizes="140px" /> : <span className={s.thumbIcon}><Icon size={32} aria-hidden="true" /></span>}
+        </div>
+        <div className={s.info}>
+          <div className={s.badges}>
+            <span className={`badge ${statusClass}`}>{status}</span>
+            <span className="badge">{booking.ticketType === "vip" ? <><Sparkles size={12} aria-hidden="true" /> VIP</> : "General"}</span>
+            <span className="badge badge-cat">{meta.label}</span>
+          </div>
+          <h2 className="h3">{event ? <Link href={`/events/${event._id}`}>{event.title}</Link> : "Event no longer available"}</h2>
+          <div className={s.rows}>
+            <span><Calendar size={14} aria-hidden="true" /> {event ? `${formatDate(event.date, { weekday: "short", month: "short", day: "numeric", year: "numeric" })} · ${formatTime(event.date)}` : formatDate(booking.bookingDate)}</span>
+            <span><MapPin size={14} aria-hidden="true" /> {event?.location ?? "—"}</span>
+            <span className="num">Paid {formatPrice(booking.amount)}</span>
+          </div>
+          {live && (
+            <div className={s.actions}>
+              <Link href={`/events/${event!._id}`} className="btn btn-secondary btn-sm">View event</Link>
+              <CancelBookingButton id={booking._id} />
+            </div>
+          )}
+        </div>
+        <div className={s.stub}>
+          <span className={s.qr}><TicketQR code={booking.ticketCode} size={88} /></span>
+          <span className={s.code}>{booking.ticketCode}</span>
+        </div>
+      </li>
+    );
+  };
 
   return (
-    <div className="bookings-page container">
-      <div className="page-header fade-in-up">
-        <h1 className="section-title">My <span className="gradient-text">Tickets</span></h1>
-        <p className="section-subtitle">Your booking history and active tickets</p>
+    <div className="container section">
+      <div className="section-head">
+        <div>
+          <p className="eyebrow">Your account</p>
+          <h1 className="h2">My tickets</h1>
+        </div>
+        <Link href="/events" className="btn btn-secondary">Find more events</Link>
       </div>
 
-      {loading ? (
-        <div className="loading-spinner">Loading bookings...</div>
-      ) : bookings.length > 0 ? (
-        <div className="bookings-list">
-          {bookings.map((booking, i) => {
-            const event = booking.eventId && typeof booking.eventId === "object" ? booking.eventId as Event : null;
-            // If the event was deleted, treat the booking as cancelled regardless of stored status
-            const displayStatus = !event && booking.status === "confirmed" ? "cancelled" : booking.status;
-            const isConfirmed = displayStatus === "confirmed";
-            const categoryEmoji = !event ? "🎟️" : event.category === "music" ? "🎵" : event.category === "tech" ? "💻" : event.category === "sports" ? "⚽" : "🎉";
-            return (
-              <div
-                key={booking._id}
-                className="booking-card glass-card fade-in-up"
-                style={{ animationDelay: `${i * 0.1}s`, transform: "none" }}
-              >
-                <div className="ticket-strip" style={{ background: isConfirmed ? "var(--accent-gradient)" : "linear-gradient(135deg, #6b7280, #4b5563)" }}></div>
-
-                <div className="booking-content">
-                  <div className="booking-main">
-                    <div className="booking-event">
-                      <div className="event-icon-box">
-                        <span>{categoryEmoji}</span>
-                      </div>
-                      <div>
-                        <h3>{event?.title || "Event Deleted"}</h3>
-                        <div className="booking-meta">
-                          <span>📅 {new Date(event?.date || booking.bookingDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
-                          <span>📍 {event?.location || "—"}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="booking-details">
-                      <div className="detail-item">
-                        <span className="detail-label">Ticket Type</span>
-                        <span className={`badge badge-${booking.ticketType === "vip" ? "business" : "tech"}`}>
-                          {booking.ticketType === "vip" ? "✨ VIP" : "General"}
-                        </span>
-                      </div>
-                      <div className="detail-item">
-                        <span className="detail-label">Amount</span>
-                        <span className="detail-value gradient-text">${booking.amount}</span>
-                      </div>
-                      <div className="detail-item">
-                        <span className="detail-label">Status</span>
-                        <span className={`badge badge-${displayStatus}`}>{displayStatus}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="booking-ticket-code">
-                      <div className="ticket-code-box">
-                        <span className="code-label">TICKET CODE</span>
-                        <span className="code-value">{booking.ticketCode}</span>
-                        <div className="qr-placeholder">
-                          <div className="qr-grid">
-                            {getQrPattern(booking.ticketCode).map((filled, j) => (
-                              <div key={j} className={`qr-cell ${filled ? "filled" : ""}`}></div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                  {isConfirmed && event && (
-                    <div className="booking-actions">
-                      <Link href={`/events/${event._id}`} className="btn btn-secondary btn-sm">
-                        View Event
-                      </Link>
-                      <button onClick={() => handleCancel(booking._id)} className="btn btn-danger btn-sm">
-                        Cancel Booking
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+      {bookings.length === 0 ? (
+        <div className="empty">
+          <Ticket size={36} aria-hidden="true" />
+          <h2 className="h3">No tickets yet</h2>
+          <p className="muted">Explore events and book your first ticket.</p>
+          <Link href="/events" className="btn btn-primary">Browse events</Link>
         </div>
       ) : (
-        <div className="empty-state fade-in-up">
-          <div style={{ fontSize: "3rem", marginBottom: "16px" }}>🎟️</div>
-          <h3>No bookings yet</h3>
-          <p>Explore events and book your first ticket!</p>
-          <Link href="/events" className="btn btn-primary mt-2" style={{ display: "inline-flex" }}>
-            Browse Events
-          </Link>
-        </div>
+        <>
+          {upcoming.length > 0 && <ul className={s.list}>{upcoming.map(ticket)}</ul>}
+          {history.length > 0 && (
+            <>
+              <h2 className={s.groupTitle}>Past and cancelled</h2>
+              <ul className={s.list}>{history.map(ticket)}</ul>
+            </>
+          )}
+        </>
       )}
-
-      <style jsx>{`
-        .bookings-page {
-          padding: 48px 0;
-        }
-        .page-header {
-          text-align: center;
-          margin-bottom: 40px;
-        }
-        .bookings-list {
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
-          max-width: 800px;
-          margin: 0 auto;
-        }
-        .booking-card {
-          position: relative;
-          overflow: hidden;
-        }
-        .ticket-strip {
-          height: 4px;
-          width: 100%;
-        }
-        .booking-content {
-          padding: 24px;
-        }
-        .booking-main {
-          display: flex;
-          justify-content: space-between;
-          align-items: start;
-          gap: 24px;
-          margin-bottom: 20px;
-        }
-        .booking-event {
-          display: flex;
-          gap: 14px;
-          align-items: center;
-        }
-        .event-icon-box {
-          width: 52px;
-          height: 52px;
-          background: var(--accent-gradient-soft);
-          border-radius: var(--radius-md);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 1.5rem;
-          flex-shrink: 0;
-        }
-        .booking-event h3 {
-          font-size: 1.05rem;
-          font-weight: 700;
-          margin-bottom: 4px;
-        }
-        .booking-meta {
-          display: flex;
-          gap: 16px;
-          font-size: 0.8rem;
-          color: var(--text-secondary);
-        }
-        .booking-details {
-          display: flex;
-          gap: 24px;
-          flex-shrink: 0;
-        }
-        .detail-item {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 6px;
-        }
-        .detail-label {
-          font-size: 0.65rem;
-          text-transform: uppercase;
-          letter-spacing: 0.08em;
-          color: var(--text-muted);
-          font-weight: 600;
-        }
-        .detail-value {
-          font-size: 1.1rem;
-          font-weight: 800;
-        }
-        .booking-ticket-code {
-          display: flex;
-          justify-content: center;
-          margin-bottom: 16px;
-          padding: 16px;
-          background: rgba(255,255,255,0.02);
-          border: 1px dashed var(--border-color);
-          border-radius: var(--radius-md);
-        }
-        .ticket-code-box {
-          text-align: center;
-        }
-        .code-label {
-          display: block;
-          font-size: 0.6rem;
-          text-transform: uppercase;
-          letter-spacing: 0.15em;
-          color: var(--text-muted);
-          margin-bottom: 4px;
-        }
-        .code-value {
-          display: block;
-          font-size: 1.2rem;
-          font-weight: 800;
-          font-family: monospace;
-          letter-spacing: 0.1em;
-          color: var(--text-primary);
-          margin-bottom: 12px;
-        }
-        .qr-placeholder {
-          display: inline-block;
-        }
-        .qr-grid {
-          display: grid;
-          grid-template-columns: repeat(5, 1fr);
-          gap: 2px;
-          width: 50px;
-          margin: 0 auto;
-        }
-        .qr-cell {
-          width: 8px;
-          height: 8px;
-          border-radius: 1px;
-          background: rgba(255,255,255,0.05);
-        }
-        .qr-cell.filled {
-          background: var(--text-secondary);
-        }
-        .booking-actions {
-          display: flex;
-          gap: 8px;
-          justify-content: flex-end;
-          padding-top: 12px;
-          border-top: 1px solid var(--border-color);
-        }
-
-        @media (max-width: 768px) {
-          .booking-main {
-            flex-direction: column;
-          }
-          .booking-details {
-            width: 100%;
-            justify-content: space-between;
-          }
-          .booking-meta {
-            flex-direction: column;
-            gap: 4px;
-          }
-          .booking-actions {
-            justify-content: stretch;
-          }
-          .booking-actions .btn {
-            flex: 1;
-          }
-        }
-      `}</style>
     </div>
   );
 }

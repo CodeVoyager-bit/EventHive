@@ -53,7 +53,7 @@ class AuthService {
 
   private generateToken(user: IUser): string {
     return jwt.sign(
-      { id: user._id, email: user.email, role: user.role },
+      { id: user._id, name: user.name, email: user.email, role: user.role },
       this.jwtSecret,
       { expiresIn: this.jwtExpiresIn } as jwt.SignOptions
     );

@@ -1,90 +1,37 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+import type { Booking, Event, Review, User } from "@/types";
 
-function getToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("token");
-}
+// Browser-side calls go through the same-origin /api proxy (see app/api/[...path]/route.ts).
+// Reads happen in server components (lib/server.ts); this module only covers mutations.
 
-export function setToken(token: string): void {
-  localStorage.setItem("token", token);
-}
-
-export function removeToken(): void {
-  localStorage.removeItem("token");
-}
-
-export function setUser(user: Record<string, unknown>): void {
-  localStorage.setItem("user", JSON.stringify(user));
-}
-
-export function getUser(): Record<string, unknown> | null {
-  if (typeof window === "undefined") return null;
-  const user = localStorage.getItem("user");
-  return user ? JSON.parse(user) : null;
-}
-
-export function removeUser(): void {
-  localStorage.removeItem("user");
-}
-
-async function request<T>(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<T> {
-  const token = getToken();
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-    ...(options.headers as Record<string, string>),
-  };
-
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
-  }
-
-  const res = await fetch(`${API_BASE}${endpoint}`, {
+async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  const res = await fetch(`/api${endpoint}`, {
     ...options,
-    headers,
+    headers: { "content-type": "application/json", ...(options.headers as Record<string, string>) },
   });
-
-  const data = await res.json();
-
-  if (!data.success) {
-    throw new Error(data.error || "Something went wrong");
+  const json = await res.json().catch(() => null);
+  if (!res.ok || !json?.success) {
+    if (res.status === 401 && !location.pathname.startsWith("/auth")) {
+      location.assign(`/auth/login?next=${encodeURIComponent(location.pathname)}`);
+    }
+    throw new Error(json?.error ?? `Request failed (${res.status})`);
   }
-
-  return data.data;
+  return json.data as T;
 }
+
+const post = (body: unknown, method = "POST"): RequestInit => ({ method, body: JSON.stringify(body) });
 
 export const api = {
-  // Auth
-  register: (body: Record<string, string>) =>
-    request("/auth/register", { method: "POST", body: JSON.stringify(body) }),
-  login: (body: { email: string; password: string }) =>
-    request("/auth/login", { method: "POST", body: JSON.stringify(body) }),
+  login: (body: { email: string; password: string }) => request<{ user: User }>("/auth/login", post(body)),
+  register: (body: { name: string; email: string; password: string; role: string }) =>
+    request<{ user: User }>("/auth/register", post(body)),
+  logout: () => request<null>("/auth/logout", { method: "POST" }),
 
-  // Events
-  getEvents: (params?: string) =>
-    request(`/events${params ? `?${params}` : ""}`),
-  getEvent: (id: string) => request(`/events/${id}`),
-  searchEvents: (q: string) => request(`/events?q=${encodeURIComponent(q)}`),
-  createEvent: (body: Record<string, unknown>) =>
-    request("/events", { method: "POST", body: JSON.stringify(body) }),
-  updateEvent: (id: string, body: Record<string, unknown>) =>
-    request(`/events/${id}`, { method: "PUT", body: JSON.stringify(body) }),
-  deleteEvent: (id: string) =>
-    request(`/events/${id}`, { method: "DELETE" }),
-  getMyEvents: () => request("/events/my/events"),
+  createEvent: (body: Record<string, unknown>) => request<Event>("/events", post(body)),
+  updateEvent: (id: string, body: Record<string, unknown>) => request<Event>(`/events/${id}`, post(body, "PUT")),
+  deleteEvent: (id: string) => request<{ message: string }>(`/events/${id}`, { method: "DELETE" }),
 
-  // Bookings
-  createBooking: (body: { eventId: string; ticketType: string }) =>
-    request("/bookings", { method: "POST", body: JSON.stringify(body) }),
-  getMyBookings: () => request("/bookings/my"),
-  cancelBooking: (id: string) =>
-    request(`/bookings/${id}/cancel`, { method: "PATCH" }),
-  getEventBookings: (eventId: string) => request(`/bookings/event/${eventId}`),
+  createBooking: (body: { eventId: string; ticketType: "general" | "vip" }) => request<Booking>("/bookings", post(body)),
+  cancelBooking: (id: string) => request<Booking>(`/bookings/${id}/cancel`, { method: "PATCH" }),
 
-  // Reviews
-  getEventReviews: (eventId: string) => request(`/reviews/event/${eventId}`),
-  createReview: (body: { eventId: string; rating: number; comment: string }) =>
-    request("/reviews", { method: "POST", body: JSON.stringify(body) }),
+  createReview: (body: { eventId: string; rating: number; comment: string }) => request<Review>("/reviews", post(body)),
 };

@@ -1,0 +1,80 @@
+.head {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.filters {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr;
+  margin-bottom: 16px;
+}
+@media (min-width: 900px) {
+  .filters {
+    grid-template-columns: minmax(0, 1fr) 150px auto auto auto;
+  }
+}
+.searchBox {
+  position: relative;
+  display: block;
+}
+.searchBox svg {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-3);
+  pointer-events: none;
+}
+.searchBox input {
+  padding-left: 42px;
+}
+.filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.filterLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+.chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  margin-bottom: 24px;
+  scrollbar-width: none;
+}
+.chips::-webkit-scrollbar {
+  display: none;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-2);
+  white-space: nowrap;
+  transition: border-color var(--dur), color var(--dur), background var(--dur);
+}
+.chip:hover {
+  border-color: var(--cat, var(--border-strong));
+  color: var(--text);
+}
+.chipActive,
+.chipActive:hover {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+.count {
+  margin-bottom: 16px;
+}

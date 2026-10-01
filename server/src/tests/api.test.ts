@@ -137,6 +137,7 @@ test("listing filters, searches and paginates published events", async () => {
     { ...eventBody({ title: "Jazz Night", category: "music", date: inDays(3) }), organizerId: org },
     { ...eventBody({ title: "Rust Workshop", category: "tech", eventType: "online", date: inDays(10) }), organizerId: org },
     { ...eventBody({ title: "Hidden Draft", category: "tech", status: "draft" }), organizerId: org },
+    { ...eventBody({ title: "Old Gig", category: "music", date: inDays(-3) }), organizerId: org },
   ]);
   const page = await api("/events?limit=1");
   assert.equal(page.json.data.length, 1);
@@ -144,6 +145,7 @@ test("listing filters, searches and paginates published events", async () => {
   assert.equal((await api("/events?q=jazz")).json.data[0].title, "Jazz Night");
   assert.equal((await api("/events?category=tech")).json.data.length, 1);
   assert.equal((await api(`/events?from=${inDays(5).toISOString().slice(0, 10)}`)).json.data[0].title, "Rust Workshop");
+  assert.equal((await api(`/events?to=${new Date().toISOString().slice(0, 10)}`)).json.data[0].title, "Old Gig"); // past via window
   assert.equal((await api("/events?category=bogus")).status, 400);
   assert.equal((await api("/events/not-an-id")).status, 400);
 });

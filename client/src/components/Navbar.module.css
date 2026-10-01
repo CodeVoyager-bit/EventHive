@@ -1,0 +1,141 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--nav-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.inner {
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 1.25rem;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+}
+.logo b {
+  color: var(--brand);
+}
+.links {
+  display: flex;
+  gap: 4px;
+  margin-inline: auto;
+}
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--text-2);
+  transition: background var(--dur), color var(--dur);
+}
+.link:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+.active,
+.active:hover {
+  background: var(--brand);
+  color: #fff;
+}
+.right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+.desktopOnly {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px 4px 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: var(--surface);
+}
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.iconBtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  display: grid;
+  place-items: center;
+  color: var(--text);
+  transition: border-color var(--dur), background var(--dur);
+}
+.iconBtn:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-2);
+}
+.burger {
+  display: none;
+}
+.mobile {
+  display: none;
+}
+@media (max-width: 860px) {
+  .links,
+  .desktopOnly {
+    display: none;
+  }
+  .burger {
+    display: grid;
+  }
+  .mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px 20px 24px;
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+  }
+  .mobile .link {
+    min-height: 48px;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+  }
+  .mobileAuth {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+  .mobileAuth .chip {
+    justify-content: center;
+  }
+}

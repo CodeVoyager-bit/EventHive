@@ -31,12 +31,12 @@ class EventService {
     const filter: FilterQuery<IEvent> = { status: "published" };
     if (q.category) filter.category = q.category;
     if (q.eventType) filter.eventType = q.eventType;
-    if (q.from || q.to) {
-      const date: Record<string, Date> = {};
-      if (q.from) date.$gte = q.from;
-      if (q.to) date.$lt = new Date(q.to.getTime() + 86_400_000); // include the whole "to" day
-      filter.date = date;
-    }
+    // Upcoming by default; an explicit from/to window can reach past events
+    const date: Record<string, Date> = {};
+    if (q.from) date.$gte = q.from;
+    if (q.to) date.$lt = new Date(q.to.getTime() + 86_400_000); // include the whole "to" day
+    if (!q.from && !q.to) date.$gte = new Date();
+    filter.date = date;
     if (q.q) {
       // ponytail: regex scan over four fields; switch to a text index if the catalogue grows
       const rx = new RegExp(escapeRegex(q.q), "i");

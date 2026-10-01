@@ -1,0 +1,71 @@
+.footer {
+  margin-top: 48px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-2);
+}
+.inner {
+  padding: 48px 20px 24px;
+  display: grid;
+  gap: 32px;
+}
+.top {
+  display: grid;
+  gap: 32px;
+}
+@media (min-width: 768px) {
+  .top {
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 40px;
+  }
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 1.15rem;
+}
+.mark {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  background: var(--brand);
+  color: #fff;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+.brand p {
+  margin-top: 10px;
+  color: var(--text-3);
+  font-size: 0.88rem;
+  max-width: 36ch;
+  line-height: 1.6;
+}
+.col h4 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-2);
+  margin-bottom: 10px;
+}
+.col a {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--text-3);
+  padding: 4px 0;
+  transition: color var(--dur);
+}
+.col a:hover {
+  color: var(--brand);
+}
+.bottom {
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 0.8rem;
+  color: var(--text-3);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}

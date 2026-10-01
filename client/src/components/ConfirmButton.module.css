@@ -1,0 +1,19 @@
+.body {
+  display: grid;
+  gap: 12px;
+}
+.title {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+.desc {
+  color: var(--text-2);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}

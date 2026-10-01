@@ -1,335 +1,119 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import type { Metadata } from "next";
 import Link from "next/link";
-import { api, getUser } from "@/lib/api";
-import { Event, Booking } from "@/types";
+import { CalendarPlus, DollarSign, LayoutGrid, Pencil, Ticket, Users } from "lucide-react";
+import DeleteEventButton from "./DeleteEventButton";
+import { apiFetch } from "@/lib/server";
+import { categoryMeta, catStyle } from "@/lib/categories";
+import { formatDate, formatPrice, isPast } from "@/lib/format";
+import type { Event } from "@/types";
+import s from "./dashboard.module.css";
 
-export default function DashboardPage() {
-  const router = useRouter();
-  const [events, setEvents] = useState<Event[]>([]);
-  const [loading, setLoading] = useState(true);
-  const user = getUser();
+export const metadata: Metadata = { title: "Organizer dashboard" };
 
-  useEffect(() => {
-    if (!user || (user.role !== "organizer" && user.role !== "admin")) {
-      router.push("/auth/login");
-      return;
-    }
-    loadMyEvents();
-  }, []);
+export default async function DashboardPage() {
+  const events = await apiFetch<Event[]>("/events/my/events");
+  const sold = events.reduce((sum, e) => sum + e.bookedCount, 0);
+  const revenue = events.reduce((sum, e) => sum + (e.revenue ?? 0), 0);
+  const upcoming = events.filter((e) => !isPast(e.date)).length;
 
-  async function loadMyEvents() {
-    try {
-      const data = (await api.getMyEvents()) as Event[];
-      setEvents(data);
-    } catch {
-      setEvents([]);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function handleDelete(id: string) {
-    if (!confirm("Are you sure you want to delete this event?")) return;
-    try {
-      await api.deleteEvent(id);
-      setEvents(events.filter((e) => e._id !== id));
-    } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : "Failed to delete");
-    }
-  }
-
-  const totalRevenue = events.reduce((sum, e) => sum + ((e as any).revenue ?? e.bookedCount * e.price), 0);
-  const totalBookings = events.reduce((sum, e) => sum + e.bookedCount, 0);
-  const totalCapacity = events.reduce((sum, e) => sum + e.capacity, 0);
+  const stats = [
+    { label: "Events", value: events.length, icon: LayoutGrid, color: "var(--brand)" },
+    { label: "Upcoming", value: upcoming, icon: CalendarPlus, color: "var(--blue)" },
+    { label: "Tickets sold", value: sold, icon: Ticket, color: "var(--purple)" },
+    { label: "Revenue", value: formatPrice(revenue), icon: DollarSign, color: "var(--green)" },
+  ];
 
   return (
-    <div className="dashboard-page container">
-      <div className="dash-header fade-in-up">
+    <div className="container section">
+      <div className={s.head}>
         <div>
-          <h1 className="section-title">Organizer <span className="gradient-text">Dashboard</span></h1>
-          <p className="section-subtitle">Manage your events and track performance</p>
+          <p className="eyebrow">Organizer</p>
+          <h1 className="h2">Dashboard</h1>
         </div>
         <Link href="/dashboard/create" className="btn btn-primary">
-          ✨ Create Event
+          <CalendarPlus size={18} aria-hidden="true" /> Create event
         </Link>
       </div>
 
-      {/* Stats */}
-      <div className="stats-grid fade-in-up">
-        <div className="stat-card glass-card" style={{ transform: "none" }}>
-          <div className="stat-icon-wrapper" style={{ background: "rgba(255,90,54,0.1)" }}>
-            <span>📊</span>
+      <div className={s.stats}>
+        {stats.map(({ label, value, icon: Icon, color }) => (
+          <div key={label} className={`card ${s.stat}`}>
+            <span className={s.statIcon} style={{ background: color }}><Icon size={20} aria-hidden="true" /></span>
+            <div>
+              <div className={`${s.statValue} num`}>{value}</div>
+              <div className={s.statLabel}>{label}</div>
+            </div>
           </div>
-          <div className="stat-info">
-            <span className="stat-value">{events.length}</span>
-            <span className="stat-label">Total Events</span>
-          </div>
-          <div className="stat-accent" style={{ background: "#FF5A36" }}></div>
-        </div>
-        <div className="stat-card glass-card" style={{ transform: "none" }}>
-          <div className="stat-icon-wrapper" style={{ background: "rgba(59, 130, 246, 0.1)" }}>
-            <span>🎟️</span>
-          </div>
-          <div className="stat-info">
-            <span className="stat-value">{totalBookings}</span>
-            <span className="stat-label">Tickets Sold</span>
-          </div>
-          <div className="stat-accent" style={{ background: "#3b82f6" }}></div>
-        </div>
-        <div className="stat-card glass-card" style={{ transform: "none" }}>
-          <div className="stat-icon-wrapper" style={{ background: "rgba(16, 185, 129, 0.1)" }}>
-            <span>💰</span>
-          </div>
-          <div className="stat-info">
-            <span className="stat-value">${totalRevenue.toLocaleString()}</span>
-            <span className="stat-label">Revenue</span>
-          </div>
-          <div className="stat-accent" style={{ background: "#38B000" }}></div>
-        </div>
-        <div className="stat-card glass-card" style={{ transform: "none" }}>
-          <div className="stat-icon-wrapper" style={{ background: "rgba(245, 158, 11, 0.1)" }}>
-            <span>👥</span>
-          </div>
-          <div className="stat-info">
-            <span className="stat-value">{totalCapacity}</span>
-            <span className="stat-label">Total Capacity</span>
-          </div>
-          <div className="stat-accent" style={{ background: "#FFBE0B" }}></div>
-        </div>
+        ))}
       </div>
 
-      {/* Events Table */}
-      <div className="events-table-wrapper glass-card fade-in-up" style={{ transform: "none", animationDelay: "0.2s" }}>
-        <div className="table-header">
-          <h2>My Events</h2>
+      <div className={`card ${s.tableCard}`}>
+        <div className={s.tableHead}>
+          <h2 className="h3">My events</h2>
+          <span className="small muted">{events.length} total</span>
         </div>
-
-        {loading ? (
-          <div className="loading-spinner">Loading...</div>
-        ) : events.length > 0 ? (
-          <div className="table-scroll">
-            <table className="events-table">
+        {events.length === 0 ? (
+          <div className="empty" style={{ border: 0 }}>
+            <LayoutGrid size={36} aria-hidden="true" />
+            <h3 className="h3">No events yet</h3>
+            <p className="muted">Create your first event to start selling tickets.</p>
+            <Link href="/dashboard/create" className="btn btn-primary">Create event</Link>
+          </div>
+        ) : (
+          <div className="table-wrap">
+            <table className="table">
               <thead>
                 <tr>
                   <th>Event</th>
                   <th>Date</th>
                   <th>Category</th>
-                  <th>Bookings</th>
+                  <th>Sold</th>
                   <th>Revenue</th>
                   <th>Status</th>
-                  <th>Actions</th>
+                  <th><span className="sr-only">Actions</span></th>
                 </tr>
               </thead>
               <tbody>
-                {events.map((event) => (
-                  <tr key={event._id}>
-                    <td>
-                      <div className="event-cell">
-                        <span className="event-emoji">
-                          {event.category === "music" ? "🎵" : event.category === "tech" ? "💻" : event.category === "sports" ? "⚽" : "🎉"}
+                {events.map((event) => {
+                  const past = isPast(event.date);
+                  const pct = Math.min(100, Math.round((event.bookedCount / event.capacity) * 100));
+                  return (
+                    <tr key={event._id} style={catStyle(event.category)}>
+                      <td>
+                        <Link href={`/events/${event._id}`} className={s.evTitle}>{event.title}</Link>
+                        <div className={s.evLoc}>{event.location}</div>
+                      </td>
+                      <td className="num">{formatDate(event.date, { month: "short", day: "numeric", year: "numeric" })}</td>
+                      <td><span className="badge badge-cat">{categoryMeta(event.category).label}</span></td>
+                      <td>
+                        <span className="num">{event.bookedCount}/{event.capacity}</span>
+                        <div className={s.bar} aria-hidden="true"><span style={{ width: `${pct}%` }} /></div>
+                      </td>
+                      <td className={`${s.revenue} num`}>{formatPrice(event.revenue ?? 0)}</td>
+                      <td>
+                        <span className={`badge ${event.status === "published" ? (past ? "" : "badge-success") : event.status === "draft" ? "badge-warning" : "badge-danger"}`}>
+                          {event.status === "published" && past ? "Ended" : event.status}
                         </span>
-                        <div>
-                          <strong>{event.title}</strong>
-                          <span className="event-location">{event.location}</span>
+                      </td>
+                      <td>
+                        <div className={s.actions}>
+                          <Link href={`/dashboard/${event._id}/attendees`} className="btn btn-ghost btn-sm">
+                            <Users size={14} aria-hidden="true" /> Attendees
+                          </Link>
+                          <Link href={`/dashboard/${event._id}/edit`} className="btn btn-secondary btn-sm">
+                            <Pencil size={14} aria-hidden="true" /> Edit
+                          </Link>
+                          <DeleteEventButton id={event._id} title={event.title} />
                         </div>
-                      </div>
-                    </td>
-                    <td>{new Date(event.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</td>
-                    <td><span className={`badge badge-${event.category}`}>{event.category}</span></td>
-                    <td>
-                      <div className="booking-bar-cell">
-                        <span>{event.bookedCount}/{event.capacity}</span>
-                        <div className="mini-bar">
-                          <div className="mini-bar-fill" style={{ width: `${(event.bookedCount / event.capacity) * 100}%` }}></div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="revenue-cell">${((event as any).revenue ?? event.bookedCount * event.price).toLocaleString()}</td>
-                    <td><span className={`badge badge-${event.status === "published" ? "confirmed" : "cancelled"}`}>{event.status}</span></td>
-                    <td>
-                      <div className="action-btns">
-                        <Link href={`/events/${event._id}`} className="btn btn-secondary btn-sm">View</Link>
-                        <button onClick={() => handleDelete(event._id)} className="btn btn-danger btn-sm">Delete</button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
-        ) : (
-          <div className="empty-state">
-            <h3>No events yet</h3>
-            <p>Create your first event to get started!</p>
-            <Link href="/dashboard/create" className="btn btn-primary mt-2" style={{ display: "inline-flex" }}>
-              Create Event
-            </Link>
-          </div>
         )}
       </div>
-
-      <style jsx>{`
-        .dashboard-page {
-          padding: 48px 0;
-        }
-        .dash-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-          margin-bottom: 36px;
-        }
-        .stats-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-          gap: 20px;
-          margin-bottom: 36px;
-        }
-        .stat-card {
-          position: relative;
-          padding: 24px;
-          display: flex;
-          align-items: center;
-          gap: 16px;
-          overflow: hidden;
-        }
-        .stat-icon-wrapper {
-          width: 48px;
-          height: 48px;
-          border-radius: var(--radius-md);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 1.4rem;
-          flex-shrink: 0;
-        }
-        .stat-info {
-          display: flex;
-          flex-direction: column;
-        }
-        .stat-value {
-          font-size: 1.6rem;
-          font-weight: 800;
-          letter-spacing: -0.02em;
-        }
-        .stat-label {
-          font-size: 0.8rem;
-          color: var(--text-muted);
-          text-transform: uppercase;
-          letter-spacing: 0.04em;
-        }
-        .stat-accent {
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          height: 3px;
-          opacity: 0.6;
-        }
-        .events-table-wrapper {
-          padding: 0;
-          overflow: hidden;
-        }
-        .table-header {
-          padding: 20px 24px;
-          border-bottom: 1px solid var(--border-color);
-        }
-        .table-header h2 {
-          font-size: 1.1rem;
-          font-weight: 700;
-        }
-        .table-scroll {
-          overflow-x: auto;
-        }
-        .events-table {
-          width: 100%;
-          border-collapse: collapse;
-        }
-        .events-table th {
-          text-align: left;
-          padding: 14px 20px;
-          font-size: 0.75rem;
-          font-weight: 600;
-          color: var(--text-muted);
-          text-transform: uppercase;
-          letter-spacing: 0.06em;
-          border-bottom: 1px solid var(--border-color);
-          white-space: nowrap;
-        }
-        .events-table td {
-          padding: 16px 20px;
-          font-size: 0.9rem;
-          border-bottom: 1px solid rgba(255,255,255,0.03);
-          vertical-align: middle;
-        }
-        .events-table tr:hover td {
-          background: rgba(255,255,255,0.02);
-        }
-        .event-cell {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-        }
-        .event-emoji {
-          font-size: 1.3rem;
-        }
-        .event-cell strong {
-          display: block;
-          font-size: 0.9rem;
-        }
-        .event-location {
-          font-size: 0.75rem;
-          color: var(--text-muted);
-        }
-        .booking-bar-cell {
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-          font-size: 0.85rem;
-        }
-        .mini-bar {
-          height: 4px;
-          width: 80px;
-          background: var(--bg-glass);
-          border-radius: 2px;
-          overflow: hidden;
-        }
-        .mini-bar-fill {
-          height: 100%;
-          background: var(--accent-gradient);
-          border-radius: 2px;
-        }
-        .revenue-cell {
-          font-weight: 700;
-          color: var(--success);
-        }
-        .action-btns {
-          display: flex;
-          gap: 6px;
-        }
-
-        @media (max-width: 768px) {
-          .dash-header {
-            flex-direction: column;
-            gap: 16px;
-          }
-          .stats-grid {
-            grid-template-columns: repeat(2, 1fr);
-          }
-          .events-table th,
-          .events-table td {
-            padding: 12px 14px;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .stats-grid {
-            grid-template-columns: 1fr;
-          }
-        }
-      `}</style>
     </div>
   );
 }

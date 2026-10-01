@@ -1,0 +1,141 @@
+.layout {
+  display: grid;
+  gap: 32px;
+  align-items: start;
+}
+@media (min-width: 960px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr) 360px;
+  }
+}
+.media {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background: color-mix(in srgb, var(--cat) 20%, var(--surface-2));
+  margin-bottom: 24px;
+}
+.media img {
+  object-fit: cover;
+}
+.placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--cat);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--cat) 35%, transparent), transparent);
+}
+.badges {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.badges .badge {
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: blur(8px);
+}
+.title {
+  margin: 6px 0 16px;
+}
+.metaGrid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+  margin: 20px 0 32px;
+}
+@media (min-width: 640px) {
+  .metaGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.metaItem {
+  display: flex;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+.metaIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  display: grid;
+  place-items: center;
+  background: var(--brand-soft);
+  color: var(--brand);
+  flex-shrink: 0;
+}
+.metaItem dt {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+  margin-bottom: 2px;
+}
+.metaItem dd {
+  font-size: 0.95rem;
+}
+.sub {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--brand);
+  font-weight: 600;
+}
+.link:hover {
+  text-decoration: underline;
+}
+.desc {
+  white-space: pre-line;
+  line-height: 1.8;
+  color: var(--text-2);
+  margin-bottom: 40px;
+}
+.reviewsHead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.reviewList {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.review {
+  padding: 16px 18px;
+}
+.reviewTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.reviewText {
+  color: var(--text-2);
+  line-height: 1.6;
+  margin-bottom: 6px;
+}
+.sidebar {
+  position: sticky;
+  top: calc(var(--nav-h) + 16px);
+}

@@ -1,6 +1,5 @@
 import "dotenv/config";
 import express from "express";
-import cors from "cors";
 import Database from "./config/Database";
 import { errorHandler } from "./middleware/errorHandler";
 
@@ -11,11 +10,7 @@ import reviewRoutes from "./routes/reviewRoutes";
 
 const app = express();
 
-// Middleware
-app.use(cors({
-  origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(",") : true,
-  credentials: true,
-}));
+// The browser never calls this API directly (the Next.js server proxies it), so no CORS layer.
 app.use(express.json());
 
 // Ensure a DB connection before handling any request (serverless-safe: the connection is cached)

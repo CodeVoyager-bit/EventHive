@@ -1,0 +1,146 @@
+.page {
+  display: grid;
+  min-height: calc(100dvh - var(--nav-h));
+  grid-template-columns: 1fr;
+}
+@media (min-width: 900px) {
+  .page {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.brand {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 32px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--brand), #ff2d55);
+}
+.brandBlue {
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+}
+.brand::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+.brandInner {
+  position: relative;
+  max-width: 420px;
+}
+.brandInner h2 {
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 14px;
+}
+.brandInner p {
+  opacity: 0.92;
+  line-height: 1.7;
+}
+.points {
+  margin-top: 24px;
+  display: grid;
+  gap: 10px;
+  font-size: 0.95rem;
+}
+.points li {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.points svg {
+  flex-shrink: 0;
+}
+.formSide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+}
+.form {
+  width: 100%;
+  max-width: 420px;
+  display: grid;
+  gap: 16px;
+}
+.form h1 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.sub {
+  color: var(--text-3);
+  margin-top: -10px;
+}
+.passwordWrap {
+  position: relative;
+}
+.passwordWrap input {
+  padding-right: 48px;
+}
+.eye {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  color: var(--text-3);
+  border-radius: var(--radius-sm);
+}
+.eye:hover {
+  color: var(--text);
+}
+.roles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.role {
+  padding: 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  text-align: left;
+  display: grid;
+  gap: 4px;
+  transition: border-color var(--dur), background var(--dur);
+}
+.role[aria-pressed="true"] {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+}
+.role strong {
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.role span {
+  font-size: 0.78rem;
+  color: var(--text-3);
+}
+.switch {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-3);
+}
+.switch a {
+  color: var(--brand);
+  font-weight: 600;
+}
+@media (max-width: 899px) {
+  .brand {
+    padding: 36px 24px;
+  }
+  .points {
+    display: none;
+  }
+}

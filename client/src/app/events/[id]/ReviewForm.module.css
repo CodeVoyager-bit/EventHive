@@ -1,0 +1,27 @@
+.form {
+  display: grid;
+  gap: 14px;
+  justify-items: start;
+}
+.form .field {
+  width: 100%;
+}
+.stars {
+  display: flex;
+  gap: 2px;
+}
+.star {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  color: var(--text-3);
+  border-radius: var(--radius-sm);
+  transition: color var(--dur), transform var(--dur);
+}
+.star:hover {
+  transform: scale(1.1);
+}
+.on {
+  color: #f59e0b;
+}
