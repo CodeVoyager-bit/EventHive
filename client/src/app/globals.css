@@ -1,8 +1,9 @@
 /* ---------- Design tokens ---------- */
 :root {
   --brand: #ff5a36; /* decorative: gradients, bars, dots */
-  --brand-dark: #e04928; /* button backgrounds: 5:1 with white text */
-  --brand-deeper: #c93d1f;
+  --brand-dark: #e04928; /* hover/decorative */
+  --brand-deeper: #c93d1f; /* solid backgrounds under white text: 5:1 */
+  --brand-deepest: #b03418;
   --brand-soft: rgba(255, 90, 54, 0.12);
   --blue: #4361ee;
   --pink: #ff006e;
@@ -264,12 +265,12 @@ ul {
   transform: none !important;
 }
 .btn-primary {
-  background: var(--brand-dark);
+  background: var(--brand-deeper);
   color: #fff;
-  box-shadow: 0 6px 20px rgba(224, 73, 40, 0.3);
+  box-shadow: 0 6px 20px rgba(201, 61, 31, 0.3);
 }
 .btn-primary:hover:not(:disabled) {
-  background: var(--brand-deeper);
+  background: var(--brand-deepest);
   transform: translateY(-1px);
 }
 .btn-secondary {

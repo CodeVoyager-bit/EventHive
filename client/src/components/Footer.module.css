@@ -30,7 +30,7 @@
   height: 28px;
   display: grid;
   place-items: center;
-  background: var(--brand-dark);
+  background: var(--brand-deeper);
   color: #fff;
   border-radius: 6px;
   font-size: 0.85rem;
