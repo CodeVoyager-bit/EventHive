@@ -1,6 +1,7 @@
 import EventRepository from "../repositories/EventRepository";
 import BookingRepository from "../repositories/BookingRepository";
 import { IEvent } from "../models/Event";
+import { idOf } from "../lib/idOf";
 
 class EventService {
   async createEvent(data: Partial<IEvent>): Promise<IEvent> {
@@ -39,9 +40,7 @@ class EventService {
   ): Promise<IEvent | null> {
     const event = await EventRepository.findById(id);
     if (!event) throw new Error("Event not found");
-    const rawOrg = event.organizerId as any;
-    const eventOrgId: string = rawOrg?._id ? rawOrg._id.toString() : rawOrg?.toString() ?? "";
-    if (eventOrgId !== organizerId) {
+    if (idOf(event.organizerId) !== organizerId) {
       throw new Error("Unauthorized: You can only edit your own events");
     }
     return EventRepository.update(id, data);
@@ -50,9 +49,7 @@ class EventService {
   async deleteEvent(id: string, organizerId: string): Promise<IEvent | null> {
     const event = await EventRepository.findById(id);
     if (!event) throw new Error("Event not found");
-    const rawOrg = event.organizerId as any;
-    const eventOrgId: string = rawOrg?._id ? rawOrg._id.toString() : rawOrg?.toString() ?? "";
-    if (eventOrgId !== organizerId) {
+    if (idOf(event.organizerId) !== organizerId) {
       throw new Error("Unauthorized: You can only delete your own events");
     }
     // Cancel all confirmed bookings before deleting the event

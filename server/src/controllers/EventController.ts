@@ -5,7 +5,9 @@ import EventService from "../services/EventService";
 class EventController extends BaseController {
   async create(req: Request, res: Response): Promise<void> {
     try {
-      const eventData = { ...req.body, organizerId: (req as any).user.id };
+      // Clients may not set server-owned fields (ponytail: replaced by zod schemas in phase 2)
+      const { bookedCount: _b, organizerId: _o, ...body } = req.body;
+      const eventData = { ...body, organizerId: (req as any).user.id };
       const event = await EventService.createEvent(eventData);
       this.sendSuccess(res, event, 201);
     } catch (error: any) {
@@ -63,10 +65,11 @@ class EventController extends BaseController {
 
   async update(req: Request, res: Response): Promise<void> {
     try {
+      const { bookedCount: _b, organizerId: _o, ...body } = req.body;
       const event = await EventService.updateEvent(
         req.params.id,
         (req as any).user.id,
-        req.body
+        body
       );
       this.sendSuccess(res, event);
     } catch (error: any) {

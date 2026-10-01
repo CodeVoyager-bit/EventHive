@@ -2,11 +2,13 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import { Event } from "@/types";
 import EventCard from "@/components/EventCard";
 
 export default function HomePage() {
+  const router = useRouter();
   const [featuredEvents, setFeaturedEvents] = useState<Event[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
@@ -29,7 +31,7 @@ export default function HomePage() {
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
     if (searchQuery.trim()) {
-      window.location.href = `/events?q=${encodeURIComponent(searchQuery)}`;
+      router.push(`/events?q=${encodeURIComponent(searchQuery)}`);
     }
   }
 

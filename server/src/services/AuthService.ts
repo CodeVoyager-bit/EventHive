@@ -3,21 +3,32 @@ import jwt from "jsonwebtoken";
 import UserRepository from "../repositories/UserRepository";
 import { IUser } from "../models/User";
 
-class AuthService {
-  private readonly jwtSecret: string;
-  private readonly jwtExpiresIn: string;
+// Self-registration may only create these roles; admins are provisioned out of band.
+const SELF_REGISTER_ROLES = ["attendee", "organizer"] as const;
+type SelfRegisterRole = (typeof SELF_REGISTER_ROLES)[number];
 
-  constructor() {
-    this.jwtSecret = process.env.JWT_SECRET || "default_secret";
-    this.jwtExpiresIn = process.env.JWT_EXPIRES_IN || "7d";
+class AuthService {
+  // Read lazily so env is loaded (and tests can set it) before first use.
+  private get jwtSecret(): string {
+    const secret = process.env.JWT_SECRET;
+    if (!secret) throw new Error("JWT_SECRET is not set");
+    return secret;
+  }
+
+  private get jwtExpiresIn(): string {
+    return process.env.JWT_EXPIRES_IN || "7d";
   }
 
   async register(
     name: string,
     email: string,
     password: string,
-    role: "attendee" | "organizer"
+    role: string
   ): Promise<{ user: Partial<IUser>; token: string }> {
+    if (!SELF_REGISTER_ROLES.includes(role as SelfRegisterRole)) {
+      throw new Error("Invalid role");
+    }
+
     const existingUser = await UserRepository.findByEmail(email);
     if (existingUser) {
       throw new Error("Email already registered");
@@ -28,7 +39,7 @@ class AuthService {
       name,
       email,
       password: hashedPassword,
-      role,
+      role: role as SelfRegisterRole,
     });
 
     const token = this.generateToken(user);

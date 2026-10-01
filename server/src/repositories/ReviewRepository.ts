@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Review, { IReview } from "../models/Review";
 
 class ReviewRepository {
@@ -18,7 +19,7 @@ class ReviewRepository {
 
   async getAverageRating(eventId: string): Promise<number> {
     const result = await Review.aggregate([
-      { $match: { eventId: eventId } },
+      { $match: { eventId: new mongoose.Types.ObjectId(eventId) } },
       { $group: { _id: null, avgRating: { $avg: "$rating" } } },
     ]);
     return result.length > 0 ? Math.round(result[0].avgRating * 10) / 10 : 0;

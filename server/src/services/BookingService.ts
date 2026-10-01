@@ -4,6 +4,7 @@ import { TicketFactory } from "../models/Ticket";
 import { MockStripeGateway, IPaymentGateway } from "../interfaces/IPaymentGateway";
 import { IBooking } from "../models/Booking";
 import crypto from "crypto";
+import { idOf } from "../lib/idOf";
 
 class BookingService {
   private paymentGateway: IPaymentGateway;
@@ -57,7 +58,16 @@ class BookingService {
     return BookingRepository.findByUser(userId);
   }
 
-  async getEventBookings(eventId: string): Promise<IBooking[]> {
+  async getEventBookings(
+    eventId: string,
+    requester: { id: string; role: string }
+  ): Promise<IBooking[]> {
+    const event = await EventRepository.findById(eventId);
+    if (!event) throw new Error("Event not found");
+    // Attendee names/emails are only visible to the event's own organizer (or an admin)
+    if (requester.role !== "admin" && idOf(event.organizerId) !== requester.id) {
+      throw new Error("Unauthorized: You can only view attendees of your own events");
+    }
     return BookingRepository.findByEvent(eventId);
   }
 
@@ -66,17 +76,13 @@ class BookingService {
     if (!booking) throw new Error("Booking not found");
     if (booking.status === "cancelled") throw new Error("Booking is already cancelled");
 
-    // booking.userId may be a populated User object — extract _id safely
-    const rawUserId = booking.userId as any;
-    const bookingOwnerId: string =
-      rawUserId?._id ? rawUserId._id.toString() : rawUserId?.toString() ?? "";
-
-    if (bookingOwnerId !== userId) {
+    // userId/eventId are populated by the repository; idOf() handles doc or raw id
+    if (idOf(booking.userId) !== userId) {
       throw new Error("Unauthorized");
     }
 
     // Restore the ticket slot on the event
-    await EventRepository.incrementAvailableTickets(booking.eventId.toString());
+    await EventRepository.incrementAvailableTickets(idOf(booking.eventId));
 
     return BookingRepository.update(bookingId, { status: "cancelled" });
   }

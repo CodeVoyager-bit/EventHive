@@ -1,14 +1,12 @@
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 import Database from "./config/Database";
 
 import authRoutes from "./routes/authRoutes";
 import eventRoutes from "./routes/eventRoutes";
 import bookingRoutes from "./routes/bookingRoutes";
 import reviewRoutes from "./routes/reviewRoutes";
-
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -20,25 +18,25 @@ app.use(cors({
 }));
 app.use(express.json());
 
-
-app.use(async (req, res, next) => {
+// Ensure a DB connection before handling any request (serverless-safe: the connection is cached)
+app.use(async (_req, res, next) => {
   try {
-    const mongoUri = process.env.MONGODB_URI || "mongodb://localhost:27017/eventhive";
-    await Database.getInstance().connect(mongoUri);
+    await Database.getInstance().connect(process.env.MONGODB_URI || "mongodb://localhost:27017/eventhive");
     next();
   } catch (err) {
-    res.status(500).json({ success: false, error: "Database Connection Failed" });
+    console.error("Database connection failed:", err);
+    res.status(500).json({ success: false, error: "Database connection failed" });
   }
 });
 
 // Routes
-app.use("/auth", authRoutes);
-app.use("/events", eventRoutes);
-app.use("/bookings", bookingRoutes);
-app.use("/reviews", reviewRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/events", eventRoutes);
+app.use("/api/bookings", bookingRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 // Health check
-app.get("/health", (_req, res) => {
+app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 

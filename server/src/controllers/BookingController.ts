@@ -32,10 +32,10 @@ class BookingController extends BaseController {
 
   async getEventBookings(req: Request, res: Response): Promise<void> {
     try {
-      const bookings = await BookingService.getEventBookings(req.params.eventId);
+      const bookings = await BookingService.getEventBookings(req.params.eventId, (req as any).user);
       this.sendSuccess(res, bookings);
     } catch (error: any) {
-      this.sendError(res, error.message, 500);
+      this.sendError(res, error.message, /^Unauthorized/.test(error.message) ? 403 : 400);
     }
   }
 
