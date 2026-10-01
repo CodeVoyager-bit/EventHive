@@ -57,6 +57,10 @@ const EventSchema: Schema = new Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
+// Listing filters on status + date; the organizer dashboard filters on organizerId
+EventSchema.index({ status: 1, date: 1 });
+EventSchema.index({ organizerId: 1 });
+
 const Event = mongoose.model<IEvent>("Event", EventSchema);
 export default Event;
 

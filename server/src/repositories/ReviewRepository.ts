@@ -13,16 +13,15 @@ class ReviewRepository {
       .sort({ createdAt: -1 });
   }
 
-  async findByUser(userId: string): Promise<IReview[]> {
-    return Review.find({ userId }).populate("eventId", "title");
-  }
-
-  async getAverageRating(eventId: string): Promise<number> {
-    const result = await Review.aggregate([
+  async getStats(eventId: string): Promise<{ averageRating: number; reviewCount: number }> {
+    const [row] = await Review.aggregate([
       { $match: { eventId: new mongoose.Types.ObjectId(eventId) } },
-      { $group: { _id: null, avgRating: { $avg: "$rating" } } },
+      { $group: { _id: null, avg: { $avg: "$rating" }, count: { $sum: 1 } } },
     ]);
-    return result.length > 0 ? Math.round(result[0].avgRating * 10) / 10 : 0;
+    return {
+      averageRating: row ? Math.round(row.avg * 10) / 10 : 0,
+      reviewCount: row?.count ?? 0,
+    };
   }
 }
 

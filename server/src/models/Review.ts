@@ -16,5 +16,9 @@ const ReviewSchema: Schema = new Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
+// One review per user per event
+ReviewSchema.index({ userId: 1, eventId: 1 }, { unique: true });
+ReviewSchema.index({ eventId: 1 });
+
 const Review = mongoose.model<IReview>("Review", ReviewSchema);
 export default Review;

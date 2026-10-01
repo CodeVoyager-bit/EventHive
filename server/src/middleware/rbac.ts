@@ -1,20 +1,16 @@
 import { Request, Response, NextFunction } from "express";
+import { HttpError } from "./errorHandler";
+import { Role } from "./auth";
 
 // RBAC middleware: Role-Based Access Control
-export function authorize(...roles: string[]) {
-  return (req: Request, res: Response, next: NextFunction): void => {
-    const user = (req as any).user;
-    if (!user) {
-      res.status(401).json({ success: false, error: "Authentication required" });
-      return;
+export function authorize(...roles: Role[]) {
+  return (req: Request, _res: Response, next: NextFunction): void => {
+    if (!req.user) {
+      next(new HttpError(401, "Authentication required"));
+    } else if (!roles.includes(req.user.role)) {
+      next(new HttpError(403, "Insufficient permissions for this action"));
+    } else {
+      next();
     }
-    if (!roles.includes(user.role)) {
-      res.status(403).json({
-        success: false,
-        error: "Insufficient permissions for this action",
-      });
-      return;
-    }
-    next();
   };
 }

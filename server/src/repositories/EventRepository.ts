@@ -1,3 +1,4 @@
+import { FilterQuery } from "mongoose";
 import Event, { IEvent } from "../models/Event";
 
 class EventRepository {
@@ -10,30 +11,28 @@ class EventRepository {
     return Event.findById(id).populate("organizerId", "name email");
   }
 
-  async findAll(filters: Record<string, unknown> = {}): Promise<IEvent[]> {
-    return Event.find(filters)
-      .populate("organizerId", "name email")
-      .sort({ date: 1 });
+  async findPaged(
+    filter: FilterQuery<IEvent>,
+    page: number,
+    limit: number
+  ): Promise<{ items: IEvent[]; total: number }> {
+    const [items, total] = await Promise.all([
+      Event.find(filter)
+        .populate("organizerId", "name email")
+        .sort({ date: 1 })
+        .skip((page - 1) * limit)
+        .limit(limit),
+      Event.countDocuments(filter),
+    ]);
+    return { items, total };
   }
 
   async findByOrganizer(organizerId: string): Promise<IEvent[]> {
     return Event.find({ organizerId }).sort({ createdAt: -1 });
   }
 
-  async search(query: string): Promise<IEvent[]> {
-    return Event.find({
-      $or: [
-        { title: { $regex: query, $options: "i" } },
-        { description: { $regex: query, $options: "i" } },
-        { category: { $regex: query, $options: "i" } },
-        { location: { $regex: query, $options: "i" } },
-      ],
-      status: "published",
-    }).populate("organizerId", "name email");
-  }
-
   async update(id: string, data: Partial<IEvent>): Promise<IEvent | null> {
-    return Event.findByIdAndUpdate(id, data, { new: true });
+    return Event.findByIdAndUpdate(id, data, { new: true, runValidators: true });
   }
 
   async delete(id: string): Promise<IEvent | null> {

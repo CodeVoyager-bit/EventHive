@@ -66,7 +66,7 @@ export const api = {
   getEvents: (params?: string) =>
     request(`/events${params ? `?${params}` : ""}`),
   getEvent: (id: string) => request(`/events/${id}`),
-  searchEvents: (q: string) => request(`/events/search?q=${encodeURIComponent(q)}`),
+  searchEvents: (q: string) => request(`/events?q=${encodeURIComponent(q)}`),
   createEvent: (body: Record<string, unknown>) =>
     request("/events", { method: "POST", body: JSON.stringify(body) }),
   updateEvent: (id: string, body: Record<string, unknown>) =>

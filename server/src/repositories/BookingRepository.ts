@@ -15,7 +15,7 @@ class BookingRepository {
 
   async findByUser(userId: string): Promise<IBooking[]> {
     return Booking.find({ userId })
-      .populate("eventId", "title date location price imageUrl")
+      .populate("eventId", "title date location price imageUrl category")
       .sort({ bookingDate: -1 });
   }
 
@@ -25,12 +25,12 @@ class BookingRepository {
       .sort({ bookingDate: -1 });
   }
 
-  async update(id: string, data: Partial<IBooking>): Promise<IBooking | null> {
-    return Booking.findByIdAndUpdate(id, data, { new: true });
+  async hasConfirmed(userId: string, eventId: string): Promise<boolean> {
+    return !!(await Booking.exists({ userId, eventId, status: "confirmed" }));
   }
 
-  async countByEvent(eventId: string): Promise<number> {
-    return Booking.countDocuments({ eventId, status: "confirmed" });
+  async update(id: string, data: Partial<IBooking>): Promise<IBooking | null> {
+    return Booking.findByIdAndUpdate(id, data, { new: true });
   }
 
   async getRevenueByEvent(eventId: string): Promise<number> {

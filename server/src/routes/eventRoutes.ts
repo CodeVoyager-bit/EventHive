@@ -7,7 +7,6 @@ const router = Router();
 
 // Public routes
 router.get("/", (req, res) => EventController.getAll(req, res));
-router.get("/search", (req, res) => EventController.search(req, res));
 router.get("/:id", (req, res) => EventController.getById(req, res));
 
 // Protected routes (organizer only)

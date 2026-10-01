@@ -3,3 +3,6 @@ export const idOf = (ref: unknown): string => {
   const id = (ref as { _id?: unknown } | null | undefined)?._id ?? ref;
   return id == null ? "" : String(id);
 };
+
+// Make user input safe to embed in a RegExp.
+export const escapeRegex = (s: string): string => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");

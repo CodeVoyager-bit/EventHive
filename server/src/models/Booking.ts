@@ -8,6 +8,7 @@ export interface IBooking extends Document {
   ticketType: "general" | "vip";
   ticketCode: string;
   amount: number;
+  transactionId?: string;
 }
 
 const BookingSchema: Schema = new Schema({
@@ -26,7 +27,15 @@ const BookingSchema: Schema = new Schema({
   },
   ticketCode: { type: String, required: true },
   amount: { type: Number, required: true },
+  transactionId: { type: String },
 });
+
+// One confirmed ticket per user per event, enforced by the database (race-safe)
+BookingSchema.index(
+  { userId: 1, eventId: 1 },
+  { unique: true, partialFilterExpression: { status: "confirmed" } }
+);
+BookingSchema.index({ eventId: 1, status: 1 });
 
 const Booking = mongoose.model<IBooking>("Booking", BookingSchema);
 export default Booking;
