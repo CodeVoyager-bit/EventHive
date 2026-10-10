@@ -70,8 +70,18 @@ Browser ──► Next.js server ──► Express API ──► MongoDB
 └── *Diagram.*                   # UML diagrams (Class, ER, Sequence, Use Case)
 ```
 
+## Features
+
+- **Discover:** search, category and date filters (all in the URL), pagination, past events, "More like this" on every event, and a ⌘K / Ctrl+K quick search across events, categories and pages.
+- **Save:** heart any event; saved events live on `/saved`.
+- **Book:** General or VIP tickets, confetti on success, QR-coded tickets under My Tickets, cancellation with refund.
+- **Plan:** add an event to Google Calendar or download an `.ics` file (Apple Calendar, Outlook); share via the native share sheet or copy the link.
+- **Host:** create and edit events, see revenue and sales, list attendees, and run a **check-in desk** at the door (type the code or scan the QR with the camera where the browser supports `BarcodeDetector`); each ticket can only be admitted once.
+- **Review:** attendees rate events after they end.
+
 ## Business rules
 
+- **Check-in:** only the event's organizer (or an admin) can admit tickets; codes are case-insensitive; the update is atomic so a ticket scanned twice is admitted once; cancelled tickets are refused.
 - **Booking:** only published, upcoming events; one confirmed ticket per user per event (database unique index, race-safe); seats are decremented atomically and returned if anything fails after the decrement; VIP costs double; the mock payment's transaction id is stored and refunded on cancellation; no cancellation once the event has started.
 - **Reviews:** only attendees with a confirmed ticket, only after the event has ended, one review per user; the endpoint returns the average and count.
 - **Events:** organizers manage only their own events (admins can manage any); the attendee list (names, emails) is visible only to the event's organizer.
@@ -158,6 +168,11 @@ All routes are under `/api`. Responses are `{ success, data }` or `{ success: fa
 | GET | `/api/bookings/my` | User | My bookings |
 | PATCH | `/api/bookings/:id/cancel` | User | Cancel a booking (refund, seat released) |
 | GET | `/api/bookings/event/:eventId` | Owner/Admin | Attendees of an event |
+| POST | `/api/bookings/check-in` | Owner/Admin | Admit a ticket at the door (`eventId`, `code`); once only |
+| GET | `/api/me/saved` | User | My saved events |
+| GET | `/api/me/saved/ids` | User | Ids of my saved events |
+| PUT | `/api/me/saved/:eventId` | User | Save an event (idempotent) |
+| DELETE | `/api/me/saved/:eventId` | User | Remove a saved event |
 | POST | `/api/reviews` | Attendee of the event | Leave a review after the event ends |
 | GET | `/api/reviews/event/:eventId` | No | Reviews with `averageRating` and `reviewCount` |
 | GET | `/api/health` | No | Health check |

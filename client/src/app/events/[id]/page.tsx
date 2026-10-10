@@ -5,9 +5,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, CalendarDots, Globe, LinkSimple, MapPin, Ticket, User } from "@phosphor-icons/react/ssr";
 import Stars from "@/components/Stars";
+import EventCard from "@/components/EventCard";
+import SaveButton from "@/components/SaveButton";
+import ShareButton from "@/components/ShareButton";
+import CalendarMenu from "@/components/CalendarMenu";
+import { headers } from "next/headers";
 import BookingCard from "./BookingCard";
 import ReviewForm from "./ReviewForm";
-import { apiFetch, ApiError, getSessionUser } from "@/lib/server";
+import { apiFetch, apiFetchPaged, ApiError, getSavedIds, getSessionUser } from "@/lib/server";
 import { categoryMeta } from "@/lib/categories";
 import { formatDate, formatDateTime, isPast, organizerName } from "@/lib/format";
 import type { Event, ReviewStats } from "@/types";
@@ -38,7 +43,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function EventDetailPage({ params }: Props) {
   const { id } = await params;
   const event = await getEvent(id);
-  const [stats, user] = await Promise.all([apiFetch<ReviewStats>(`/reviews/event/${id}`), getSessionUser()]);
+  const [stats, user, savedIds, similar, host] = await Promise.all([
+    apiFetch<ReviewStats>(`/reviews/event/${id}`),
+    getSessionUser(),
+    getSavedIds(),
+    apiFetchPaged<Event>(`/events?category=${event.category}&limit=4`)
+      .then((r) => r.items.filter((e) => e._id !== event._id).slice(0, 3))
+      .catch(() => [] as Event[]),
+    headers().then((h) => h.get("host")),
+  ]);
+  const pageUrl = `${host?.startsWith("localhost") ? "http" : "https"}://${host}/events/${event._id}`;
 
   const meta = categoryMeta(event.category);
   const past = isPast(event.date);
@@ -97,6 +111,12 @@ export default async function EventDetailPage({ params }: Props) {
               </li>
             ))}
           </ul>
+
+          <div className={`rise ${s.actions}`} style={{ "--i": 3 } as React.CSSProperties}>
+            <SaveButton eventId={event._id} saved={savedIds.has(event._id)} signedIn={!!user} variant="inline" />
+            <ShareButton title={event.title} />
+            {!past && <CalendarMenu event={event} pageUrl={pageUrl} />}
+          </div>
 
           {online && event.meetingLink && (
             <p className={s.join}>
@@ -173,6 +193,17 @@ export default async function EventDetailPage({ params }: Props) {
           />
         </aside>
       </div>
+
+      {similar.length > 0 && (
+        <section className={s.similar} aria-labelledby="similar-title">
+          <h2 id="similar-title" className="h2">More like this</h2>
+          <div className="grid-cards">
+            {similar.map((e) => (
+              <EventCard key={e._id} event={e} saved={savedIds.has(e._id)} signedIn={!!user} />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

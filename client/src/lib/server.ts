@@ -31,6 +31,12 @@ export async function apiFetch<T>(path: string): Promise<T> {
   return (await call(path)).data as T;
 }
 
+// Ids of the signed-in user's saved events (empty when signed out or on error)
+export async function getSavedIds(): Promise<Set<string>> {
+  if (!(await getSessionUser())) return new Set();
+  return new Set(await apiFetch<string[]>("/me/saved/ids").catch(() => [] as string[]));
+}
+
 export async function apiFetchPaged<T>(path: string): Promise<{ items: T[]; pagination: Pagination }> {
   const json = await call(path);
   return { items: json.data as T[], pagination: json.pagination! };

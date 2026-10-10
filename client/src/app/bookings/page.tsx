@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { CalendarBlank, MapPin, Sparkle, Ticket } from "@phosphor-icons/react/ssr";
+import { CalendarBlank, CalendarPlus, MapPin, SealCheck, Sparkle, Ticket } from "@phosphor-icons/react/ssr";
 import TicketQR from "@/components/TicketQR";
 import CancelBookingButton from "./CancelBookingButton";
 import { apiFetch } from "@/lib/server";
@@ -40,6 +40,11 @@ export default async function BookingsPage() {
           <div className={s.info}>
             <div className={s.badges}>
               <span className={`badge ${statusClass}`}>{status}</span>
+              {booking.checkedInAt && (
+                <span className="badge badge-success">
+                  <SealCheck size={13} weight="fill" aria-hidden="true" /> Checked in
+                </span>
+              )}
               <span className="badge">
                 {booking.ticketType === "vip" ? (
                   <>
@@ -64,6 +69,9 @@ export default async function BookingsPage() {
             {live && (
               <div className={s.actions}>
                 <Link href={`/events/${event!._id}`} className="btn btn-secondary btn-sm">View Event</Link>
+                <a href={`/events/${event!._id}/calendar.ics`} download className="btn btn-ghost btn-sm">
+                  <CalendarPlus size={15} aria-hidden="true" /> Add to Calendar
+                </a>
                 <CancelBookingButton id={booking._id} />
               </div>
             )}

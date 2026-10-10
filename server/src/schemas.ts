@@ -56,6 +56,17 @@ export const createReviewSchema = z.object({
   comment: z.string().trim().min(1).max(1000),
 });
 
+// Ticket codes are 16 hex chars; accept any case and stray spaces from manual entry
+export const checkInSchema = z.object({
+  eventId: objectId,
+  code: z
+    .string()
+    .trim()
+    .min(4)
+    .max(64)
+    .transform((c) => c.replace(/\s+/g, "").toUpperCase()),
+});
+
 export const listEventsQuery = z.object({
   q: z.string().trim().max(100).optional(),
   category: z.enum(CATEGORIES).optional(),

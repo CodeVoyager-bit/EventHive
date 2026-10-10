@@ -7,6 +7,7 @@ import authRoutes from "./routes/authRoutes";
 import eventRoutes from "./routes/eventRoutes";
 import bookingRoutes from "./routes/bookingRoutes";
 import reviewRoutes from "./routes/reviewRoutes";
+import meRoutes from "./routes/meRoutes";
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/me", meRoutes);
 
 // Health check
 app.get("/api/health", (_req, res) => {

@@ -5,11 +5,14 @@ import { Globe, MapPin } from "@phosphor-icons/react/ssr";
 import type { Event } from "@/types";
 import { categoryMeta } from "@/lib/categories";
 import { formatPrice, formatTime, isPast } from "@/lib/format";
+import SaveButton from "./SaveButton";
 import s from "./EventCard.module.css";
 
 // The signature element: an admission ticket. Photo on top, a perforated tear line,
 // and a stub with the date block. Notches are real cut-outs (CSS masks).
-export default function EventCard({ event, priority = false }: { event: Event; priority?: boolean }) {
+type Props = { event: Event; priority?: boolean; saved?: boolean; signedIn?: boolean };
+
+export default function EventCard({ event, priority = false, saved = false, signedIn = false }: Props) {
   const meta = categoryMeta(event.category);
   const Icon = meta.icon;
   const date = new Date(event.date);
@@ -18,7 +21,8 @@ export default function EventCard({ event, priority = false }: { event: Event; p
   const status = past ? "Ended" : left === 0 ? "Sold out" : left <= Math.max(5, event.capacity * 0.1) ? `${left} left` : null;
 
   return (
-    <Link href={`/events/${event._id}`} className={s.card} data-tone={meta.tone} data-spotlight data-tilt>
+    <div className={s.card} data-tone={meta.tone} data-spotlight data-tilt>
+      <Link href={`/events/${event._id}`} className={s.link}>
       <ViewTransition name={`ev-${event._id}`} share="morph" default="none">
         <div className={`${s.media} notch-b`}>
           {event.imageUrl ? (
@@ -54,6 +58,11 @@ export default function EventCard({ event, priority = false }: { event: Event; p
           </div>
         </div>
       </div>
-    </Link>
+      </Link>
+      {/* Sibling of the link (a button cannot live inside an <a>) */}
+      <div className={s.save}>
+        <SaveButton eventId={event._id} saved={saved} signedIn={signedIn} />
+      </div>
+    </div>
   );
 }

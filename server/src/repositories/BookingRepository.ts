@@ -25,6 +25,19 @@ class BookingRepository {
       .sort({ bookingDate: -1 });
   }
 
+  async findByEventAndCode(eventId: string, ticketCode: string): Promise<IBooking | null> {
+    return Booking.findOne({ eventId, ticketCode }).populate("userId", "name email");
+  }
+
+  // Atomic: only the first check-in wins, so a double scan cannot admit twice
+  async markCheckedIn(id: string): Promise<IBooking | null> {
+    return Booking.findOneAndUpdate(
+      { _id: id, status: "confirmed", checkedInAt: { $exists: false } },
+      { $set: { checkedInAt: new Date() } },
+      { new: true }
+    ).populate("userId", "name email");
+  }
+
   async hasConfirmed(userId: string, eventId: string): Promise<boolean> {
     return !!(await Booking.exists({ userId, eventId, status: "confirmed" }));
   }

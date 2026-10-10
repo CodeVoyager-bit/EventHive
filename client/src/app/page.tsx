@@ -7,7 +7,7 @@ import Countdown from "@/components/Countdown";
 import PhotoTrail from "@/components/PhotoTrail";
 import SurpriseMe from "@/components/SurpriseMe";
 import HowItWorks from "./HowItWorks";
-import { apiFetchPaged, getSessionUser } from "@/lib/server";
+import { apiFetchPaged, getSavedIds, getSessionUser } from "@/lib/server";
 import { CATEGORY_META, categoryMeta, type Tone } from "@/lib/categories";
 import { formatPrice } from "@/lib/format";
 import type { Event } from "@/types";
@@ -29,11 +29,12 @@ const TONES: Tone[] = ["pink", "orange", "yellow", "lime", "teal", "blue", "viol
 const MANIFESTO: [string, Tone | ""][] = [["There's", ""], ["a", ""], ["gig,", "pink"], ["a", ""], ["workshop", "orange"], ["or", ""], ["a", ""], ["long", ""], ["dinner", "yellow"], ["out", ""], ["there", ""], ["with", ""], ["your", ""], ["name", ""], ["on", ""], ["it.", ""], ["Find", ""], ["it", ""], ["here,", ""], ["grab", ""], ["a", ""], ["seat", ""], ["in", ""], ["seconds,", "blue"], ["and", ""], ["keep", ""], ["the", ""], ["ticket", ""], ["in", ""], ["your", ""], ["pocket.", "violet"]];
 
 export default async function HomePage() {
-  const [events, user] = await Promise.all([
+  const [events, user, savedIds] = await Promise.all([
     apiFetchPaged<Event>("/events?limit=50")
       .then((r) => r.items)
       .catch(() => null), // API unreachable: the page still renders
     getSessionUser(),
+    getSavedIds(),
   ]);
   const upcoming = events ?? [];
   const deck = upcoming.slice(0, 3); // hero: the next three events, as tickets
@@ -218,7 +219,7 @@ export default async function HomePage() {
               <ul className={s.panTrack}>
                 {comingUp.map((event) => (
                   <li key={event._id} className={s.panItem}>
-                    <EventCard event={event} />
+                    <EventCard event={event} saved={savedIds.has(event._id)} signedIn={!!user} />
                   </li>
                 ))}
                 <li className={s.panItem}>

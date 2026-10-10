@@ -1,0 +1,56 @@
+.trigger {
+  anchor-name: --cal;
+}
+.menu {
+  margin: 0;
+  inset: auto;
+  min-width: 240px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow);
+  opacity: 0;
+  translate: 0 -6px;
+  transition: opacity var(--dur-fast), translate var(--dur) var(--ease-out), overlay var(--dur) allow-discrete, display var(--dur) allow-discrete;
+}
+.menu:popover-open {
+  opacity: 1;
+  translate: 0 0;
+}
+@starting-style {
+  .menu:popover-open {
+    opacity: 0;
+    translate: 0 -6px;
+  }
+}
+/* Sit right under the button where anchor positioning exists; centred otherwise */
+@supports (position-anchor: --cal) {
+  .menu {
+    position-anchor: --cal;
+    top: calc(anchor(bottom) + 6px);
+    left: anchor(left);
+    position-try-fallbacks: flip-block;
+  }
+}
+@supports not (position-anchor: --cal) {
+  .menu {
+    inset: 0;
+    margin: auto;
+    height: fit-content;
+  }
+}
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.92rem;
+  font-weight: 550;
+}
+.item:hover,
+.item:focus-visible {
+  background: var(--surface-2);
+}

@@ -653,7 +653,7 @@
 .panItem:hover {
   rotate: 0deg;
 }
-.panItem > a {
+.panItem > * {
   height: 100%;
 }
 .panEnd {

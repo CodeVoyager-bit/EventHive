@@ -1,6 +1,7 @@
 .card {
   --lift: 0px;
   --h: 0;
+  position: relative;
   display: flex;
   flex-direction: column;
   filter: drop-shadow(0 0 0 transparent);
@@ -173,4 +174,17 @@
 /* While the photo loads, show a soft wash of the category colour instead of a grey box */
 :global([data-theme="light"]) .media {
   background: linear-gradient(135deg, var(--tone-tint), color-mix(in srgb, var(--tone) 30%, var(--tone-tint)));
+}
+
+.link {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  border-radius: var(--radius-lg);
+}
+.save {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
 }

@@ -185,3 +185,18 @@
 :global([data-theme="light"]) .media {
   background: linear-gradient(135deg, var(--tone-tint), color-mix(in srgb, var(--tone) 30%, var(--tone-tint)));
 }
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+.similar {
+  margin-top: 72px;
+  padding-top: 40px;
+  border-top: 1px solid var(--line);
+}
+.similar h2 {
+  margin-bottom: 24px;
+}

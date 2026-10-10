@@ -11,6 +11,9 @@ import { idOf } from "../lib/util";
 import { HttpError } from "../middleware/errorHandler";
 import { AuthUser } from "../middleware/auth";
 
+const alreadyIn = (at: Date) =>
+  `Already checked in at ${at.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}`;
+
 class BookingService {
   private paymentGateway: IPaymentGateway;
 
@@ -69,6 +72,18 @@ class BookingService {
   async getEventBookings(eventId: string, user: AuthUser): Promise<IBooking[]> {
     await EventService.getOwnedEvent(eventId, user);
     return BookingRepository.findByEvent(eventId);
+  }
+
+  // Door check-in by the event's organizer: look the ticket up by its code and admit it once
+  async checkIn(eventId: string, code: string, user: AuthUser): Promise<IBooking> {
+    await EventService.getOwnedEvent(eventId, user);
+    const booking = await BookingRepository.findByEventAndCode(eventId, code);
+    if (!booking) throw new HttpError(404, "No ticket with that code for this event");
+    if (booking.status === "cancelled") throw new HttpError(409, "This ticket was cancelled");
+    if (booking.checkedInAt) throw new HttpError(409, alreadyIn(booking.checkedInAt));
+    const admitted = await BookingRepository.markCheckedIn(String(booking._id));
+    if (!admitted) throw new HttpError(409, "This ticket was just checked in");
+    return admitted;
   }
 
   async cancelBooking(bookingId: string, userId: string): Promise<IBooking | null> {

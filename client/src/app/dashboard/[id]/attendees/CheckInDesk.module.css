@@ -1,0 +1,88 @@
+.desk {
+  padding: 24px;
+  margin-bottom: 24px;
+  display: grid;
+  gap: 16px;
+}
+.top h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.form {
+  display: grid;
+  gap: 8px;
+}
+@media (min-width: 720px) {
+  .form {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+  }
+}
+.form .input {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.form .input::placeholder {
+  text-transform: none;
+  letter-spacing: normal;
+}
+.results {
+  display: grid;
+  gap: 6px;
+}
+.result {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.92rem;
+  animation: slideIn 360ms var(--ease-spring);
+}
+.result:not(:first-child) {
+  opacity: 0.6;
+  font-weight: 500;
+}
+.ok {
+  background: color-mix(in srgb, var(--success-text) 12%, transparent);
+  color: var(--success-text);
+}
+.bad {
+  background: color-mix(in srgb, var(--danger-text) 12%, transparent);
+  color: var(--danger-text);
+}
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+}
+.scanner {
+  max-width: 420px;
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+  position: relative;
+}
+.scanner:not([open]) {
+  display: none;
+}
+.video {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  background: #000;
+}
+.frame {
+  position: absolute;
+  top: calc(28px + 15%);
+  width: 55%;
+  aspect-ratio: 1;
+  border: 3px solid #fff;
+  border-radius: var(--radius-md);
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+}

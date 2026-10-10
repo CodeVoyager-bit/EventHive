@@ -1,0 +1,14 @@
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  padding-block: 40px 28px;
+}
+.group {
+  margin: 48px 0 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-3);
+}

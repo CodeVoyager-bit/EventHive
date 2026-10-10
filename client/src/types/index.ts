@@ -43,6 +43,7 @@ export interface Booking {
   ticketCode: string;
   amount: number;
   transactionId?: string;
+  checkedInAt?: string;
 }
 
 export interface Review {

@@ -6,6 +6,7 @@ export interface IUser extends Document {
   email: string;
   password: string;
   role: "attendee" | "organizer" | "admin";
+  saved: mongoose.Types.ObjectId[];
   createdAt: Date;
 }
 
@@ -19,6 +20,8 @@ const UserSchema: Schema = new Schema({
     enum: ["attendee", "organizer", "admin"],
     default: "attendee",
   },
+  // Events the user bookmarked (hearted)
+  saved: [{ type: Schema.Types.ObjectId, ref: "Event" }],
   createdAt: { type: Date, default: Date.now },
 });
 

@@ -1,22 +1,43 @@
 "use client";
 
-import { useState, type MouseEvent } from "react";
+import { useEffect, useState, useSyncExternalStore, type MouseEvent } from "react";
 import { flushSync } from "react-dom";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { List, MagnifyingGlass, Moon, SignOut, Sun, X } from "@phosphor-icons/react";
 import { api } from "@/lib/api";
 import Logo from "./Logo";
+import CommandPalette from "./CommandPalette";
 import type { SessionUser } from "@/types";
 import s from "./Navbar.module.css";
 
 type Props = { user: SessionUser | null; initialTheme: "dark" | "light" };
+
+const noSubscribe = () => () => {};
 
 export default function NavbarClient({ user, initialTheme }: Props) {
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [theme, setTheme] = useState(initialTheme);
+  const [searching, setSearching] = useState(false);
+  const isMac = useSyncExternalStore(noSubscribe, () => /Mac|iPhone|iPad/.test(navigator.platform), () => true);
+
+  // ⌘K / Ctrl+K toggles quick search; "/" opens it when not typing somewhere
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const typing = (e.target as HTMLElement)?.closest?.("input, textarea, select, [contenteditable='true']");
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setSearching((v) => !v);
+      } else if (e.key === "/" && !typing) {
+        e.preventDefault();
+        setSearching(true);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   function toggleTheme(e: MouseEvent<HTMLButtonElement>) {
     const next = theme === "dark" ? "light" : "dark";
@@ -36,12 +57,13 @@ export default function NavbarClient({ user, initialTheme }: Props) {
     const y = r.top + r.height / 2;
     const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
     const transition = document.startViewTransition(() => flushSync(apply));
+    transition.finished.catch(() => {}); // skipped transitions (e.g. hidden tab) still apply the theme
     transition.ready.then(() => {
       document.documentElement.animate(
         { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
         { duration: 700, easing: "cubic-bezier(0.16, 1, 0.3, 1)", pseudoElement: "::view-transition-new(root)" }
       );
-    });
+    }, () => {});
   }
 
   async function logout() {
@@ -55,6 +77,7 @@ export default function NavbarClient({ user, initialTheme }: Props) {
   const links = [
     { href: "/events", label: "Explore", active: pathname.startsWith("/events") },
     ...(organizer ? [] : [{ href: "/#categories", label: "Categories", active: false }]),
+    ...(user ? [{ href: "/saved", label: "Saved", active: pathname.startsWith("/saved") }] : []),
     ...(user ? [{ href: "/bookings", label: "My Tickets", active: pathname.startsWith("/bookings") }] : []),
     ...(organizer ? [{ href: "/dashboard", label: "Dashboard", active: pathname.startsWith("/dashboard") }] : []),
     ...(!user ? [{ href: "/#host", label: "For Hosts", active: false }] : []),
@@ -103,9 +126,11 @@ export default function NavbarClient({ user, initialTheme }: Props) {
           <nav className={s.links} aria-label="Main">{navLinks}</nav>
 
           <div className={s.right}>
-            <Link href="/events" className={`${s.iconBtn} ${s.searchBtn}`} aria-label="Search events">
-              <MagnifyingGlass size={19} aria-hidden="true" />
-            </Link>
+            <button type="button" className={s.searchPill} onClick={() => setSearching(true)} aria-label="Search (opens quick search)" aria-keyshortcuts={isMac ? "Meta+K" : "Control+K"}>
+              <MagnifyingGlass size={18} aria-hidden="true" />
+              <span className={s.searchText}>Search</span>
+              <kbd className={s.searchKbd}>{isMac ? "⌘K" : "Ctrl K"}</kbd>
+            </button>
             {themeButton}
             <span className={s.divider} aria-hidden="true" />
             <div className={s.desktopOnly}>{authControls}</div>
@@ -114,6 +139,8 @@ export default function NavbarClient({ user, initialTheme }: Props) {
             </button>
           </div>
         </div>
+
+        {searching && <CommandPalette user={user} onClose={() => setSearching(false)} />}
 
         {open && (
           <nav id="mobile-nav" className={`glass ${s.mobile}`} aria-label="Mobile">

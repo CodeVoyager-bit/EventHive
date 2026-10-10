@@ -149,3 +149,49 @@ test("listing filters, searches and paginates published events", async () => {
   assert.equal((await api("/events?category=bogus")).status, 400);
   assert.equal((await api("/events/not-an-id")).status, 400);
 });
+
+test("saved events: save is idempotent, list and ids reflect it, unsave removes it", async () => {
+  const org = await user("organizer");
+  const fan = await user("attendee");
+  const ev = (await api("/events", { method: "POST", token: org.token, body: eventBody({ title: "Saved Show" }) })).json.data;
+
+  assert.equal((await api(`/me/saved/${ev._id}`, { method: "PUT" })).status, 401); // must be signed in
+  assert.equal((await api(`/me/saved/${ev._id}`, { method: "PUT", token: fan.token })).status, 200);
+  assert.equal((await api(`/me/saved/${ev._id}`, { method: "PUT", token: fan.token })).status, 200); // twice is fine
+  assert.deepEqual((await api("/me/saved/ids", { token: fan.token })).json.data, [ev._id]);
+  const list = (await api("/me/saved", { token: fan.token })).json.data;
+  assert.equal(list.length, 1);
+  assert.equal(list[0].title, "Saved Show");
+  assert.equal((await api("/me/saved/000000000000000000000000", { method: "PUT", token: fan.token })).status, 404);
+
+  assert.equal((await api(`/me/saved/${ev._id}`, { method: "DELETE", token: fan.token })).status, 200);
+  assert.deepEqual((await api("/me/saved/ids", { token: fan.token })).json.data, []);
+});
+
+test("check-in: only the owner, codes are case-insensitive, no double admission, cancelled refused", async () => {
+  const owner = await user("organizer");
+  const other = await user("organizer");
+  const a1 = await user("attendee");
+  const a2 = await user("attendee");
+  const ev = (await api("/events", { method: "POST", token: owner.token, body: eventBody({ capacity: 5 }) })).json.data;
+  const b1 = (await api("/bookings", { method: "POST", token: a1.token, body: { eventId: ev._id } })).json.data;
+  const b2 = (await api("/bookings", { method: "POST", token: a2.token, body: { eventId: ev._id } })).json.data;
+  await api(`/bookings/${b2._id}/cancel`, { method: "PATCH", token: a2.token });
+
+  const checkIn = (token: string, code: string) => api("/bookings/check-in", { method: "POST", token, body: { eventId: ev._id, code } });
+  assert.equal((await checkIn(a1.token, b1.ticketCode)).status, 403); // attendees cannot
+  assert.equal((await checkIn(other.token, b1.ticketCode)).status, 403); // not their event
+  assert.equal((await checkIn(owner.token, "DEADBEEF00000000")).status, 404);
+  assert.equal((await checkIn(owner.token, b2.ticketCode)).status, 409); // cancelled
+
+  const ok = await checkIn(owner.token, ` ${b1.ticketCode.toLowerCase()} `);
+  assert.equal(ok.status, 200, ok.json.error);
+  assert.ok(ok.json.data.checkedInAt);
+  assert.equal(ok.json.data.userId.email.startsWith("user"), true);
+  const again = await checkIn(owner.token, b1.ticketCode);
+  assert.equal(again.status, 409);
+  assert.match(again.json.error ?? "", /Already checked in/);
+
+  const mine = (await api("/bookings/my", { token: a1.token })).json.data;
+  assert.ok(mine.find((b: { _id: string }) => b._id === b1._id).checkedInAt);
+});

@@ -32,7 +32,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const theme = await getTheme();
 
   return (
-    <html lang="en" data-theme={theme} className={`${archivo.variable} ${geist.variable} ${geistMono.variable}`}>
+    <html lang="en" data-theme={theme} data-scroll-behavior="smooth" className={`${archivo.variable} ${geist.variable} ${geistMono.variable}`}>
       <body>
         <a href="#main" className="skip-link">Skip to Content</a>
         <Navbar theme={theme} />

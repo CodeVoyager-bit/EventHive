@@ -3,7 +3,7 @@ import Link from "next/link";
 import { CalendarX, ClockCounterClockwise, MagnifyingGlass, SlidersHorizontal } from "@phosphor-icons/react/ssr";
 import EventCard from "@/components/EventCard";
 import Pagination from "@/components/Pagination";
-import { apiFetchPaged, ApiError } from "@/lib/server";
+import { apiFetchPaged, ApiError, getSavedIds, getSessionUser } from "@/lib/server";
 import { CATEGORY_META } from "@/lib/categories";
 import { first, qs, type SearchParams } from "@/lib/query";
 import type { Event, Pagination as PaginationInfo } from "@/types";
@@ -21,6 +21,7 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
   const today = new Date().toISOString().slice(0, 10);
   const showingPast = !!to && !from;
 
+  const [user, savedIds] = await Promise.all([getSessionUser(), getSavedIds()]);
   let items: Event[] = [];
   let pagination: PaginationInfo = { total: 0, page: 1, limit: 12, pages: 0 };
   let problem = "";
@@ -110,7 +111,7 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
           <h2 className="sr-only">Results</h2>
           <div className="grid-cards">
             {items.map((event, i) => (
-              <EventCard key={event._id} event={event} priority={i === 0} />
+              <EventCard key={event._id} event={event} priority={i === 0} saved={savedIds.has(event._id)} signedIn={!!user} />
             ))}
           </div>
           <Pagination pagination={pagination} params={params} basePath="/events" />

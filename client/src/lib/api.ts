@@ -34,4 +34,8 @@ export const api = {
   cancelBooking: (id: string) => request<Booking>(`/bookings/${id}/cancel`, { method: "PATCH" }),
 
   createReview: (body: { eventId: string; rating: number; comment: string }) => request<Review>("/reviews", post(body)),
+
+  saveEvent: (id: string) => request<{ saved: boolean }>(`/me/saved/${id}`, { method: "PUT" }),
+  unsaveEvent: (id: string) => request<{ saved: boolean }>(`/me/saved/${id}`, { method: "DELETE" }),
+  checkIn: (body: { eventId: string; code: string }) => request<Booking>("/bookings/check-in", post(body)),
 };

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Users } from "@phosphor-icons/react/ssr";
+import { ArrowLeft, SealCheck, Users } from "@phosphor-icons/react/ssr";
+import CheckInDesk from "./CheckInDesk";
 import { apiFetch, ApiError } from "@/lib/server";
 import { formatDate, formatDateTime, formatPrice } from "@/lib/format";
 import type { Booking, Event } from "@/types";
@@ -21,6 +22,8 @@ export default async function AttendeesPage({ params }: { params: Promise<{ id: 
   }
 
   const confirmed = bookings.filter((b) => b.status === "confirmed");
+  const checkedIn = confirmed.filter((b) => b.checkedInAt).length;
+  const time = (iso: string) => new Date(iso).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
   const revenue = confirmed.reduce((sum, b) => sum + b.amount, 0);
   const attendee = (b: Booking) => (typeof b.userId === "object" ? b.userId : { name: "Unknown", email: "" });
 
@@ -39,10 +42,13 @@ export default async function AttendeesPage({ params }: { params: Promise<{ id: 
 
       <div className={s.summary}>
         <div><strong className="num">{confirmed.length}</strong><span>Confirmed</span></div>
+        <div><strong className="num">{checkedIn}/{confirmed.length}</strong><span>Checked in</span></div>
         <div><strong className="num">{Math.max(event.capacity - event.bookedCount, 0)}</strong><span>Seats left</span></div>
         <div><strong className="num">{formatPrice(revenue)}</strong><span>Revenue</span></div>
         <div><strong className="num">{bookings.length - confirmed.length}</strong><span>Cancelled</span></div>
       </div>
+
+      {confirmed.length > 0 && <CheckInDesk eventId={event._id} />}
 
       <section className={`card ${s.tableCard}`} aria-label="Attendee list">
         {bookings.length === 0 ? (
@@ -63,6 +69,7 @@ export default async function AttendeesPage({ params }: { params: Promise<{ id: 
                   <th>Paid</th>
                   <th>Booked</th>
                   <th>Status</th>
+                  <th>Door</th>
                 </tr>
               </thead>
               <tbody>
@@ -75,6 +82,15 @@ export default async function AttendeesPage({ params }: { params: Promise<{ id: 
                     <td className="num">{formatPrice(b.amount)}</td>
                     <td className="num">{formatDate(b.bookingDate, { month: "short", day: "numeric", year: "numeric" })}</td>
                     <td><span className={`badge ${b.status === "confirmed" ? "badge-success" : ""}`}>{b.status === "confirmed" ? "Confirmed" : "Cancelled"}</span></td>
+                    <td className="num">
+                      {b.checkedInAt ? (
+                        <span className="badge badge-accent">
+                          <SealCheck size={13} weight="fill" aria-hidden="true" /> {time(b.checkedInAt)}
+                        </span>
+                      ) : (
+                        <span className="muted">Not yet</span>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
