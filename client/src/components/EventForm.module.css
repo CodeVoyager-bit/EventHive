@@ -10,13 +10,16 @@
   margin-bottom: 12px;
 }
 .back:hover {
-  color: var(--brand-ink);
+  color: var(--accent-ink);
 }
 .head {
-  margin-bottom: 24px;
+  margin-bottom: 28px;
+}
+.head h1 {
+  overflow-wrap: anywhere;
 }
 .form {
-  padding: 28px;
+  padding: 32px;
   display: grid;
   gap: 28px;
 }
@@ -30,8 +33,8 @@
   gap: 16px;
 }
 .section h2 {
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: 1.05rem;
+  font-weight: 650;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -39,7 +42,7 @@
   border-bottom: 1px solid var(--border);
 }
 .section h2 svg {
-  color: var(--brand-ink);
+  color: var(--accent-ink);
 }
 .grid {
   display: grid;
@@ -60,8 +63,8 @@
   gap: 8px;
 }
 .toggleBtn {
-  min-height: 46px;
-  border-radius: var(--radius-md);
+  min-height: 48px;
+  border-radius: var(--radius-full);
   border: 1px solid var(--border-strong);
   background: var(--surface-2);
   font-weight: 600;
@@ -73,8 +76,8 @@
   transition: border-color var(--dur), background var(--dur), color var(--dur);
 }
 .toggleBtn[aria-pressed="true"] {
-  border-color: var(--brand-ink);
-  background: var(--brand-soft);
+  border-color: var(--accent-ink);
+  background: var(--accent-ink);
   color: var(--text);
 }
 .preview {

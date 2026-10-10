@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, type ReactNode } from "react";
-import { AlertCircle } from "lucide-react";
+import { WarningCircle } from "@phosphor-icons/react";
 import s from "./ConfirmButton.module.css";
 
 type Props = {
@@ -26,7 +26,7 @@ export default function ConfirmButton({ children, className = "btn btn-danger bt
       await onConfirm();
       ref.current?.close();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
     } finally {
       setBusy(false);
     }
@@ -39,16 +39,19 @@ export default function ConfirmButton({ children, className = "btn btn-danger bt
       </button>
       <dialog ref={ref} className="dialog" aria-labelledby="confirm-title">
         <div className={s.body}>
+          <span className={s.icon} aria-hidden="true">
+            <WarningCircle size={22} weight="duotone" />
+          </span>
           <h2 id="confirm-title" className={s.title}>{title}</h2>
           <p className={s.desc}>{description}</p>
           {error && (
             <p className="alert alert-error" role="alert">
-              <AlertCircle size={16} aria-hidden="true" /> {error}
+              <WarningCircle size={16} aria-hidden="true" /> {error}
             </p>
           )}
           <div className={s.actions}>
             <button type="button" className="btn btn-ghost" onClick={() => ref.current?.close()} disabled={busy}>
-              Keep it
+              Keep It
             </button>
             <button type="button" className="btn btn-danger" onClick={confirm} disabled={busy}>
               {busy ? "Working…" : confirmLabel}

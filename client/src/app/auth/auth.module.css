@@ -1,99 +1,96 @@
 .page {
   display: grid;
+  gap: 24px;
+  padding-block: 16px 24px;
   min-height: calc(100dvh - var(--nav-h));
-  grid-template-columns: 1fr;
 }
 @media (min-width: 900px) {
   .page {
     grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: stretch;
   }
 }
-.brand {
+.visual {
   position: relative;
+  min-height: 220px;
+  border-radius: var(--radius-xl);
   overflow: hidden;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 48px 32px;
-  color: #fff;
-  background: linear-gradient(135deg, var(--brand-deeper), #d61f52);
+  align-items: flex-end;
+  background: #111;
 }
-.brandBlue {
-  background: linear-gradient(135deg, var(--blue), var(--purple));
+.visual img {
+  object-fit: cover;
+  animation: settle 1.6s var(--ease-out) backwards;
 }
-.brand::before {
+@keyframes settle {
+  from {
+    transform: scale(1.08);
+  }
+}
+.visual::after {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px);
-  background-size: 22px 22px;
+  background: linear-gradient(180deg, transparent 35%, rgba(8, 8, 12, 0.85));
 }
-.brandInner {
+.visualText {
   position: relative;
-  max-width: 420px;
+  z-index: 1;
+  padding: 32px;
 }
-.brandInner h2 {
-  font-size: clamp(1.8rem, 3vw, 2.4rem);
-  font-weight: 800;
-  line-height: 1.15;
-  margin-bottom: 14px;
+.visualTitle {
+  color: #fff;
+  font-size: clamp(2.4rem, 5vw, 4.4rem);
+  line-height: 0.92;
+  max-width: 11ch;
 }
-.brandInner p {
-  opacity: 0.92;
-  line-height: 1.7;
-}
-.points {
-  margin-top: 24px;
-  display: grid;
-  gap: 10px;
-  font-size: 0.95rem;
-}
-.points li {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-.points svg {
-  flex-shrink: 0;
+@media (max-width: 899px) {
+  .visualText {
+    padding: 20px 24px;
+  }
+  .visualTitle {
+    font-size: 2.4rem;
+  }
 }
 .formSide {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px 24px;
+  padding: 16px 0 24px;
 }
 .form {
   width: 100%;
   max-width: 420px;
   display: grid;
-  gap: 16px;
+  gap: 18px;
 }
 .form h1 {
-  font-size: 1.8rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  margin-bottom: 4px;
 }
 .sub {
   color: var(--text-3);
-  margin-top: -10px;
+  margin-top: -8px;
 }
 .passwordWrap {
   position: relative;
 }
 .passwordWrap input {
-  padding-right: 48px;
+  padding-right: 52px;
 }
 .eye {
   position: absolute;
   right: 4px;
   top: 50%;
   transform: translateY(-50%);
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   display: grid;
   place-items: center;
   color: var(--text-3);
   border-radius: var(--radius-sm);
+  transition: color var(--dur-fast);
 }
 .eye:hover {
   color: var(--text);
@@ -106,41 +103,39 @@
 .role {
   padding: 14px;
   border-radius: var(--radius-md);
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--line-strong);
   background: var(--surface);
   text-align: left;
   display: grid;
   gap: 4px;
-  transition: border-color var(--dur), background var(--dur);
+  transition: border-color var(--dur-fast), background-color var(--dur-fast), transform var(--dur) var(--ease-spring);
 }
-.role[aria-pressed="true"] {
-  border-color: var(--brand-ink);
-  background: var(--brand-soft);
+.role:hover {
+  border-color: var(--text-3);
+}
+.role:active {
+  transform: scale(0.98);
+}
+.role[aria-checked="true"] {
+  border-color: var(--accent-ink);
+  background: var(--accent-soft);
 }
 .role strong {
-  font-size: 0.9rem;
   display: flex;
   align-items: center;
   gap: 6px;
+  font-size: 0.93rem;
 }
 .role span {
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   color: var(--text-3);
 }
 .switch {
   text-align: center;
-  font-size: 0.9rem;
+  font-size: 0.93rem;
   color: var(--text-3);
 }
 .switch a {
-  color: var(--brand-ink);
+  color: var(--accent-ink);
   font-weight: 600;
-}
-@media (max-width: 899px) {
-  .brand {
-    padding: 36px 24px;
-  }
-  .points {
-    display: none;
-  }
 }

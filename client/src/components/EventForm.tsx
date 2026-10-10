@@ -3,7 +3,7 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AlertCircle, ArrowLeft, Building2, Globe, ImageIcon, MapPin, NotebookPen, Ticket } from "lucide-react";
+import { ArrowLeft, Buildings, Globe, ImageSquare, MapPin, NotePencil, Ticket, WarningCircle } from "@phosphor-icons/react";
 import { api } from "@/lib/api";
 import { CATEGORY_META } from "@/lib/categories";
 import type { Event } from "@/types";
@@ -68,7 +68,7 @@ export default function EventForm({ initial }: { initial?: Event }) {
       router.push("/dashboard");
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not save the event");
+      setError(err instanceof Error ? err.message : "Could not save the event. Check the fields and try again.");
       window.scrollTo({ top: 0, behavior: "smooth" });
     } finally {
       setBusy(false);
@@ -81,19 +81,18 @@ export default function EventForm({ initial }: { initial?: Event }) {
         <ArrowLeft size={14} aria-hidden="true" /> Back to dashboard
       </Link>
       <div className={s.head}>
-        <p className="eyebrow">{editing ? "Edit" : "New event"}</p>
-        <h1 className="h2">{editing ? initial!.title : "Create an event"}</h1>
+        <h1 className="h1">{editing ? `Edit ${initial!.title}` : "Create an event"}</h1>
       </div>
 
       {error && (
         <p className="alert alert-error" role="alert" style={{ marginBottom: 16 }}>
-          <AlertCircle size={16} aria-hidden="true" /> {error}
+          <WarningCircle size={16} aria-hidden="true" /> {error}
         </p>
       )}
 
       <form className={`card ${s.form}`} onSubmit={submit}>
         <section className={s.section}>
-          <h2><NotebookPen size={18} aria-hidden="true" /> Basics</h2>
+          <h2><NotePencil size={18} aria-hidden="true" /> Basics</h2>
           <div className={s.grid}>
             <div className={`field ${s.full}`}>
               <label className="label" htmlFor="title">Title</label>
@@ -101,7 +100,7 @@ export default function EventForm({ initial }: { initial?: Event }) {
             </div>
             <div className={`field ${s.full}`}>
               <label className="label" htmlFor="description">Description</label>
-              <textarea id="description" name="description" className="input" rows={5} value={form.description} onChange={set} placeholder="What should attendees expect?" required minLength={10} maxLength={5000} />
+              <textarea id="description" name="description" className="input" rows={5} value={form.description} onChange={set} placeholder="What should attendees expect…" required minLength={10} maxLength={5000} />
             </div>
             <div className="field">
               <label className="label" htmlFor="category">Category</label>
@@ -113,7 +112,7 @@ export default function EventForm({ initial }: { initial?: Event }) {
             </div>
             <div className="field">
               <label className="label" htmlFor="date">Date and time</label>
-              <input id="date" name="date" type="datetime-local" className="input" value={form.date} onChange={set} required />
+              <input id="date" name="date" type="datetime-local" className="input" value={form.date} onChange={set} required suppressHydrationWarning />
               <span className="help">Must be in the future.</span>
             </div>
           </div>
@@ -126,7 +125,7 @@ export default function EventForm({ initial }: { initial?: Event }) {
               <span className="label" id="type-label">Format</span>
               <div className={s.toggle} role="group" aria-labelledby="type-label">
                 <button type="button" className={s.toggleBtn} aria-pressed={form.eventType === "venue"} onClick={() => setForm({ ...form, eventType: "venue" })}>
-                  <Building2 size={16} aria-hidden="true" /> In person
+                  <Buildings size={16} aria-hidden="true" /> In person
                 </button>
                 <button type="button" className={s.toggleBtn} aria-pressed={form.eventType === "online"} onClick={() => setForm({ ...form, eventType: "online" })}>
                   <Globe size={16} aria-hidden="true" /> Online
@@ -145,7 +144,7 @@ export default function EventForm({ initial }: { initial?: Event }) {
                 </div>
                 <div className={`field ${s.full}`}>
                   <label className="label" htmlFor="meetingLink">Meeting link</label>
-                  <input id="meetingLink" name="meetingLink" type="url" className="input" value={form.meetingLink} onChange={set} placeholder="https://…" maxLength={500} />
+                  <input id="meetingLink" name="meetingLink" type="url" className="input" value={form.meetingLink} onChange={set} placeholder="https://example.com/…" maxLength={500} />
                   <span className="help">Shown to signed-in users on the event page.</span>
                 </div>
               </>
@@ -184,10 +183,10 @@ export default function EventForm({ initial }: { initial?: Event }) {
         </section>
 
         <section className={s.section}>
-          <h2><ImageIcon size={18} aria-hidden="true" /> Cover image</h2>
+          <h2><ImageSquare size={18} aria-hidden="true" /> Cover image</h2>
           <div className="field">
             <label className="label" htmlFor="imageUrl">Image URL</label>
-            <input id="imageUrl" name="imageUrl" type="url" className="input" value={form.imageUrl} onChange={set} placeholder="https://…" />
+            <input id="imageUrl" name="imageUrl" type="url" className="input" value={form.imageUrl} onChange={set} placeholder="https://example.com/…" />
             <span className="help">Optional. A wide (16:9) image works best.</span>
             {form.imageUrl && (
               <div className={s.preview}>
@@ -201,7 +200,7 @@ export default function EventForm({ initial }: { initial?: Event }) {
         <div className={s.actions}>
           <Link href="/dashboard" className="btn btn-ghost">Cancel</Link>
           <button type="submit" className="btn btn-primary btn-lg" disabled={busy}>
-            {busy ? "Saving…" : editing ? "Save changes" : "Publish event"}
+            {busy ? "Saving…" : editing ? "Save Changes" : "Publish Event"}
           </button>
         </div>
       </form>

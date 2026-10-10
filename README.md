@@ -8,12 +8,20 @@ A full-stack event platform: organizers publish events and sell General and VIP 
 
 | Layer | Technology |
 |-------|------------|
-| Frontend | Next.js 16 (App Router, server components, CSS Modules), TypeScript, lucide-react icons, qrcode.react |
+| Frontend | Next.js 16 (App Router, server components, CSS Modules), TypeScript, Phosphor icons, qrcode.react |
 | Backend | Express 5, TypeScript, zod validation |
 | Database | MongoDB with Mongoose (indexes enforce one ticket and one review per user per event) |
 | Auth | JWT, stored in an httpOnly cookie on the Next.js origin and forwarded to the API by a same-origin proxy |
 | Tests / CI | `node:test` API suite against a local MongoDB, GitHub Actions |
 | Architecture | Layered (Controller → Service → Repository) with a single error middleware |
+
+## Design system
+
+- **Palette:** ink neutrals with one accent, a stage-light magenta (`#d4145a` fills, `#ff4d8d` / `#c0124f` as text in dark / light). Every text colour pair is at least 4.5:1; ratios are noted in `client/src/app/globals.css`.
+- **Type:** Archivo (condensed via its width axis) for display, Geist for body and UI, Geist Mono for ticket codes.
+- **Signature:** the admission ticket. Event cards, the booking panel, My Tickets and the organizer band use real notch cut-outs (CSS masks) and a perforated tear line.
+- **Motion:** headline mask reveal and a dealt ticket deck on load, pointer tilt and cursor-following highlights (one delegated listener, no React state), scroll-driven reveals, a shared-element morph from event card to event page (React `<ViewTransition>`), and a stamp when a booking succeeds. Everything is disabled under `prefers-reduced-motion`.
+- **Photography:** seed events and categories use subject-matched Unsplash photos (Unsplash License).
 
 ## How a request flows
 

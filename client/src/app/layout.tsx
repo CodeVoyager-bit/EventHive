@@ -1,40 +1,45 @@
-import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Archivo, Geist, Geist_Mono } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import PointerFX from "@/components/PointerFX";
 
-const jakarta = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-jakarta",
-  display: "swap",
-});
+// Archivo's width axis gives poster-style condensed display type; Geist carries body and UI.
+const archivo = Archivo({ subsets: ["latin"], axes: ["wdth"], variable: "--font-archivo", display: "swap" });
+const geist = Geist({ subsets: ["latin"], variable: "--font-geist", display: "swap" });
+const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", display: "swap", preload: false }); // ticket codes only
 
 export const metadata: Metadata = {
-  title: { default: "EventHive — Discover & Book Events", template: "%s · EventHive" },
+  title: { default: "EventHive: Discover & Book Events", template: "%s · EventHive" },
   description:
     "EventHive is your gateway to discovering, organizing, and attending unforgettable events. Browse concerts, tech meetups, sports, and more.",
 };
 
+async function getTheme() {
+  return (await cookies()).get("theme")?.value === "light" ? "light" : "dark";
+}
+
+export async function generateViewport(): Promise<Viewport> {
+  const theme = await getTheme();
+  return { themeColor: theme === "light" ? "#f5f5f7" : "#0b0b0f", colorScheme: theme };
+}
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   // Theme comes from a cookie so the first paint already has the right colours
-  const theme = (await cookies()).get("theme")?.value === "light" ? "light" : "dark";
+  const theme = await getTheme();
 
   return (
-    <html lang="en" data-theme={theme} className={jakarta.variable}>
+    <html lang="en" data-theme={theme} className={`${archivo.variable} ${geist.variable} ${geistMono.variable}`}>
       <body>
-        <div className="bg-shapes" aria-hidden="true">
-          <span />
-          <span />
-          <span />
-        </div>
+        <a href="#main" className="skip-link">Skip to Content</a>
         <Navbar theme={theme} />
         <main id="main" className="main">
           {children}
         </main>
         <Footer />
+        <PointerFX />
       </body>
     </html>
   );

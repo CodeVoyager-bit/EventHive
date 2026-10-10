@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Users } from "lucide-react";
+import { ArrowLeft, Users } from "@phosphor-icons/react/ssr";
 import { apiFetch, ApiError } from "@/lib/server";
 import { formatDate, formatDateTime, formatPrice } from "@/lib/format";
 import type { Booking, Event } from "@/types";
@@ -25,30 +25,29 @@ export default async function AttendeesPage({ params }: { params: Promise<{ id: 
   const attendee = (b: Booking) => (typeof b.userId === "object" ? b.userId : { name: "Unknown", email: "" });
 
   return (
-    <div className="container section">
+    <div className="container">
       <Link href="/dashboard" className={s.back}>
-        <ArrowLeft size={14} aria-hidden="true" /> Back to dashboard
+        <ArrowLeft size={16} aria-hidden="true" /> Back to dashboard
       </Link>
-      <div className={s.head}>
+      <header className={s.head} style={{ paddingTop: 16 }}>
         <div>
-          <p className="eyebrow">Attendees</p>
-          <h1 className="h2">{event.title}</h1>
-          <p className="muted small">{formatDateTime(event.date)} · {event.location}</p>
+          <h1 className="h1">{event.title}</h1>
+          <p className="muted" style={{ marginTop: 8 }}>{formatDateTime(event.date)}, {event.location}</p>
         </div>
-        <Link href={`/events/${event._id}`} className="btn btn-secondary">View event page</Link>
-      </div>
+        <Link href={`/events/${event._id}`} className="btn btn-secondary">View Event Page</Link>
+      </header>
 
       <div className={s.summary}>
         <div><strong className="num">{confirmed.length}</strong><span>Confirmed</span></div>
-        <div><strong className="num">{event.capacity - event.bookedCount}</strong><span>Seats left</span></div>
+        <div><strong className="num">{Math.max(event.capacity - event.bookedCount, 0)}</strong><span>Seats left</span></div>
         <div><strong className="num">{formatPrice(revenue)}</strong><span>Revenue</span></div>
         <div><strong className="num">{bookings.length - confirmed.length}</strong><span>Cancelled</span></div>
       </div>
 
-      <div className={`card ${s.tableCard}`}>
+      <section className={`card ${s.tableCard}`} aria-label="Attendee list">
         {bookings.length === 0 ? (
-          <div className="empty" style={{ border: 0 }}>
-            <Users size={36} aria-hidden="true" />
+          <div className="empty" style={{ border: 0, background: "transparent" }}>
+            <Users size={40} weight="duotone" aria-hidden="true" />
             <h2 className="h3">No bookings yet</h2>
             <p className="muted">Share the event page to start selling tickets.</p>
           </div>
@@ -72,17 +71,17 @@ export default async function AttendeesPage({ params }: { params: Promise<{ id: 
                     <td style={{ fontWeight: 600 }}>{attendee(b).name}</td>
                     <td>{attendee(b).email}</td>
                     <td>{b.ticketType === "vip" ? "VIP" : "General"}</td>
-                    <td><code>{b.ticketCode}</code></td>
+                    <td><code className="mono small">{b.ticketCode}</code></td>
                     <td className="num">{formatPrice(b.amount)}</td>
                     <td className="num">{formatDate(b.bookingDate, { month: "short", day: "numeric", year: "numeric" })}</td>
-                    <td><span className={`badge ${b.status === "confirmed" ? "badge-success" : "badge-danger"}`}>{b.status}</span></td>
+                    <td><span className={`badge ${b.status === "confirmed" ? "badge-success" : ""}`}>{b.status === "confirmed" ? "Confirmed" : "Cancelled"}</span></td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 }

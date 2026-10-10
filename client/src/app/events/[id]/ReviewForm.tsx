@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { AlertCircle, Star } from "lucide-react";
+import { Star, WarningCircle } from "@phosphor-icons/react";
 import { api } from "@/lib/api";
 import s from "./ReviewForm.module.css";
 
@@ -22,7 +22,7 @@ export default function ReviewForm({ eventId }: { eventId: string }) {
       setComment("");
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not submit review");
+      setError(err instanceof Error ? err.message : "Could not submit your review. Please try again.");
     } finally {
       setBusy(false);
     }
@@ -44,22 +44,22 @@ export default function ReviewForm({ eventId }: { eventId: string }) {
               className={`${s.star} ${n <= rating ? s.on : ""}`}
               onClick={() => setRating(n)}
             >
-              <Star size={24} fill={n <= rating ? "currentColor" : "none"} aria-hidden="true" />
+              <Star size={26} weight={n <= rating ? "fill" : "regular"} aria-hidden="true" />
             </button>
           ))}
         </div>
       </div>
       <div className="field">
         <label className="label" htmlFor="comment">Your experience</label>
-        <textarea id="comment" className="input" rows={3} value={comment} onChange={(e) => setComment(e.target.value)} placeholder="What stood out?" required maxLength={1000} />
+        <textarea id="comment" name="comment" className="input" rows={3} value={comment} onChange={(e) => setComment(e.target.value)} placeholder="What stood out…" required maxLength={1000} />
       </div>
       {error && (
         <p className="alert alert-error" role="alert">
-          <AlertCircle size={16} aria-hidden="true" /> {error}
+          <WarningCircle size={16} aria-hidden="true" /> {error}
         </p>
       )}
       <button type="submit" className="btn btn-primary" disabled={busy}>
-        {busy ? "Submitting…" : "Submit review"}
+        {busy ? "Submitting…" : "Submit Review"}
       </button>
     </form>
   );

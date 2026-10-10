@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-import { cache } from "react";
+import { cache, ViewTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CalendarDays, Globe, Link2, MapPin, Ticket, UserRound } from "lucide-react";
+import { ArrowLeft, CalendarDots, Globe, LinkSimple, MapPin, Ticket, User } from "@phosphor-icons/react/ssr";
 import Stars from "@/components/Stars";
 import BookingCard from "./BookingCard";
 import ReviewForm from "./ReviewForm";
 import { apiFetch, ApiError, getSessionUser } from "@/lib/server";
-import { categoryMeta, catStyle } from "@/lib/categories";
+import { categoryMeta } from "@/lib/categories";
 import { formatDate, formatDateTime, isPast, organizerName } from "@/lib/format";
 import type { Event, ReviewStats } from "@/types";
 import s from "./event.module.css";
@@ -41,108 +41,123 @@ export default async function EventDetailPage({ params }: Props) {
   const [stats, user] = await Promise.all([apiFetch<ReviewStats>(`/reviews/event/${id}`), getSessionUser()]);
 
   const meta = categoryMeta(event.category);
-  const Icon = meta.icon;
   const past = isPast(event.date);
   const left = Math.max(event.capacity - event.bookedCount, 0);
+  const online = event.eventType === "online";
+
+  const facts = [
+    { icon: CalendarDots, label: "When", value: formatDateTime(event.date) },
+    {
+      icon: online ? Globe : MapPin,
+      label: online ? "Where" : "Venue",
+      value: online ? event.platform || event.location : event.location,
+      sub: online ? undefined : event.address,
+    },
+    { icon: User, label: "Hosted by", value: organizerName(event) },
+    { icon: Ticket, label: "Seats", value: `${event.bookedCount} of ${event.capacity} booked` },
+  ];
 
   return (
-    <div className="container section">
-      <div className={s.layout} style={catStyle(event.category)}>
-        <article>
-          <div className={s.media}>
-            {event.imageUrl ? (
-              <Image src={event.imageUrl} alt="" fill priority sizes="(max-width: 960px) 100vw, 800px" />
-            ) : (
-              <div className={s.placeholder}>
-                <Icon size={72} aria-hidden="true" />
-              </div>
-            )}
-            <div className={s.badges}>
-              <span className="badge badge-cat">{meta.label}</span>
-              <span className="badge">{event.eventType === "online" ? "Online" : "In person"}</span>
-              {past && <span className="badge">Ended</span>}
-              {!past && left === 0 && <span className="badge badge-danger">Sold out</span>}
-            </div>
+    <div className="container">
+      <Link href="/events" className={s.back}>
+        <ArrowLeft size={16} aria-hidden="true" /> All events
+      </Link>
+
+      <ViewTransition name={`ev-${event._id}`} share="morph">
+        <div className={s.media}>
+          {event.imageUrl ? (
+            <Image src={event.imageUrl} alt="" fill priority sizes="(max-width: 1240px) 100vw, 1180px" />
+          ) : (
+            <span className={s.placeholder}>
+              <meta.icon size={80} weight="duotone" aria-hidden="true" />
+            </span>
+          )}
+        </div>
+      </ViewTransition>
+
+      <div className={s.layout}>
+        <article className={s.main}>
+          <div className={`rise ${s.badges}`}>
+            <span className="badge">
+              <meta.icon size={14} aria-hidden="true" /> {meta.label}
+            </span>
+            <span className="badge">{online ? "Online" : "In person"}</span>
+            {past && <span className="badge">Ended</span>}
+            {!past && left === 0 && <span className="badge badge-danger">Sold out</span>}
           </div>
+          <h1 className={`h1 rise ${s.title}`} style={{ "--i": 1 } as React.CSSProperties}>{event.title}</h1>
 
-          <p className="eyebrow">{formatDate(event.date, { weekday: "long", month: "long", day: "numeric" })}</p>
-          <h1 className={`h2 ${s.title}`}>{event.title}</h1>
-
-          <ul className={s.metaGrid}>
-            <li className={s.metaItem}>
-              <span className={s.metaIcon}><CalendarDays size={18} aria-hidden="true" /></span>
-              <div><span className={s.metaLabel}>Date and time</span><span className={s.metaValue}>{formatDateTime(event.date)}</span></div>
-            </li>
-            <li className={s.metaItem}>
-              <span className={s.metaIcon}>{event.eventType === "online" ? <Globe size={18} aria-hidden="true" /> : <MapPin size={18} aria-hidden="true" />}</span>
-              <div>
-                <span className={s.metaLabel}>{event.eventType === "online" ? "Platform" : "Location"}</span>
-                <span className={s.metaValue}>
-                  {event.eventType === "online" ? event.platform || event.location : event.location}
-                  {event.eventType === "venue" && event.address && <span className={s.sub}>{event.address}</span>}
-                  {event.eventType === "online" && event.meetingLink && (
-                    <span className={s.sub}>
-                      {user ? (
-                        <a href={event.meetingLink} target="_blank" rel="noreferrer" className={s.link}>
-                          <Link2 size={14} aria-hidden="true" /> Join link
-                        </a>
-                      ) : (
-                        "Join link visible after signing in"
-                      )}
-                    </span>
-                  )}
-                </span>
-              </div>
-            </li>
-            <li className={s.metaItem}>
-              <span className={s.metaIcon}><UserRound size={18} aria-hidden="true" /></span>
-              <div><span className={s.metaLabel}>Organized by</span><span className={s.metaValue}>{organizerName(event)}</span></div>
-            </li>
-            <li className={s.metaItem}>
-              <span className={s.metaIcon}><Ticket size={18} aria-hidden="true" /></span>
-              <div><span className={s.metaLabel}>Capacity</span><span className={`${s.metaValue} num`}>{event.bookedCount} of {event.capacity} seats booked</span></div>
-            </li>
+          <ul className={`rise ${s.facts}`} style={{ "--i": 2 } as React.CSSProperties}>
+            {facts.map(({ icon: Icon, label, value, sub }) => (
+              <li key={label}>
+                <Icon size={20} aria-hidden="true" className={s.factIcon} />
+                <span className={s.factLabel}>{label}</span>
+                <span className={s.factValue}>{value}</span>
+                {sub && <span className={s.factSub}>{sub}</span>}
+              </li>
+            ))}
           </ul>
 
-          <h2 className="h3" style={{ marginBottom: 10 }}>About this event</h2>
-          <p className={s.desc}>{event.description}</p>
+          {online && event.meetingLink && (
+            <p className={s.join}>
+              {user ? (
+                <a href={event.meetingLink} target="_blank" rel="noreferrer" className="text-link">
+                  <LinkSimple size={16} aria-hidden="true" /> Open join link
+                </a>
+              ) : (
+                <span className="muted small">The join link appears here after you sign in.</span>
+              )}
+            </p>
+          )}
 
-          <section className={s.reviews} aria-labelledby="reviews-title">
+          <section className={s.section} aria-labelledby="about-title">
+            <h2 id="about-title" className="h3">About this event</h2>
+            <p className={s.desc}>{event.description}</p>
+          </section>
+
+          <section className={s.section} aria-labelledby="reviews-title">
             <div className={s.reviewsHead}>
               <h2 id="reviews-title" className="h3">Reviews</h2>
               {stats.reviewCount > 0 && (
                 <span className={s.rating}>
                   <Stars value={stats.averageRating} />
                   <strong className="num">{stats.averageRating}</strong>
-                  <span className="muted small">({stats.reviewCount})</span>
+                  <span className="muted small num">({stats.reviewCount})</span>
                 </span>
               )}
             </div>
 
             {stats.reviews.length === 0 ? (
-              <p className="muted" style={{ marginBottom: 20 }}>
-                {past ? "No reviews yet. Attendees can be the first." : "Reviews open once the event has ended."}
-              </p>
+              <p className="muted">{past ? "No reviews yet. Attendees can be the first." : "Reviews open once the event has ended."}</p>
             ) : (
               <ul className={s.reviewList}>
-                {stats.reviews.map((review) => (
-                  <li key={review._id} className={`card ${s.review}`}>
-                    <div className={s.reviewTop}>
-                      <strong>{typeof review.userId === "object" ? review.userId.name : "Attendee"}</strong>
-                      <Stars value={review.rating} size={14} />
-                    </div>
-                    <p className={s.reviewText}>{review.comment}</p>
-                    <span className="small muted">{formatDate(review.createdAt, { month: "short", day: "numeric", year: "numeric" })}</span>
-                  </li>
-                ))}
+                {stats.reviews.map((review) => {
+                  const name = typeof review.userId === "object" ? review.userId.name : "Attendee";
+                  return (
+                    <li key={review._id} className={`reveal ${s.review}`}>
+                      <span className={s.avatar} aria-hidden="true">{name.charAt(0).toUpperCase()}</span>
+                      <div>
+                        <div className={s.reviewTop}>
+                          <strong>{name}</strong>
+                          <Stars value={review.rating} size={14} />
+                        </div>
+                        <p className={s.reviewText}>{review.comment}</p>
+                        <span className="small muted">{formatDate(review.createdAt, { month: "short", day: "numeric", year: "numeric" })}</span>
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             )}
 
-            {past && (user ? <ReviewForm eventId={event._id} /> : (
-              <p className="muted small">
-                <Link href={`/auth/login?next=/events/${event._id}`} className={s.link}>Sign in</Link> to leave a review if you attended.
-              </p>
-            ))}
+            {past &&
+              (user ? (
+                <ReviewForm eventId={event._id} />
+              ) : (
+                <p className="muted small" style={{ marginTop: 16 }}>
+                  <Link href={`/auth/login?next=/events/${event._id}`} className="accent">Sign in</Link> to leave a review if you attended.
+                </p>
+              ))}
           </section>
         </article>
 

@@ -1,57 +1,57 @@
+import { ViewTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Calendar, Globe, MapPin } from "lucide-react";
+import { Globe, MapPin } from "@phosphor-icons/react/ssr";
 import type { Event } from "@/types";
-import { categoryMeta, catStyle } from "@/lib/categories";
-import { formatDate, formatPrice, formatTime, isPast } from "@/lib/format";
+import { categoryMeta } from "@/lib/categories";
+import { formatPrice, formatTime, isPast } from "@/lib/format";
 import s from "./EventCard.module.css";
 
+// The signature element: an admission ticket. Photo on top, a perforated tear line,
+// and a stub with the date block. Notches are real cut-outs (CSS masks).
 export default function EventCard({ event, priority = false }: { event: Event; priority?: boolean }) {
   const meta = categoryMeta(event.category);
   const Icon = meta.icon;
+  const date = new Date(event.date);
   const left = Math.max(event.capacity - event.bookedCount, 0);
-  const pct = Math.min(100, Math.round((event.bookedCount / event.capacity) * 100));
   const past = isPast(event.date);
+  const status = past ? "Ended" : left === 0 ? "Sold out" : left <= Math.max(5, event.capacity * 0.1) ? `${left} left` : null;
 
   return (
-    <Link href={`/events/${event._id}`} className={s.card} style={catStyle(event.category)}>
-      <div className={s.media}>
-        {event.imageUrl ? (
-          <Image src={event.imageUrl} alt="" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" priority={priority} />
-        ) : (
-          <div className={s.placeholder}>
-            <Icon size={40} aria-hidden="true" />
-          </div>
-        )}
-        <span className={`badge badge-cat ${s.cat}`}>{meta.label}</span>
-        {past ? (
-          <span className={`badge ${s.flag}`}>Ended</span>
-        ) : left === 0 ? (
-          <span className={`badge badge-danger ${s.flag}`}>Sold out</span>
-        ) : null}
-      </div>
-
-      <div className={s.body}>
-        <div className={s.date}>
-          <Calendar size={14} aria-hidden="true" />
-          {formatDate(event.date, { month: "short", day: "numeric" })} · {formatTime(event.date)}
-        </div>
-        <h3 className={s.title}>{event.title}</h3>
-        <div className={s.loc}>
-          {event.eventType === "online" ? <Globe size={14} aria-hidden="true" /> : <MapPin size={14} aria-hidden="true" />}
-          {event.location}
-        </div>
-        <div className={s.foot}>
-          <span className={s.price}>
-            {formatPrice(event.price)}
-            {event.price > 0 && <small>/ticket</small>}
-          </span>
-          <span className={s.spots}>
-            <span className={s.bar} aria-hidden="true">
-              <span style={{ width: `${pct}%` }} />
+    <Link href={`/events/${event._id}`} className={`${s.card} reveal`} data-spotlight>
+      <ViewTransition name={`ev-${event._id}`} share="morph">
+        <div className={`${s.media} notch-b`}>
+          {event.imageUrl ? (
+            <Image src={event.imageUrl} alt="" fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px" priority={priority} />
+          ) : (
+            <span className={s.placeholder}>
+              <Icon size={44} weight="duotone" aria-hidden="true" />
             </span>
-            <span className="small muted num">{left} left</span>
-          </span>
+          )}
+        </div>
+      </ViewTransition>
+
+      <div className={`${s.stub} notch-t perf-t`}>
+        <div className={s.dateBlock} aria-hidden="true">
+          <span className={s.day}>{date.toLocaleDateString("en-US", { day: "numeric" })}</span>
+          <span className={s.mon}>{date.toLocaleDateString("en-US", { month: "short" })}</span>
+        </div>
+        <div className={s.info}>
+          <h3 className={s.title}>{event.title}</h3>
+          <p className={s.meta}>
+            <time dateTime={event.date} className="sr-only">{date.toDateString()}</time>
+            {date.toLocaleDateString("en-US", { weekday: "short" })} {formatTime(event.date)}
+            <span aria-hidden="true"> · </span>
+            {event.eventType === "online" ? <Globe size={14} aria-hidden="true" /> : <MapPin size={14} aria-hidden="true" />}
+            {event.location}
+          </p>
+          <div className={s.foot}>
+            <span className={s.cat}>
+              <Icon size={15} aria-hidden="true" /> {meta.label}
+            </span>
+            {status && <span className={`${s.status} ${past || left === 0 ? "" : s.hot}`}>{status}</span>}
+            <span className={`${s.price} num`}>{formatPrice(event.price)}</span>
+          </div>
         </div>
       </div>
     </Link>

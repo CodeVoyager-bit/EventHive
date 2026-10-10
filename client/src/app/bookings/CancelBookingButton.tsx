@@ -8,15 +8,16 @@ export default function CancelBookingButton({ id }: { id: string }) {
   const router = useRouter();
   return (
     <ConfirmButton
+      className="btn btn-ghost btn-sm"
       title="Cancel this ticket?"
       description="Your seat is released for someone else and the payment is refunded. This cannot be undone."
-      confirmLabel="Yes, cancel it"
+      confirmLabel="Cancel Ticket"
       onConfirm={async () => {
         await api.cancelBooking(id);
         router.refresh();
       }}
     >
-      Cancel ticket
+      Cancel Ticket
     </ConfirmButton>
   );
 }

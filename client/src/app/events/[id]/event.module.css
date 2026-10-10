@@ -1,20 +1,28 @@
-.layout {
-  display: grid;
-  gap: 32px;
-  align-items: start;
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-block: 20px 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-3);
+  transition: color var(--dur-fast), gap var(--dur) var(--ease-out);
 }
-@media (min-width: 960px) {
-  .layout {
-    grid-template-columns: minmax(0, 1fr) 360px;
-  }
+.back:hover {
+  color: var(--text);
+  gap: 10px;
 }
 .media {
   position: relative;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 4 / 3;
   border-radius: var(--radius-xl);
   overflow: hidden;
-  background: color-mix(in srgb, var(--cat) 20%, var(--surface-2));
-  margin-bottom: 24px;
+  background: var(--surface-2);
+}
+@media (min-width: 768px) {
+  .media {
+    aspect-ratio: 21 / 9;
+  }
 }
 .media img {
   object-fit: cover;
@@ -24,93 +32,103 @@
   inset: 0;
   display: grid;
   place-items: center;
-  color: var(--cat);
-  background: linear-gradient(135deg, color-mix(in srgb, var(--cat) 35%, transparent), transparent);
+  color: var(--accent-ink);
+  background: radial-gradient(circle at 30% 20%, var(--accent-soft), transparent 70%), var(--surface-2);
+}
+.layout {
+  display: grid;
+  gap: 40px;
+  align-items: start;
+  margin-top: 36px;
+}
+@media (min-width: 1024px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr) 380px;
+    gap: 64px;
+  }
+}
+.main {
+  min-width: 0;
+  container-type: inline-size;
 }
 .badges {
-  position: absolute;
-  top: 16px;
-  left: 16px;
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-}
-.badges .badge {
-  background: color-mix(in srgb, var(--surface) 88%, transparent);
-  backdrop-filter: blur(8px);
+  margin-bottom: 16px;
 }
 .title {
-  margin: 6px 0 16px;
+  margin-bottom: 28px;
+  overflow-wrap: anywhere;
 }
-.metaGrid {
+.facts {
   display: grid;
-  gap: 12px;
-  grid-template-columns: 1fr;
-  margin: 20px 0 32px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-block: 1px solid var(--line);
 }
-@media (min-width: 640px) {
-  .metaGrid {
-    grid-template-columns: 1fr 1fr;
+/* Four across only when the article column itself is wide enough */
+@container (min-width: 680px) {
+  .facts {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
-.metaItem {
-  display: flex;
-  gap: 12px;
-  padding: 14px 16px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-}
-.metaIcon {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-sm);
+.facts li {
   display: grid;
-  place-items: center;
-  background: var(--brand-soft);
-  color: var(--brand-ink);
-  flex-shrink: 0;
+  align-content: start;
+  gap: 2px;
+  padding: 18px 16px 18px 0;
 }
-.metaLabel {
-  display: block;
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+.facts li:nth-child(even) {
+  padding-left: 16px;
+  border-left: 1px solid var(--line);
+}
+@container (min-width: 680px) {
+  .facts li + li {
+    padding-left: 16px;
+    border-left: 1px solid var(--line);
+  }
+}
+.factIcon {
+  color: var(--accent-ink);
+  margin-bottom: 8px;
+}
+.factLabel {
+  font-size: 0.8rem;
   color: var(--text-3);
-  margin-bottom: 2px;
 }
-.metaValue {
-  display: block;
-  font-size: 0.95rem;
+.factValue {
+  font-weight: 600;
+  overflow-wrap: anywhere;
 }
-.sub {
-  display: block;
+.factSub {
   font-size: 0.85rem;
   color: var(--text-3);
-  margin-top: 2px;
 }
-.link {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  color: var(--brand-ink);
-  font-weight: 600;
+.join {
+  margin-top: 16px;
 }
-.link:hover {
-  text-decoration: underline;
+.section {
+  margin-top: 48px;
+}
+.section h2 {
+  margin-bottom: 14px;
 }
 .desc {
   white-space: pre-line;
+  font-size: 1.05rem;
   line-height: 1.8;
   color: var(--text-2);
-  margin-bottom: 40px;
+  max-width: 68ch;
 }
 .reviewsHead {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   flex-wrap: wrap;
   margin-bottom: 16px;
+}
+.reviewsHead h2 {
+  margin-bottom: 0;
 }
 .rating {
   display: inline-flex;
@@ -119,25 +137,35 @@
 }
 .reviewList {
   display: grid;
-  gap: 12px;
+  gap: 20px;
   margin-bottom: 24px;
 }
 .review {
-  padding: 16px 18px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+}
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font-weight: 700;
 }
 .reviewTop {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 6px;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 .reviewText {
+  margin: 4px 0;
   color: var(--text-2);
-  line-height: 1.6;
-  margin-bottom: 6px;
 }
 .sidebar {
   position: sticky;
-  top: calc(var(--nav-h) + 16px);
+  top: calc(var(--nav-h) + 12px);
 }

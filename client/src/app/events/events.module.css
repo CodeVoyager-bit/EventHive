@@ -1,51 +1,84 @@
 .head {
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  padding-block: 40px 28px;
+}
+.toolbar {
+  display: grid;
+  gap: 14px;
   margin-bottom: 32px;
+}
+@media (min-width: 1024px) {
+  .toolbar {
+    position: sticky;
+    top: calc(var(--nav-h) + 4px);
+    z-index: 10;
+  }
 }
 .filters {
   display: grid;
-  gap: 10px;
-  grid-template-columns: 1fr;
-  margin-bottom: 16px;
+  gap: 8px;
+  padding: 8px;
+  border-radius: var(--radius-lg);
 }
 @media (min-width: 900px) {
   .filters {
     grid-template-columns: minmax(0, 1fr) 150px auto auto auto;
+    align-items: center;
+    border-radius: var(--radius-full);
   }
 }
-.searchBox {
-  position: relative;
-  display: block;
-}
-.searchBox svg {
-  position: absolute;
-  left: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-3);
-  pointer-events: none;
-}
-.searchBox input {
-  padding-left: 42px;
-}
-.filter {
+.searchBox,
+.field {
   display: flex;
   align-items: center;
   gap: 8px;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: var(--radius-full);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--text-3);
+  transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
 }
-.filterLabel {
+.searchBox:focus-within,
+.field:focus-within {
+  border-color: var(--accent-ink);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.searchBox input,
+.field input,
+.field select {
+  flex: 1;
+  min-width: 0;
+  min-height: 42px;
+  background: transparent;
+  border: 0;
+  outline: none;
+  color: var(--text);
+}
+.field select {
+  appearance: none;
+  cursor: pointer;
+  background-color: var(--surface);
+}
+.searchBox input::placeholder {
+  color: var(--text-3);
+}
+.fieldLabel {
   font-size: 0.8rem;
   font-weight: 600;
-  color: var(--text-3);
-  white-space: nowrap;
 }
 .chips {
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  padding-bottom: 6px;
-  margin-bottom: 24px;
+  padding: 2px 2px 6px;
   scrollbar-width: none;
+  scroll-snap-type: x proximity;
 }
 .chips::-webkit-scrollbar {
   display: none;
@@ -53,28 +86,28 @@
 .chip {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
   min-height: 40px;
-  padding: 0 14px;
+  padding: 0 16px;
   border-radius: var(--radius-full);
-  border: 1px solid var(--border);
+  border: 1px solid var(--line);
   background: var(--surface);
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.9rem;
+  font-weight: 500;
   color: var(--text-2);
   white-space: nowrap;
-  transition: border-color var(--dur), color var(--dur), background var(--dur);
+  scroll-snap-align: start;
+  transition: background-color var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast), transform var(--dur) var(--ease-spring);
 }
 .chip:hover {
-  border-color: var(--cat, var(--border-strong));
+  border-color: var(--line-strong);
   color: var(--text);
 }
-.chipActive,
-.chipActive:hover {
-  background: var(--text);
-  color: var(--bg);
-  border-color: var(--text);
+.chip:active {
+  transform: scale(0.96);
 }
-.count {
-  margin-bottom: 16px;
+.chip[aria-current="true"] {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
 }
