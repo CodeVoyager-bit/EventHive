@@ -2,28 +2,48 @@
   position: sticky;
   top: 0;
   z-index: var(--z-nav);
-  padding-top: 12px;
+  padding-top: 10px;
   height: var(--nav-h);
 }
 .wrap {
   position: relative;
 }
 .bar {
-  height: 56px;
+  height: 58px;
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 0 8px 0 18px;
+  gap: 8px;
+  padding: 0 8px 0 10px;
   border-radius: var(--radius-full);
 }
+/* At the top of the page the bar sits flat on the page; scrolling turns it into a floating glass pill */
+@supports (animation-timeline: scroll()) {
+  .bar {
+    animation: settle linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0px 90px;
+  }
+}
+@keyframes settle {
+  from {
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    padding-inline: 0;
+  }
+}
+
 .logo {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 10px;
+  margin-right: 20px;
   font-family: var(--font-display);
   font-stretch: 85%;
   font-weight: 800;
-  font-size: 1.3rem;
+  font-size: 1.35rem;
   letter-spacing: -0.01em;
   flex-shrink: 0;
 }
@@ -31,42 +51,93 @@
   color: var(--accent-ink);
   font-weight: inherit;
 }
+.logoMark {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--accent-soft);
+  transition: rotate 600ms var(--ease-spring), scale 600ms var(--ease-spring);
+}
+.logo:hover .logoMark {
+  rotate: -14deg;
+  scale: 1.08;
+}
+
 .links {
   display: flex;
-  gap: 2px;
-  margin-inline: auto;
+  align-items: center;
+  gap: 4px;
 }
 .link {
+  position: relative;
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 0 16px;
-  border-radius: var(--radius-full);
-  font-weight: 500;
-  font-size: 0.93rem;
+  padding: 0 12px;
+  font-weight: 550;
+  font-size: 0.95rem;
   color: var(--text-2);
-  transition: background-color var(--dur-fast), color var(--dur-fast);
+  transition: color var(--dur-fast);
+}
+/* Underline grows from the left on hover; stays full on the current page */
+.link::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 6px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent-ink);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 380ms var(--ease-out);
 }
 .link:hover {
   color: var(--text);
-  background: var(--surface-2);
+}
+.link:hover::after,
+.link[aria-current="page"]::after {
+  transform: scaleX(1);
 }
 .link[aria-current="page"] {
   color: var(--text);
-  background: var(--surface-2);
-  box-shadow: inset 0 0 0 1px var(--line);
+  font-weight: 650;
 }
+
 .right {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   margin-left: auto;
   flex-shrink: 0;
+}
+.divider {
+  width: 1px;
+  height: 22px;
+  margin: 0 6px;
+  background: var(--line-strong);
 }
 .desktopOnly {
   display: flex;
   align-items: center;
   gap: 6px;
+}
+.login {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 12px;
+  font-weight: 600;
+  font-size: 0.93rem;
+  color: var(--text);
+  border-radius: var(--radius-full);
+  transition: background-color var(--dur-fast);
+}
+.login:hover {
+  background: var(--surface-2);
 }
 .chip {
   display: inline-flex;
@@ -75,18 +146,18 @@
   padding: 3px 12px 3px 3px;
   border-radius: var(--radius-full);
   background: var(--surface-2);
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   font-weight: 600;
 }
 .avatar {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   display: grid;
   place-items: center;
   background: var(--accent);
   color: #fff;
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   font-weight: 700;
 }
 .iconBtn {
@@ -96,22 +167,25 @@
   display: grid;
   place-items: center;
   color: var(--text-2);
-  transition: background-color var(--dur-fast), color var(--dur-fast), transform var(--dur) var(--ease-spring);
+  transition: background-color var(--dur-fast), color var(--dur-fast), rotate 500ms var(--ease-spring);
 }
 .iconBtn:hover {
   background: var(--surface-2);
   color: var(--text);
 }
-.iconBtn:active {
-  transform: scale(0.92);
+.iconBtn:hover svg {
+  rotate: 18deg;
+  transition: rotate 500ms var(--ease-spring);
 }
 .burger,
 .mobile {
   display: none;
 }
-@media (max-width: 860px) {
+
+@media (max-width: 900px) {
   .links,
-  .desktopOnly {
+  .desktopOnly,
+  .divider {
     display: none;
   }
   .burger {
@@ -119,20 +193,22 @@
   }
   .mobile {
     position: absolute;
-    top: 64px;
+    top: 66px;
     left: 16px;
     right: 16px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
     padding: 12px;
     border-radius: var(--radius-lg);
     animation: drop var(--dur) var(--ease-out);
   }
   .mobile .link {
     min-height: 48px;
-    border-radius: var(--radius-md);
-    font-size: 1rem;
+    font-size: 1.05rem;
+  }
+  .mobile .link::after {
+    display: none;
   }
   .mobileAuth {
     display: flex;
@@ -142,6 +218,14 @@
     margin-top: 8px;
     padding-top: 12px;
     border-top: 1px solid var(--line);
+  }
+}
+@media (max-width: 480px) {
+  .searchBtn {
+    display: none;
+  }
+  .logo {
+    margin-right: 0;
   }
 }
 @keyframes drop {

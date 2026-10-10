@@ -127,6 +127,13 @@
   --tone-on: #14111f;
 }
 
+/* Integer custom property so counters can animate (home page count-up) */
+@property --num {
+  syntax: "<integer>";
+  inherits: false;
+  initial-value: 0;
+}
+
 /* ---------- Base ---------- */
 *,
 *::before,
@@ -345,6 +352,21 @@ p {
 }
 .btn:active:not(:disabled) {
   transform: scale(0.97);
+}
+/* Magnetic buttons drift toward the cursor (vars from PointerFX); only while hovered */
+[data-magnetic] {
+  --hm: 0;
+  translate: calc(var(--tx, 0px) * var(--hm)) calc(var(--ty, 0px) * var(--hm));
+  transition: translate 450ms var(--ease-spring), background-color var(--dur-fast), color var(--dur-fast), box-shadow var(--dur), transform var(--dur) var(--ease-spring);
+}
+[data-magnetic]:hover {
+  --hm: 1;
+  transition-duration: 120ms, var(--dur-fast), var(--dur-fast), var(--dur), var(--dur);
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-magnetic] {
+    translate: none;
+  }
 }
 .btn:disabled,
 .btn[aria-disabled="true"] {

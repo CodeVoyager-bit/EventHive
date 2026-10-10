@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { List, Moon, SignOut, Sun, X } from "@phosphor-icons/react";
+import { List, MagnifyingGlass, Moon, SignOut, Sun, X } from "@phosphor-icons/react";
 import { api } from "@/lib/api";
 import Logo from "./Logo";
 import type { SessionUser } from "@/types";
@@ -32,11 +32,13 @@ export default function NavbarClient({ user, initialTheme }: Props) {
     router.refresh();
   }
 
-  const canOrganize = user?.role === "organizer" || user?.role === "admin";
+  const organizer = user?.role === "organizer" || user?.role === "admin";
   const links = [
     { href: "/events", label: "Explore", active: pathname.startsWith("/events") },
+    ...(organizer ? [] : [{ href: "/#categories", label: "Categories", active: false }]),
     ...(user ? [{ href: "/bookings", label: "My Tickets", active: pathname.startsWith("/bookings") }] : []),
-    ...(canOrganize ? [{ href: "/dashboard", label: "Dashboard", active: pathname.startsWith("/dashboard") }] : []),
+    ...(organizer ? [{ href: "/dashboard", label: "Dashboard", active: pathname.startsWith("/dashboard") }] : []),
+    ...(!user ? [{ href: "/#host", label: "For Hosts", active: false }] : []),
   ];
 
   const navLinks = links.map(({ href, label, active }) => (
@@ -44,6 +46,12 @@ export default function NavbarClient({ user, initialTheme }: Props) {
       {label}
     </Link>
   ));
+
+  const themeButton = (
+    <button className={s.iconBtn} onClick={toggleTheme} aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}>
+      {theme === "dark" ? <Sun size={19} aria-hidden="true" /> : <Moon size={19} aria-hidden="true" />}
+    </button>
+  );
 
   const authControls = user ? (
     <>
@@ -57,8 +65,8 @@ export default function NavbarClient({ user, initialTheme }: Props) {
     </>
   ) : (
     <>
-      <Link href="/auth/login" className="btn btn-ghost btn-sm" onClick={() => setOpen(false)}>Log In</Link>
-      <Link href="/auth/register" className="btn btn-primary btn-sm" onClick={() => setOpen(false)}>Sign Up</Link>
+      <Link href="/auth/login" className={s.login} onClick={() => setOpen(false)}>Log In</Link>
+      <Link href="/auth/register" className="btn btn-primary btn-sm" data-magnetic onClick={() => setOpen(false)}>Sign Up</Link>
     </>
   );
 
@@ -67,17 +75,21 @@ export default function NavbarClient({ user, initialTheme }: Props) {
       <div className={`container ${s.wrap}`}>
         <div className={`glass ${s.bar}`}>
           <Link href="/" className={s.logo} aria-label="EventHive home" translate="no">
-            <Logo />
+            <span className={s.logoMark}>
+              <Logo size={24} />
+            </span>
             <span>Event<b>Hive</b></span>
           </Link>
 
           <nav className={s.links} aria-label="Main">{navLinks}</nav>
 
           <div className={s.right}>
+            <Link href="/events" className={`${s.iconBtn} ${s.searchBtn}`} aria-label="Search events">
+              <MagnifyingGlass size={19} aria-hidden="true" />
+            </Link>
+            {themeButton}
+            <span className={s.divider} aria-hidden="true" />
             <div className={s.desktopOnly}>{authControls}</div>
-            <button className={s.iconBtn} onClick={toggleTheme} aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}>
-              {theme === "dark" ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
-            </button>
             <button className={`${s.iconBtn} ${s.burger}`} onClick={() => setOpen(!open)} aria-expanded={open} aria-controls="mobile-nav" aria-label="Menu">
               {open ? <X size={20} aria-hidden="true" /> : <List size={20} aria-hidden="true" />}
             </button>

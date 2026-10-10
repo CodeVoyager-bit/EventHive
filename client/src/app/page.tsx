@@ -1,16 +1,26 @@
 import { ViewTransition, type CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, Globe, MagnifyingGlass, MapPin, Sparkle } from "@phosphor-icons/react/ssr";
+import { ArrowRight, ArrowUpRight, MagnifyingGlass, Sparkle } from "@phosphor-icons/react/ssr";
 import EventCard from "@/components/EventCard";
 import { apiFetchPaged, getSessionUser } from "@/lib/server";
-import { CATEGORY_META, categoryMeta } from "@/lib/categories";
-import { formatPrice, formatTime } from "@/lib/format";
+import { CATEGORY_META, categoryMeta, type Tone } from "@/lib/categories";
+import { formatPrice } from "@/lib/format";
 import type { Event } from "@/types";
 import s from "./home.module.css";
 
-const order = (i: number) => ({ "--i": i }) as CSSProperties;
+const vars = (v: Record<string, string | number>) => v as CSSProperties;
 const shortDate = (iso: string) => new Date(iso).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+
+// Rotating hero word; the first word repeats at the end so the loop is seamless
+const WORDS: { text: string; tone: Tone }[] = [
+  { text: "more.", tone: "pink" },
+  { text: "tonight.", tone: "yellow" },
+  { text: "louder.", tone: "blue" },
+  { text: "together.", tone: "lime" },
+  { text: "more.", tone: "pink" },
+];
+const TONES: Tone[] = ["pink", "orange", "yellow", "lime", "teal", "blue", "violet"];
 
 export default async function HomePage() {
   const [events, user] = await Promise.all([
@@ -21,35 +31,61 @@ export default async function HomePage() {
   ]);
   const upcoming = events ?? [];
   const deck = upcoming.slice(0, 3); // hero: the next three events, as tickets
-  const comingUp = upcoming.slice(3, 8); // distinct from the deck, so shared-element names stay unique
+  const comingUp = upcoming.slice(3, 9); // distinct from the deck, so shared-element names stay unique
   const counts: Record<string, number> = {};
   for (const e of upcoming) counts[e.category] = (counts[e.category] ?? 0) + 1;
+  const cities = new Set(upcoming.filter((e) => e.eventType === "venue").map((e) => e.location)).size;
+  const stats = [
+    { n: upcoming.length, label: "upcoming events", tone: "pink" },
+    { n: cities, label: cities === 1 ? "city" : "cities", tone: "blue" },
+    { n: Object.keys(counts).length, label: "categories", tone: "lime" },
+    { n: upcoming.filter((e) => e.price === 0).length, label: "free to attend", tone: "orange" },
+  ];
   const showHost = user?.role !== "attendee";
   const hostHref = user ? "/dashboard/create" : "/auth/register";
+  const marqueeA = upcoming.length ? upcoming.map((e) => e.title) : ["Live music", "Meetups", "Workshops", "Supper clubs"];
+  const marqueeB = Object.values(CATEGORY_META).map((m) => m.label);
 
   return (
     <>
-      <section className={s.hero}>
+      <div className={s.progress} aria-hidden="true" />
+
+      {/* ---------- Hero ---------- */}
+      <section className={s.hero} data-spotlight>
+        <span className={s.glow} aria-hidden="true" />
         <div className={`container ${s.heroGrid}`}>
           <div className={s.copy}>
             <h1 className={`display ${s.title}`}>
-              <span className={s.line}>
-                <span style={order(0)}>Go out</span>
-              </span>
-              <span className={s.line}>
-                <span style={order(1)}>
-                  <span className={s.hl}>more.</span>
+              <span className="sr-only">Go out more.</span>
+              <span aria-hidden="true">
+                <span className={s.line}>
+                  {"Go out".split("").map((ch, i) => (
+                    <span key={i} className={s.ch} style={vars({ "--i": i })}>
+                      {ch === " " ? " " : ch}
+                    </span>
+                  ))}
+                </span>
+                <span className={s.line}>
+                  <span className={s.rotator}>
+                    <span className={s.words}>
+                      {WORDS.map((w, i) => (
+                        <span key={i} className={s.word}>
+                          <span className={s.hl} data-tone={w.tone}>{w.text}</span>
+                        </span>
+                      ))}
+                    </span>
+                  </span>
                 </span>
               </span>
             </h1>
-            <p className={`lead ${s.heroRise} ${s.lead}`} style={order(3)}>
+            <p className={`lead ${s.heroRise} ${s.lead}`} style={vars({ "--i": 3 })}>
               Concerts, meetups, workshops and supper clubs near you. Pick a seat and get your ticket in seconds.
             </p>
-            <form className={`${s.heroRise} ${s.search}`} style={order(4)} action="/events" method="get" role="search">
+            <form className={`${s.heroRise} ${s.search}`} style={vars({ "--i": 4 })} action="/events" method="get" role="search">
               <MagnifyingGlass size={20} aria-hidden="true" />
               <label className="sr-only" htmlFor="hero-q">Search events</label>
               <input id="hero-q" name="q" type="search" placeholder="Search events, cities, topics…" autoComplete="off" spellCheck={false} />
-              <button type="submit" className="btn btn-primary">Search</button>
+              <button type="submit" className="btn btn-primary" data-magnetic>Search</button>
             </form>
           </div>
 
@@ -69,6 +105,38 @@ export default async function HomePage() {
               </div>
             </div>
           )}
+        </div>
+      </section>
+
+      {/* ---------- Crossing marquee bands (decorative; the same content is linked below) ---------- */}
+      <section className={s.marquee} aria-hidden="true">
+        <div className={`${s.band} ${s.bandA}`}>
+          <div className={s.track}>
+            {[0, 1].map((copy) => (
+              <div key={copy} className={s.run}>
+                {marqueeA.map((t, i) => (
+                  <span key={i} className={s.item} data-tone={TONES[i % TONES.length]}>
+                    {t}
+                    <Sparkle size={34} weight="fill" />
+                  </span>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className={`${s.band} ${s.bandB}`}>
+          <div className={s.track}>
+            {[0, 1].map((copy) => (
+              <div key={copy} className={s.run}>
+                {marqueeB.map((t, i) => (
+                  <span key={i} className={s.item}>
+                    {t}
+                    <Sparkle size={30} weight="fill" />
+                  </span>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -92,28 +160,59 @@ export default async function HomePage() {
         </section>
       )}
 
-      {comingUp.length > 0 && (
-        <section className="container section">
-          <div className="section-head">
-            <h2 className="h2">Coming up</h2>
-            <Link href="/events" className="text-link">
-              All events <ArrowRight size={16} aria-hidden="true" />
-            </Link>
-          </div>
-          <div className={s.bento} data-count={comingUp.length}>
-            <FeatureTile event={comingUp[0]} />
-            {comingUp.slice(1).map((event) => (
-              <EventCard key={event._id} event={event} />
+      {/* ---------- Count-up stats ---------- */}
+      {upcoming.length > 0 && (
+        <section className={`container ${s.statsSection}`} aria-label="EventHive in numbers">
+          <ul className={s.stats}>
+            {stats.map((st) => (
+              <li key={st.label} className={s.stat} data-tone={st.tone}>
+                <span className="sr-only">{st.n} {st.label}</span>
+                <span className={s.count} style={vars({ "--to": st.n })} aria-hidden="true" />
+                <span className={s.statLabel} aria-hidden="true">{st.label}</span>
+              </li>
             ))}
+          </ul>
+        </section>
+      )}
+
+      {/* ---------- Coming up: vertical scroll pans the row sideways ---------- */}
+      {comingUp.length > 0 && (
+        <section className={s.pan} aria-labelledby="coming-up">
+          <div className={s.panSticky}>
+            <div className={`container ${s.panHead}`}>
+              <h2 id="coming-up" className={`display ${s.panTitle}`}>Coming up</h2>
+              <Link href="/events" className="text-link">
+                All events <ArrowRight size={16} aria-hidden="true" />
+              </Link>
+            </div>
+            <div className={s.panScroller}>
+              <ul className={s.panTrack}>
+                {comingUp.map((event) => (
+                  <li key={event._id} className={s.panItem}>
+                    <EventCard event={event} />
+                  </li>
+                ))}
+                <li className={s.panItem}>
+                  <Link href="/events" className={s.panEnd}>
+                    <span className="display">See every event</span>
+                    <ArrowUpRight size={40} aria-hidden="true" />
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div className={`container ${s.panBarWrap}`} aria-hidden="true">
+              <span className={s.panBar} />
+            </div>
           </div>
         </section>
       )}
 
-      <section className="container section">
+      {/* ---------- Categories ---------- */}
+      <section id="categories" className={`container section ${s.anchor}`}>
         <h2 className={`h2 ${s.catHeading}`}>Browse by category</h2>
         <ul className={s.cats}>
-          {Object.entries(CATEGORY_META).map(([key, meta]) => (
-            <li key={key} className="reveal">
+          {Object.entries(CATEGORY_META).map(([key, meta], i) => (
+            <li key={key} className={s.catItem} style={vars({ "--dir": i % 2 ? 1 : -1 })}>
               <Link href={`/events?category=${key}`} className={s.cat} data-tone={meta.tone} data-spotlight>
                 <Image className={s.peek} src={meta.image.replace("w=1200", "w=480")} alt="" width={300} height={200} sizes="300px" />
                 <span className={s.catIcon} aria-hidden="true">
@@ -128,15 +227,17 @@ export default async function HomePage() {
         </ul>
       </section>
 
+      {/* ---------- Host band: a big ticket with a tear-off stub ---------- */}
       {showHost && (
-        <section className="container">
-          <div className={`${s.host} reveal`}>
+        <section id="host" className={`container ${s.anchor}`}>
+          <div className={`${s.host} reveal`} data-tilt>
             <div className={`${s.hostMain} notch-r`}>
+              <span className={s.shine} aria-hidden="true" />
               <h2 className={`display ${s.hostTitle}`}>Hosting something?</h2>
               <p>Publish an event in minutes, sell general and VIP tickets, and watch bookings land in your dashboard.</p>
             </div>
             <div className={`${s.hostStub} notch-l`}>
-              <Link href={hostHref} className={`btn btn-lg ${s.hostBtn}`}>
+              <Link href={hostHref} className={`btn btn-lg ${s.hostBtn}`} data-magnetic>
                 Start Hosting <ArrowRight size={18} aria-hidden="true" />
               </Link>
             </div>
@@ -148,16 +249,16 @@ export default async function HomePage() {
 }
 
 function DeckTicket({ event, i }: { event: Event; i: number }) {
-  const Icon = categoryMeta(event.category).icon;
+  const meta = categoryMeta(event.category);
   return (
-    <Link href={`/events/${event._id}`} className={s.tix} style={order(i)} data-tone={categoryMeta(event.category).tone}>
+    <Link href={`/events/${event._id}`} className={s.tix} style={vars({ "--i": i })} data-tone={meta.tone}>
       <ViewTransition name={`ev-${event._id}`} share="morph" default="none">
         <div className={`${s.tixMedia} notch-b`}>
           {event.imageUrl ? (
             <Image src={event.imageUrl} alt="" fill sizes="280px" priority={i === 1} />
           ) : (
             <span className={s.tixPlaceholder}>
-              <Icon size={40} weight="duotone" aria-hidden="true" />
+              <meta.icon size={40} weight="duotone" aria-hidden="true" />
             </span>
           )}
         </div>
@@ -170,38 +271,6 @@ function DeckTicket({ event, i }: { event: Event; i: number }) {
           <span className="num">{formatPrice(event.price)}</span>
         </span>
         <span className={`mono ${s.admit}`} aria-hidden="true">ADMIT ONE</span>
-      </div>
-    </Link>
-  );
-}
-
-function FeatureTile({ event }: { event: Event }) {
-  const meta = categoryMeta(event.category);
-  return (
-    <Link href={`/events/${event._id}`} className={`${s.feature} reveal`} data-tone={meta.tone} data-spotlight>
-      <ViewTransition name={`ev-${event._id}`} share="morph" default="none">
-        <div className={s.featureMedia}>
-          {event.imageUrl ? (
-            <Image src={event.imageUrl} alt="" fill sizes="(max-width: 900px) 100vw, 620px" />
-          ) : (
-            <span className={s.tixPlaceholder}>
-              <meta.icon size={56} weight="duotone" aria-hidden="true" />
-            </span>
-          )}
-        </div>
-      </ViewTransition>
-      <div className={s.featureBody}>
-        <span className={s.featureDate}>
-          {shortDate(event.date)} · {formatTime(event.date)}
-        </span>
-        <h3 className={`display ${s.featureTitle}`}>{event.title}</h3>
-        <div className={`${s.featureFoot} perf-t`}>
-          <span className={s.featureMeta}>
-            {event.eventType === "online" ? <Globe size={16} aria-hidden="true" /> : <MapPin size={16} aria-hidden="true" />}
-            {event.location}
-          </span>
-          <span className={`${s.featurePrice} num`}>{formatPrice(event.price)}</span>
-        </div>
       </div>
     </Link>
   );
