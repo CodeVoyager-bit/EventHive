@@ -18,10 +18,10 @@ export default async function DashboardPage() {
   const upcoming = events.filter((e) => !isPast(e.date)).length;
 
   const stats = [
-    { label: "Revenue", value: formatPrice(revenue), icon: CurrencyDollar, primary: true },
-    { label: "Tickets sold", value: sold.toLocaleString("en-US"), icon: Ticket },
-    { label: "Upcoming events", value: upcoming, icon: ChartLineUp },
-    { label: "Seats filled", value: capacity ? `${Math.round((sold / capacity) * 100)}%` : "0%", icon: GridFour },
+    { label: "Revenue", value: formatPrice(revenue), icon: CurrencyDollar, primary: true, tone: "violet" },
+    { label: "Tickets sold", value: sold.toLocaleString("en-US"), icon: Ticket, tone: "pink" },
+    { label: "Upcoming events", value: upcoming, icon: ChartLineUp, tone: "blue" },
+    { label: "Seats filled", value: capacity ? `${Math.round((sold / capacity) * 100)}%` : "0%", icon: GridFour, tone: "lime" },
   ];
 
   return (
@@ -34,8 +34,8 @@ export default async function DashboardPage() {
       </header>
 
       <div className={s.stats}>
-        {stats.map(({ label, value, icon: Icon, primary }, i) => (
-          <div key={label} className={`rise ${s.stat} ${primary ? s.statPrimary : ""}`} style={{ "--i": i } as React.CSSProperties}>
+        {stats.map(({ label, value, icon: Icon, primary, tone }, i) => (
+          <div key={label} className={`rise ${s.stat} ${primary ? s.statPrimary : ""}`} style={{ "--i": i } as React.CSSProperties} data-tone={tone}>
             <Icon size={22} aria-hidden="true" className={s.statIcon} />
             <div className={`${s.statValue} num`}>{value}</div>
             <div className={s.statLabel}>{label}</div>
@@ -81,8 +81,8 @@ export default async function DashboardPage() {
                         <div className={s.evLoc}>{event.location}</div>
                       </td>
                       <td className="num">{formatDate(event.date, { month: "short", day: "numeric", year: "numeric" })}</td>
-                      <td>
-                        <span className="badge">
+                      <td data-tone={meta.tone}>
+                        <span className={`badge ${s.catBadge}`}>
                           <meta.icon size={14} aria-hidden="true" /> {meta.label}
                         </span>
                       </td>

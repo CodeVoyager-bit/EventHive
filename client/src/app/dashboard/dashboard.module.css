@@ -125,3 +125,27 @@
   color: var(--text);
   gap: 10px;
 }
+
+/* ---------- Light theme: colour-coded stat tiles and categories ---------- */
+:global([data-theme="light"]) .stat {
+  background: var(--tone-tint);
+  border-color: transparent;
+}
+:global([data-theme="light"]) .stat .statIcon {
+  color: var(--tone-deep);
+}
+:global([data-theme="light"]) .statPrimary {
+  background: var(--tone);
+  color: var(--tone-on);
+}
+:global([data-theme="light"]) .statPrimary .statIcon,
+:global([data-theme="light"]) .statPrimary .statLabel {
+  color: var(--tone-on);
+}
+:global([data-theme="light"]) .catBadge {
+  background: var(--tone-tint);
+  color: var(--tone-deep);
+}
+:global([data-theme="light"]) .bar span {
+  background: var(--accent);
+}

@@ -17,13 +17,14 @@ export const metadata: Metadata = {
     "EventHive is your gateway to discovering, organizing, and attending unforgettable events. Browse concerts, tech meetups, sports, and more.",
 };
 
+// Light (colourful) by default; dark only when the visitor picks it
 async function getTheme() {
-  return (await cookies()).get("theme")?.value === "light" ? "light" : "dark";
+  return (await cookies()).get("theme")?.value === "dark" ? "dark" : "light";
 }
 
 export async function generateViewport(): Promise<Viewport> {
   const theme = await getTheme();
-  return { themeColor: theme === "light" ? "#f5f5f7" : "#0b0b0f", colorScheme: theme };
+  return { themeColor: theme === "light" ? "#f7f6fb" : "#0b0b0f", colorScheme: theme };
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

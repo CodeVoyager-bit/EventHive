@@ -20,6 +20,9 @@
   align-items: flex-end;
   background: #111;
 }
+:global([data-theme="light"]) .visual {
+  background: linear-gradient(135deg, #ff3d8b, #7a4df5 55%, #2f5bff);
+}
 .visual img {
   object-fit: cover;
   animation: settle 1.6s var(--ease-out) backwards;

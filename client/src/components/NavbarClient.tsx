@@ -22,7 +22,7 @@ export default function NavbarClient({ user, initialTheme }: Props) {
     setTheme(next);
     document.documentElement.dataset.theme = next;
     document.cookie = `theme=${next}; path=/; max-age=31536000; samesite=lax`;
-    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", next === "light" ? "#f5f5f7" : "#0b0b0f");
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", next === "light" ? "#f7f6fb" : "#0b0b0f");
   }
 
   async function logout() {

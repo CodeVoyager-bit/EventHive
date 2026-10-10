@@ -169,3 +169,19 @@
   position: sticky;
   top: calc(var(--nav-h) + 12px);
 }
+
+/* ---------- Light theme: the event's category colour ---------- */
+:global([data-theme="light"]) .catBadge {
+  background: var(--tone-tint);
+  color: var(--tone-deep);
+}
+:global([data-theme="light"]) .factIcon {
+  color: var(--tone-deep);
+}
+:global([data-theme="light"]) .avatar {
+  background: var(--tone-tint);
+  color: var(--tone-deep);
+}
+:global([data-theme="light"]) .media {
+  background: linear-gradient(135deg, var(--tone-tint), color-mix(in srgb, var(--tone) 30%, var(--tone-tint)));
+}

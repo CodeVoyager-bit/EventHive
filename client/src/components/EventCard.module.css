@@ -138,3 +138,36 @@
   font-weight: 700;
   font-size: 1.05rem;
 }
+
+/* ---------- Light theme: category colour on the stub ---------- */
+:global([data-theme="light"]) .card:hover {
+  filter: drop-shadow(0 22px 26px color-mix(in srgb, var(--tone) 38%, transparent));
+}
+:global([data-theme="light"]) .stub {
+  box-shadow: inset 0 -4px 0 var(--tone);
+}
+:global([data-theme="light"]) .dateBlock {
+  align-self: start;
+  padding: 8px 6px 7px;
+  border-radius: var(--radius-md);
+  background: var(--tone-tint);
+  color: var(--tone-deep);
+}
+:global([data-theme="light"]) .mon {
+  color: var(--tone-deep);
+}
+:global([data-theme="light"]) .cat {
+  color: var(--tone-deep);
+}
+:global([data-theme="light"]) .hot {
+  background: var(--tone-tint);
+  color: var(--tone-deep);
+}
+:global([data-theme="light"]) .placeholder {
+  color: var(--tone-deep);
+  background: var(--tone-tint);
+}
+/* While the photo loads, show a soft wash of the category colour instead of a grey box */
+:global([data-theme="light"]) .media {
+  background: linear-gradient(135deg, var(--tone-tint), color-mix(in srgb, var(--tone) 30%, var(--tone-tint)));
+}

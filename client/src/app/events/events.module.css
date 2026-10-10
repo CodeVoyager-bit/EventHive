@@ -111,3 +111,20 @@
   border-color: var(--text);
   color: var(--bg);
 }
+
+/* ---------- Light theme: each category chip carries its colour ---------- */
+:global([data-theme="light"]) .chip[data-tone] svg {
+  color: var(--tone-deep);
+}
+:global([data-theme="light"]) .chip[data-tone]:hover {
+  border-color: var(--tone);
+  background: var(--tone-tint);
+}
+:global([data-theme="light"]) .chip[data-tone][aria-current="true"] {
+  background: var(--tone);
+  border-color: var(--tone);
+  color: var(--tone-on);
+}
+:global([data-theme="light"]) .chip[data-tone][aria-current="true"] svg {
+  color: currentColor;
+}

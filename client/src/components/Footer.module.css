@@ -49,3 +49,11 @@
   font-size: 0.85rem;
   color: var(--text-3);
 }
+
+/* ---------- Light theme: the category palette as a stripe ---------- */
+:global([data-theme="light"]) .footer {
+  border-top: 0;
+  background-image: linear-gradient(90deg, #ff3d8b 0 14.28%, #ff7a1a 0 28.57%, #ffc83d 0 42.85%, #8edb4f 0 57.14%, #14c8b4 0 71.42%, #2f5bff 0 85.71%, #7a4df5 0);
+  background-size: 100% 6px;
+  background-repeat: no-repeat;
+}

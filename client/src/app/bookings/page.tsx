@@ -26,7 +26,7 @@ export default async function BookingsPage() {
     const statusClass = status === "Confirmed" ? "badge-success" : status === "Attended" ? "badge-accent" : "";
 
     return (
-      <li key={booking._id} className={`rise ${s.ticket} ${live ? "" : s.past}`} style={{ "--i": i } as React.CSSProperties}>
+      <li key={booking._id} className={`rise ${s.ticket} ${live ? "" : s.past}`} style={{ "--i": i } as React.CSSProperties} data-tone={meta.tone}>
         <div className={s.main}>
           <div className={s.thumb}>
             {event?.imageUrl ? (

@@ -31,10 +31,10 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
     problem = err.message; // bad filter values typed into the URL
   }
 
-  const chip = (key: string | null, label: string, icon?: React.ReactNode) => {
+  const chip = (key: string | null, label: string, icon?: React.ReactNode, tone?: string) => {
     const active = (category || null) === key;
     return (
-      <Link key={key ?? "all"} href={`/events${qs(params, { category: key, page: null })}`} className={s.chip} aria-current={active ? "true" : undefined}>
+      <Link key={key ?? "all"} href={`/events${qs(params, { category: key, page: null })}`} className={s.chip} data-tone={tone} aria-current={active ? "true" : undefined}>
         {icon}
         {label}
       </Link>
@@ -84,7 +84,7 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
 
         <nav className={s.chips} aria-label="Categories">
           {chip(null, "All")}
-          {Object.entries(CATEGORY_META).map(([key, meta]) => chip(key, meta.label, <meta.icon size={16} aria-hidden="true" />))}
+          {Object.entries(CATEGORY_META).map(([key, meta]) => chip(key, meta.label, <meta.icon size={16} aria-hidden="true" />, meta.tone))}
           <Link href={`/events${qs(params, { from: null, to: today, page: null })}`} className={s.chip} aria-current={showingPast ? "true" : undefined}>
             <ClockCounterClockwise size={16} aria-hidden="true" /> Past
           </Link>

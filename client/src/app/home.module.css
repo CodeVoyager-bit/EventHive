@@ -15,7 +15,7 @@
   animation: lightsUp 1.6s var(--ease-out) backwards;
 }
 [data-theme="light"] .hero::before {
-  opacity: 0.55;
+  display: none;
 }
 @keyframes lightsUp {
   from {
@@ -139,24 +139,42 @@
   animation-delay: calc(380ms + var(--i) * 120ms);
 }
 .tix:nth-child(1) {
-  --x: -52%;
-  --y: 7%;
-  --r: -9deg;
+  --x: -54%;
+  --y: 4%;
+  --r: -10deg;
 }
 .tix:nth-child(2) {
   --y: -5%;
   z-index: 2;
 }
 .tix:nth-child(3) {
-  --x: 52%;
-  --y: 9%;
-  --r: 8deg;
+  --x: 54%;
+  --y: 6%;
+  --r: 9deg;
 }
 .tix:hover,
 .tix:focus-visible {
   --lift: -18px;
   --r: 0deg;
   z-index: 3;
+}
+/* Side tickets sit behind the front one. At rest they show only short details (date, price)
+   on their visible outer edge; hovering or focusing one brings it forward with full details. */
+.tix:nth-child(3) .tixStub {
+  justify-items: end;
+  text-align: right;
+}
+.tix:nth-child(1):not(:hover):not(:focus-visible) .tixStub > *,
+.tix:nth-child(3):not(:hover):not(:focus-visible) .tixStub > * {
+  max-width: 46%;
+}
+.tix:nth-child(1):not(:hover):not(:focus-visible) :is(.tixTitle, .tixMeta > span:first-child),
+.tix:nth-child(3):not(:hover):not(:focus-visible) :is(.tixTitle, .tixMeta > span:first-child) {
+  display: none;
+}
+.tix:nth-child(1):not(:hover):not(:focus-visible) .admit,
+.tix:nth-child(3):not(:hover):not(:focus-visible) .admit {
+  letter-spacing: 0.16em;
 }
 @keyframes deal {
   from {
@@ -345,6 +363,12 @@
   border-bottom: 1px solid var(--line);
   transition: color var(--dur-fast);
 }
+.catName,
+.catCount,
+.catArrow {
+  position: relative;
+  z-index: 1;
+}
 .catName {
   font-family: var(--font-display);
   font-stretch: 75%;
@@ -372,6 +396,8 @@
   transform: translate(4px, -4px) rotate(0deg);
 }
 /* Desktop: the hovered category's photo follows the cursor */
+/* Position follows the cursor via `translate` with no transition, so the photo never flies in
+   from a stale spot; only opacity, scale and rotation animate */
 .peek {
   position: absolute;
   left: 0;
@@ -384,13 +410,16 @@
   border-radius: var(--radius-md);
   pointer-events: none;
   opacity: 0;
-  transform: translate3d(calc(var(--px, 50%) - 50%), calc(var(--py, 50%) - 50%), 0) rotate(-5deg) scale(0.8);
-  transition: opacity var(--dur), transform 450ms var(--ease-out);
+  translate: calc(var(--px, 50%) - 50%) calc(var(--py, 50%) - 50%);
+  rotate: -6deg;
+  scale: 0.8;
+  transition: opacity var(--dur), scale 450ms var(--ease-spring), rotate 450ms var(--ease-out);
   box-shadow: var(--shadow);
 }
 .cat:hover .peek {
   opacity: 1;
-  transform: translate3d(calc(var(--px, 50%) - 50%), calc(var(--py, 50%) - 50%), 0) rotate(-3deg) scale(1);
+  rotate: -3deg;
+  scale: 1;
 }
 @media (hover: none), (max-width: 767px) {
   .cat {
@@ -402,11 +431,14 @@
     width: 64px;
     border-radius: var(--radius-sm);
     opacity: 1;
-    transform: none;
+    translate: none;
+    rotate: none;
+    scale: none;
     box-shadow: none;
   }
   .cat:hover .peek {
-    transform: none;
+    rotate: none;
+    scale: none;
   }
   .catName {
     font-size: 2.2rem;
@@ -485,5 +517,209 @@
     -webkit-mask: none;
     mask: none;
     padding: 28px;
+  }
+}
+
+/* ---------- Light theme: festival-poster colour ---------- */
+.hl {
+  color: var(--accent-ink);
+}
+:global([data-theme="light"]) .hl {
+  position: relative;
+  display: inline-block;
+  color: #14111f;
+  padding: 0 0.1em;
+  isolation: isolate;
+}
+/* Highlighter swipe behind "more." */
+:global([data-theme="light"]) .hl::before {
+  content: "";
+  position: absolute;
+  inset: 0.14em -0.02em 0.04em;
+  z-index: -1;
+  border-radius: 0.14em;
+  background: #ff3d8b;
+  transform-origin: left center;
+  animation: swipe 0.7s var(--ease-out) backwards;
+  animation-delay: 0.75s;
+}
+@keyframes swipe {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+/* Crisp colour shapes behind the ticket deck; they pop in as the poster assembles */
+.shapes {
+  display: none;
+}
+:global([data-theme="light"]) .shapes {
+  display: block;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.shapes span {
+  position: absolute;
+  animation: pop 0.9s var(--ease-spring) backwards;
+  animation-delay: calc(150ms + var(--d, 0) * 90ms);
+}
+.shapes span:nth-child(1) {
+  --d: 0;
+  left: 18%;
+  top: 14%;
+  width: 64%;
+  height: 72%;
+  border-radius: 44px;
+  background: #ffc83d;
+  rotate: 7deg;
+}
+.shapes span:nth-child(2) {
+  --d: 1;
+  right: 4%;
+  top: 4%;
+  width: 22%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #ff3d8b;
+}
+.shapes span:nth-child(3) {
+  --d: 2;
+  left: 2%;
+  bottom: 10%;
+  width: 34%;
+  height: 13%;
+  border-radius: 999px;
+  background: #2f5bff;
+  rotate: -14deg;
+}
+.shapes span:nth-child(4) {
+  --d: 3;
+  right: 10%;
+  bottom: 4%;
+  width: 15%;
+  aspect-ratio: 1;
+  background: #8edb4f;
+  clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+.shapes span:nth-child(5) {
+  --d: 4;
+  left: 8%;
+  top: 6%;
+  width: 13%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 10px solid #7a4df5;
+}
+@keyframes pop {
+  from {
+    opacity: 0;
+    scale: 0.4;
+  }
+}
+
+:global([data-theme="light"]) .tix {
+  filter: drop-shadow(0 26px 30px rgba(60, 30, 90, 0.28));
+}
+:global([data-theme="light"]) .tixStub {
+  background: var(--tone-tint);
+}
+:global([data-theme="light"]) .tixDate,
+:global([data-theme="light"]) .admit {
+  color: var(--tone-deep);
+}
+:global([data-theme="light"]) .admit {
+  border-top-color: color-mix(in srgb, var(--tone-deep) 25%, transparent);
+}
+
+:global([data-theme="light"]) .featureDate {
+  color: var(--tone);
+}
+
+/* Category rows fill with their colour from the left on hover */
+:global([data-theme="light"]) .cat::before {
+  content: "";
+  position: absolute;
+  inset: 4px -12px;
+  border-radius: var(--radius-lg);
+  background: var(--tone);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 520ms var(--ease-out);
+}
+:global([data-theme="light"]) .cat:hover::before,
+:global([data-theme="light"]) .cat:focus-visible::before {
+  transform: scaleX(1);
+}
+:global([data-theme="light"]) .cat:hover .catName,
+:global([data-theme="light"]) .cat:hover .catCount,
+:global([data-theme="light"]) .cat:hover .catArrow,
+:global([data-theme="light"]) .cat:focus-visible .catName,
+:global([data-theme="light"]) .cat:focus-visible .catCount,
+:global([data-theme="light"]) .cat:focus-visible .catArrow {
+  color: var(--tone-on);
+}
+@media (hover: none), (max-width: 767px) {
+  :global([data-theme="light"]) .cat::before {
+    display: none;
+  }
+  :global([data-theme="light"]) .peek {
+    outline: 3px solid var(--tone);
+    outline-offset: -3px;
+  }
+}
+
+/* Host band: violet ticket with a yellow stub */
+:global([data-theme="light"]) .hostMain {
+  background-color: #7a4df5;
+}
+:global([data-theme="light"]) .hostStub {
+  background: #ffc83d;
+  border-left-color: rgba(20, 17, 31, 0.35);
+}
+:global([data-theme="light"]) .hostBtn {
+  background: #14111f;
+  color: #fff;
+}
+:global([data-theme="light"]) .hostBtn:hover {
+  background: #c2105a;
+}
+@media (max-width: 899px) {
+  :global([data-theme="light"]) .hostStub {
+    border-top-color: rgba(20, 17, 31, 0.35);
+  }
+}
+
+/* Coloured icon at the start of each category row (light theme only) */
+.catIcon {
+  display: none;
+}
+:global([data-theme="light"]) .cat {
+  grid-template-columns: auto 1fr auto auto;
+}
+:global([data-theme="light"]) .catIcon {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--tone);
+  color: var(--tone-on);
+  transition: transform 500ms var(--ease-spring), background-color var(--dur-fast), color var(--dur-fast);
+}
+:global([data-theme="light"]) .cat:hover .catIcon,
+:global([data-theme="light"]) .cat:focus-visible .catIcon {
+  background: var(--tone-on);
+  color: var(--tone);
+  transform: rotate(-12deg) scale(1.06);
+}
+@media (hover: none), (max-width: 767px) {
+  :global([data-theme="light"]) .cat {
+    grid-template-columns: auto 1fr auto;
+  }
+  :global([data-theme="light"]) .catIcon {
+    display: none;
   }
 }

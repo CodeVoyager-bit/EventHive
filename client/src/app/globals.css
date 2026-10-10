@@ -53,25 +53,78 @@
 }
 
 [data-theme="light"] {
-  --bg: #f5f5f7;
-  --bg-2: #ececf1;
+  --bg: #f7f6fb;
+  --bg-2: #efedf7;
   --surface: #ffffff;
-  --surface-2: #ececf1;
-  --line: rgba(17, 17, 23, 0.08);
-  --line-strong: rgba(17, 17, 23, 0.16);
-  --text: #111117; /* 17.3:1 on bg */
-  --text-2: #474755; /* 9.1:1 on surface */
-  --text-3: #6a6a78; /* 5.3:1 on surface, 4.5:1 on surface-2 */
-  --accent-ink: #c0124f; /* 6.1:1 on surface */
-  --accent-soft: #fce7f0;
-  --glass: rgba(255, 255, 255, 0.72);
-  --glass-edge: rgba(17, 17, 23, 0.08);
-  --skeleton: rgba(17, 17, 23, 0.06);
-  --shadow: 0 24px 60px -28px rgba(30, 20, 40, 0.28);
+  --surface-2: #efedf7;
+  --line: rgba(20, 17, 31, 0.09);
+  --line-strong: rgba(20, 17, 31, 0.18);
+  --text: #14111f; /* 17.3:1 on bg */
+  --text-2: #4a4560; /* 9.1:1 on surface */
+  --text-3: #67627a; /* 5.8:1 on surface, 5.0:1 on surface-2 */
+  --accent: #c2105a; /* fills under white text: 6.0:1 */
+  --accent-hover: #a30c4b;
+  --accent-ink: #c2105a; /* 5.6:1 on bg */
+  --accent-soft: #ffe3ef;
+  --glass: rgba(255, 255, 255, 0.76);
+  --glass-edge: rgba(20, 17, 31, 0.08);
+  --skeleton: rgba(20, 17, 31, 0.06);
+  --shadow: 0 24px 60px -28px rgba(60, 30, 90, 0.28);
   --success-text: #15803d;
   --danger-text: #c42b1c;
-  --grain-opacity: 0.035;
+  --grain-opacity: 0.02;
+  /* default tone (overridden per category with data-tone) */
+  --tone: #ff3d8b;
+  --tone-deep: #c2105a;
+  --tone-tint: #ffe3ef;
+  --tone-on: #14111f;
   color-scheme: light;
+}
+
+/* Light theme palette: one colour per category, used consistently everywhere.
+   vivid = shapes and fills, deep = text on white/tint (>=4.7:1), tint = soft backgrounds,
+   on = text on the vivid fill (>=5:1). Dark theme ignores these and keeps the single accent. */
+[data-theme="light"] [data-tone="pink"] {
+  --tone: #ff3d8b;
+  --tone-deep: #c2105a;
+  --tone-tint: #ffe3ef;
+  --tone-on: #14111f;
+}
+[data-theme="light"] [data-tone="orange"] {
+  --tone: #ff7a1a;
+  --tone-deep: #b3470a;
+  --tone-tint: #ffeadb;
+  --tone-on: #14111f;
+}
+[data-theme="light"] [data-tone="yellow"] {
+  --tone: #ffc83d;
+  --tone-deep: #8a5f00;
+  --tone-tint: #fff3cf;
+  --tone-on: #14111f;
+}
+[data-theme="light"] [data-tone="lime"] {
+  --tone: #8edb4f;
+  --tone-deep: #3a7a10;
+  --tone-tint: #e8f7d9;
+  --tone-on: #14111f;
+}
+[data-theme="light"] [data-tone="blue"] {
+  --tone: #2f5bff;
+  --tone-deep: #2347c9;
+  --tone-tint: #e2e9ff;
+  --tone-on: #ffffff;
+}
+[data-theme="light"] [data-tone="violet"] {
+  --tone: #7a4df5;
+  --tone-deep: #6236d9;
+  --tone-tint: #ede5ff;
+  --tone-on: #ffffff;
+}
+[data-theme="light"] [data-tone="teal"] {
+  --tone: #14c8b4;
+  --tone-deep: #0b7468;
+  --tone-tint: #d9f6f2;
+  --tone-on: #14111f;
 }
 
 /* ---------- Base ---------- */
@@ -306,6 +359,14 @@ p {
 .btn-primary:hover:not(:disabled) {
   background: var(--accent-hover);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 14px 34px -12px rgba(212, 20, 90, 0.9);
+}
+[data-theme="light"] .btn-primary {
+  background: #14111f;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 10px 26px -12px rgba(20, 17, 31, 0.55);
+}
+[data-theme="light"] .btn-primary:hover:not(:disabled) {
+  background: var(--accent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 14px 30px -12px rgba(194, 16, 90, 0.6);
 }
 .btn-secondary {
   background: var(--surface);
@@ -649,13 +710,14 @@ dialog.dialog::backdrop {
 @keyframes reveal {
   from {
     opacity: 0;
-    transform: translateY(40px) scale(0.98);
+    translate: 0 40px;
   }
 }
-/* Route changes: soft cross-fade; shared event images morph (see React <ViewTransition>) */
+/* Route changes swap instantly (a whole-page cross-fade flickered the glass nav);
+   only shared event images morph between pages (see React <ViewTransition>) */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: 220ms;
+  animation: none;
 }
 ::view-transition-group(.morph) {
   animation-duration: 520ms;

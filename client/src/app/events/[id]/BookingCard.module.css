@@ -108,3 +108,24 @@
     transform: rotate(-24deg) scale(1.9);
   }
 }
+
+/* ---------- Light theme: ticket tinted with the event's category colour ---------- */
+:global([data-theme="light"]) .ticket {
+  filter: drop-shadow(0 24px 36px color-mix(in srgb, var(--tone) 30%, transparent));
+}
+:global([data-theme="light"]) .top {
+  background: var(--tone-tint);
+  background-image: none;
+}
+:global([data-theme="light"]) .type {
+  background: var(--surface);
+}
+:global([data-theme="light"]) .type[aria-checked="true"] {
+  border-color: var(--tone-deep);
+  box-shadow: inset 0 0 0 1px var(--tone-deep);
+  background: var(--surface);
+}
+:global([data-theme="light"]) .stamp {
+  color: var(--tone-deep);
+  border-color: var(--tone-deep);
+}

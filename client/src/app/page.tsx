@@ -37,7 +37,9 @@ export default async function HomePage() {
                 <span style={order(0)}>Go out</span>
               </span>
               <span className={s.line}>
-                <span className="accent" style={order(1)}>more.</span>
+                <span style={order(1)}>
+                  <span className={s.hl}>more.</span>
+                </span>
               </span>
             </h1>
             <p className={`lead ${s.heroRise} ${s.lead}`} style={order(3)}>
@@ -53,6 +55,13 @@ export default async function HomePage() {
 
           {deck.length > 0 && (
             <div className={s.deckWrap}>
+              <div className={s.shapes} aria-hidden="true">
+                <span />
+                <span />
+                <span />
+                <span />
+                <span />
+              </div>
               <div className={s.deck} data-tilt>
                 {deck.map((event, i) => (
                   <DeckTicket key={event._id} event={event} i={i} />
@@ -105,8 +114,11 @@ export default async function HomePage() {
         <ul className={s.cats}>
           {Object.entries(CATEGORY_META).map(([key, meta]) => (
             <li key={key} className="reveal">
-              <Link href={`/events?category=${key}`} className={s.cat} data-spotlight>
+              <Link href={`/events?category=${key}`} className={s.cat} data-tone={meta.tone} data-spotlight>
                 <Image className={s.peek} src={meta.image.replace("w=1200", "w=480")} alt="" width={300} height={200} sizes="300px" />
+                <span className={s.catIcon} aria-hidden="true">
+                  <meta.icon size={26} weight="bold" />
+                </span>
                 <span className={s.catName}>{meta.label}</span>
                 <span className={`${s.catCount} num`}>{counts[key] ? `${counts[key]} upcoming` : "Nothing scheduled"}</span>
                 <ArrowUpRight className={s.catArrow} size={28} aria-hidden="true" />
@@ -138,8 +150,8 @@ export default async function HomePage() {
 function DeckTicket({ event, i }: { event: Event; i: number }) {
   const Icon = categoryMeta(event.category).icon;
   return (
-    <Link href={`/events/${event._id}`} className={s.tix} style={order(i)}>
-      <ViewTransition name={`ev-${event._id}`} share="morph">
+    <Link href={`/events/${event._id}`} className={s.tix} style={order(i)} data-tone={categoryMeta(event.category).tone}>
+      <ViewTransition name={`ev-${event._id}`} share="morph" default="none">
         <div className={`${s.tixMedia} notch-b`}>
           {event.imageUrl ? (
             <Image src={event.imageUrl} alt="" fill sizes="280px" priority={i === 1} />
@@ -166,8 +178,8 @@ function DeckTicket({ event, i }: { event: Event; i: number }) {
 function FeatureTile({ event }: { event: Event }) {
   const meta = categoryMeta(event.category);
   return (
-    <Link href={`/events/${event._id}`} className={`${s.feature} reveal`} data-spotlight>
-      <ViewTransition name={`ev-${event._id}`} share="morph">
+    <Link href={`/events/${event._id}`} className={`${s.feature} reveal`} data-tone={meta.tone} data-spotlight>
+      <ViewTransition name={`ev-${event._id}`} share="morph" default="none">
         <div className={s.featureMedia}>
           {event.imageUrl ? (
             <Image src={event.imageUrl} alt="" fill sizes="(max-width: 900px) 100vw, 620px" />

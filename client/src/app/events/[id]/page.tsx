@@ -58,12 +58,12 @@ export default async function EventDetailPage({ params }: Props) {
   ];
 
   return (
-    <div className="container">
+    <div className="container" data-tone={meta.tone}>
       <Link href="/events" className={s.back}>
         <ArrowLeft size={16} aria-hidden="true" /> All events
       </Link>
 
-      <ViewTransition name={`ev-${event._id}`} share="morph">
+      <ViewTransition name={`ev-${event._id}`} share="morph" default="none">
         <div className={s.media}>
           {event.imageUrl ? (
             <Image src={event.imageUrl} alt="" fill priority sizes="(max-width: 1240px) 100vw, 1180px" />
@@ -78,7 +78,7 @@ export default async function EventDetailPage({ params }: Props) {
       <div className={s.layout}>
         <article className={s.main}>
           <div className={`rise ${s.badges}`}>
-            <span className="badge">
+            <span className={`badge ${s.catBadge}`}>
               <meta.icon size={14} aria-hidden="true" /> {meta.label}
             </span>
             <span className="badge">{online ? "Online" : "In person"}</span>

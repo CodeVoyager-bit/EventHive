@@ -135,3 +135,18 @@
   font-weight: 600;
   color: var(--text-3);
 }
+
+/* ---------- Light theme: stub tinted with the event's category colour ---------- */
+:global([data-theme="light"]) .ticket {
+  filter: drop-shadow(0 16px 28px color-mix(in srgb, var(--tone) 22%, transparent));
+}
+:global([data-theme="light"]) .stub {
+  background: var(--tone-tint);
+  border-color: color-mix(in srgb, var(--tone-deep) 35%, transparent);
+}
+:global([data-theme="light"]) .code {
+  color: var(--tone-deep);
+}
+:global([data-theme="light"]) .title a:hover {
+  color: var(--tone-deep);
+}
