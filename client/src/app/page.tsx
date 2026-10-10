@@ -3,6 +3,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, MagnifyingGlass, Sparkle } from "@phosphor-icons/react/ssr";
 import EventCard from "@/components/EventCard";
+import Countdown from "@/components/Countdown";
+import PhotoTrail from "@/components/PhotoTrail";
+import SurpriseMe from "@/components/SurpriseMe";
+import HowItWorks from "./HowItWorks";
 import { apiFetchPaged, getSessionUser } from "@/lib/server";
 import { CATEGORY_META, categoryMeta, type Tone } from "@/lib/categories";
 import { formatPrice } from "@/lib/format";
@@ -21,6 +25,8 @@ const WORDS: { text: string; tone: Tone }[] = [
   { text: "more.", tone: "pink" },
 ];
 const TONES: Tone[] = ["pink", "orange", "yellow", "lime", "teal", "blue", "violet"];
+// Statement copy; highlighted words take their category colour as they fill in
+const MANIFESTO: [string, Tone | ""][] = [["There's", ""], ["a", ""], ["gig,", "pink"], ["a", ""], ["workshop", "orange"], ["or", ""], ["a", ""], ["long", ""], ["dinner", "yellow"], ["out", ""], ["there", ""], ["with", ""], ["your", ""], ["name", ""], ["on", ""], ["it.", ""], ["Find", ""], ["it", ""], ["here,", ""], ["grab", ""], ["a", ""], ["seat", ""], ["in", ""], ["seconds,", "blue"], ["and", ""], ["keep", ""], ["the", ""], ["ticket", ""], ["in", ""], ["your", ""], ["pocket.", "violet"]];
 
 export default async function HomePage() {
   const [events, user] = await Promise.all([
@@ -45,6 +51,7 @@ export default async function HomePage() {
   const hostHref = user ? "/dashboard/create" : "/auth/register";
   const marqueeA = upcoming.length ? upcoming.map((e) => e.title) : ["Live music", "Meetups", "Workshops", "Supper clubs"];
   const marqueeB = Object.values(CATEGORY_META).map((m) => m.label);
+  const trail = upcoming.filter((e) => e.imageUrl).map((e) => e.imageUrl.replace(/w=\d+/, "w=420"));
 
   return (
     <>
@@ -87,6 +94,9 @@ export default async function HomePage() {
               <input id="hero-q" name="q" type="search" placeholder="Search events, cities, topics…" autoComplete="off" spellCheck={false} />
               <button type="submit" className="btn btn-primary" data-magnetic>Search</button>
             </form>
+            <div className={s.heroRise} style={vars({ "--i": 5 })}>
+              <SurpriseMe events={upcoming.map((e) => ({ id: e._id, title: e.title }))} />
+            </div>
           </div>
 
           {deck.length > 0 && (
@@ -102,6 +112,10 @@ export default async function HomePage() {
                 {deck.map((event, i) => (
                   <DeckTicket key={event._id} event={event} i={i} />
                 ))}
+              </div>
+              <div className={s.sticker} aria-label={`${deck[0].title} starts soon`}>
+                <span className={s.stickerLabel}>Next up in</span>
+                <Countdown to={deck[0].date} />
               </div>
             </div>
           )}
@@ -175,6 +189,21 @@ export default async function HomePage() {
         </section>
       )}
 
+      {/* ---------- Statement: words fill with colour as you scroll; photos trail the cursor ---------- */}
+      {upcoming.length > 0 && (
+        <section className={s.manifestoSection}>
+          <PhotoTrail images={trail} className={s.trailArea}>
+            <p className={`container display ${s.manifesto}`}>
+              {MANIFESTO.map(([word, tone], i) => (
+                <span key={i} className={s.mword} data-tone={tone || undefined} style={vars({ "--w": i })}>
+                  {word}{" "}
+                </span>
+              ))}
+            </p>
+          </PhotoTrail>
+        </section>
+      )}
+
       {/* ---------- Coming up: vertical scroll pans the row sideways ---------- */}
       {comingUp.length > 0 && (
         <section className={s.pan} aria-labelledby="coming-up">
@@ -206,6 +235,8 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+
+      {upcoming.length > 0 && <HowItWorks sampleCode="EVH7A2C9F41B0D3" />}
 
       {/* ---------- Categories ---------- */}
       <section id="categories" className={`container section ${s.anchor}`}>

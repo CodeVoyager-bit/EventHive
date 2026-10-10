@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CheckCircle, Sparkle, WarningCircle } from "@phosphor-icons/react";
 import { api } from "@/lib/api";
+import { burstFrom } from "@/lib/confetti";
 import { formatPrice } from "@/lib/format";
 import s from "./BookingCard.module.css";
 
@@ -15,6 +16,7 @@ export default function BookingCard({ eventId, price, left, capacity, past, avai
   const [ticketType, setTicketType] = useState<"general" | "vip">("general");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
+  const bookButton = useRef<HTMLButtonElement>(null);
 
   const total = ticketType === "vip" ? price * 2 : price;
   const canBook = !past && available && left > 0;
@@ -30,6 +32,7 @@ export default function BookingCard({ eventId, price, left, capacity, past, avai
     try {
       await api.createBooking({ eventId, ticketType });
       setMessage({ ok: true, text: "You're in. Your ticket is under My Tickets." });
+      if (bookButton.current) burstFrom(bookButton.current);
       router.refresh(); // refresh the seat count rendered on the server
     } catch (err) {
       setMessage({ ok: false, text: err instanceof Error ? err.message : "Booking failed. Please try again." });
@@ -65,7 +68,7 @@ export default function BookingCard({ eventId, price, left, capacity, past, avai
           {past ? "This event has ended" : left > 0 ? <><strong>{left}</strong> of {capacity} seats left</> : "Sold out"}
         </p>
 
-        <button className="btn btn-primary btn-lg btn-block" onClick={book} disabled={busy || booked || !canBook}>
+        <button ref={bookButton} className="btn btn-primary btn-lg btn-block" onClick={book} disabled={busy || booked || !canBook}>
           {busy ? "Booking…" : booked ? "Booked" : past ? "Event Ended" : !available ? "Not Available" : left === 0 ? "Sold Out" : signedIn ? "Get Ticket" : "Sign In to Book"}
         </button>
 

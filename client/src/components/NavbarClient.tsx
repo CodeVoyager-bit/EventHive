@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type MouseEvent } from "react";
+import { flushSync } from "react-dom";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { List, MagnifyingGlass, Moon, SignOut, Sun, X } from "@phosphor-icons/react";
@@ -17,12 +18,30 @@ export default function NavbarClient({ user, initialTheme }: Props) {
   const [open, setOpen] = useState(false);
   const [theme, setTheme] = useState(initialTheme);
 
-  function toggleTheme() {
+  function toggleTheme(e: MouseEvent<HTMLButtonElement>) {
     const next = theme === "dark" ? "light" : "dark";
-    setTheme(next);
-    document.documentElement.dataset.theme = next;
-    document.cookie = `theme=${next}; path=/; max-age=31536000; samesite=lax`;
-    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", next === "light" ? "#f7f6fb" : "#0b0b0f");
+    const apply = () => {
+      setTheme(next);
+      document.documentElement.dataset.theme = next;
+      document.cookie = `theme=${next}; path=/; max-age=31536000; samesite=lax`;
+      document.querySelector('meta[name="theme-color"]')?.setAttribute("content", next === "light" ? "#f7f6fb" : "#0b0b0f");
+    };
+    if (!document.startViewTransition || matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      apply();
+      return;
+    }
+    // The new theme grows out of the toggle button as an expanding circle
+    const r = e.currentTarget.getBoundingClientRect();
+    const x = r.left + r.width / 2;
+    const y = r.top + r.height / 2;
+    const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    const transition = document.startViewTransition(() => flushSync(apply));
+    transition.ready.then(() => {
+      document.documentElement.animate(
+        { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
+        { duration: 700, easing: "cubic-bezier(0.16, 1, 0.3, 1)", pseudoElement: "::view-transition-new(root)" }
+      );
+    });
   }
 
   async function logout() {

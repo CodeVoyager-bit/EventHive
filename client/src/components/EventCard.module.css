@@ -1,13 +1,16 @@
 .card {
   --lift: 0px;
+  --h: 0;
   display: flex;
   flex-direction: column;
   filter: drop-shadow(0 0 0 transparent);
-  transform: translateY(var(--lift));
+  /* lift + a gentle 3D tilt toward the cursor (--rx/--ry from PointerFX, only while hovered) */
+  transform: perspective(900px) translateY(var(--lift)) rotateX(calc(var(--rx, 0deg) * var(--h) * 0.5)) rotateY(calc(var(--ry, 0deg) * var(--h) * 0.5));
   transition: transform 420ms var(--ease-spring), filter var(--dur);
 }
 .card:hover {
   --lift: -6px;
+  --h: 1;
   filter: drop-shadow(0 22px 28px rgba(0, 0, 0, 0.35));
 }
 .media {

@@ -1,0 +1,64 @@
+.wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 18px;
+  min-height: 44px;
+}
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px 0 14px;
+  border-radius: var(--radius-full);
+  border: 2px dashed var(--line-strong);
+  font-weight: 650;
+  font-size: 0.95rem;
+  color: var(--text);
+  background: var(--surface);
+}
+.button:hover:not(:disabled) {
+  border-style: solid;
+  border-color: var(--accent-ink);
+}
+.button:disabled {
+  cursor: progress;
+}
+.button svg {
+  color: var(--accent-ink);
+  transition: rotate 500ms var(--ease-spring);
+}
+.button:hover svg {
+  rotate: 90deg;
+}
+.rolling {
+  animation: roll 0.35s linear infinite;
+}
+@keyframes roll {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.slot {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 0.95rem;
+}
+.hint {
+  color: var(--text-3);
+}
+.title {
+  display: block;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  animation: slotIn 160ms var(--ease-out);
+}
+@keyframes slotIn {
+  from {
+    opacity: 0;
+    transform: translateY(-70%);
+  }
+}

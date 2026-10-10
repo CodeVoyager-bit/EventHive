@@ -18,7 +18,7 @@ export default function EventCard({ event, priority = false }: { event: Event; p
   const status = past ? "Ended" : left === 0 ? "Sold out" : left <= Math.max(5, event.capacity * 0.1) ? `${left} left` : null;
 
   return (
-    <Link href={`/events/${event._id}`} className={s.card} data-tone={meta.tone} data-spotlight>
+    <Link href={`/events/${event._id}`} className={s.card} data-tone={meta.tone} data-spotlight data-tilt>
       <ViewTransition name={`ev-${event._id}`} share="morph" default="none">
         <div className={`${s.media} notch-b`}>
           {event.imageUrl ? (
