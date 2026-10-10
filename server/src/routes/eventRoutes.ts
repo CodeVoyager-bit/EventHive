@@ -24,6 +24,13 @@ router.get(
   (req, res) => EventController.getMyEvents(req, res)
 );
 
+router.get(
+  "/my/stats",
+  authenticate,
+  authorize("organizer", "admin"),
+  (req, res) => EventController.getMyStats(req, res)
+);
+
 router.put(
   "/:id",
   authenticate,

@@ -195,3 +195,54 @@ test("check-in: only the owner, codes are case-insensitive, no double admission,
   const mine = (await api("/bookings/my", { token: a1.token })).json.data;
   assert.ok(mine.find((b: { _id: string }) => b._id === b1._id).checkedInAt);
 });
+
+test("listing sorts by price or popularity and filters by max price", async () => {
+  await Event.deleteMany({});
+  const org = new mongoose.Types.ObjectId();
+  await Event.create([
+    { ...eventBody({ title: "Cheap", price: 199, date: inDays(9) }), bookedCount: 1, organizerId: org },
+    { ...eventBody({ title: "Free", price: 0, date: inDays(8) }), bookedCount: 0, organizerId: org },
+    { ...eventBody({ title: "Pricey", price: 4999, date: inDays(7), capacity: 50 }), bookedCount: 40, organizerId: org },
+  ]);
+  const titles = async (qs: string) => (await api(`/events?${qs}`)).json.data.map((e: { title: string }) => e.title);
+  assert.deepEqual(await titles("sort=date"), ["Pricey", "Free", "Cheap"]);
+  assert.deepEqual(await titles("sort=price-asc"), ["Free", "Cheap", "Pricey"]);
+  assert.deepEqual(await titles("sort=price-desc"), ["Pricey", "Cheap", "Free"]);
+  assert.deepEqual(await titles("sort=popular"), ["Pricey", "Cheap", "Free"]);
+  assert.deepEqual(await titles("maxPrice=500&sort=price-asc"), ["Free", "Cheap"]);
+  assert.deepEqual(await titles("maxPrice=0"), ["Free"]);
+  assert.equal((await api("/events?sort=random")).status, 400);
+});
+
+test("organizer stats: zero-filled daily bookings and revenue for their own events only", async () => {
+  const owner = await user("organizer");
+  const fan = await user("attendee");
+  const ev = (await api("/events", { method: "POST", token: owner.token, body: eventBody({ price: 300 }) })).json.data;
+  await api("/bookings", { method: "POST", token: fan.token, body: { eventId: ev._id, ticketType: "vip" } });
+
+  assert.equal((await api("/events/my/stats", { token: fan.token })).status, 403);
+  const stats = (await api("/events/my/stats?days=14", { token: owner.token })).json.data;
+  assert.equal(stats.daily.length, 14);
+  const today = stats.daily[stats.daily.length - 1];
+  assert.equal(today.bookings, 1);
+  assert.equal(today.revenue, 600); // VIP is double
+  assert.equal(stats.daily.slice(0, -1).every((d: { bookings: number }) => d.bookings === 0), true);
+});
+
+test("recent reviews are public, include reviewer and event, and skip deleted events", async () => {
+  const reviewer = await user("attendee");
+  const kept = await Event.create({ ...eventBody({ title: "Kept Gig", date: inDays(-3) }), organizerId: new mongoose.Types.ObjectId() });
+  const gone = await Event.create({ ...eventBody({ title: "Gone Gig", date: inDays(-2) }), organizerId: new mongoose.Types.ObjectId() });
+  for (const ev of [kept, gone]) {
+    await Booking.create({ userId: reviewer.id, eventId: ev._id, ticketCode: `R${ev._id}`, amount: 10, status: "confirmed" });
+    await Review.create({ userId: reviewer.id, eventId: ev._id, rating: 5, comment: `Loved ${ev.title}` });
+  }
+  await Event.deleteOne({ _id: gone._id });
+
+  const recent = await api("/reviews/recent?limit=5");
+  assert.equal(recent.status, 200);
+  const titles = recent.json.data.map((r: { eventId: { title: string } }) => r.eventId.title);
+  assert.ok(titles.includes("Kept Gig"));
+  assert.ok(!titles.includes("Gone Gig"));
+  assert.equal(typeof recent.json.data[0].userId.name, "string");
+});

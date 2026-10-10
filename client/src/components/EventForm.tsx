@@ -165,8 +165,8 @@ export default function EventForm({ initial }: { initial?: Event }) {
               <input id="capacity" name="capacity" type="number" inputMode="numeric" className="input" min={1} max={100000} value={form.capacity} onChange={set} placeholder="100" required />
             </div>
             <div className="field">
-              <label className="label" htmlFor="price">General ticket price (USD)</label>
-              <input id="price" name="price" type="number" inputMode="decimal" className="input" min={0} step="0.01" value={form.price} onChange={set} placeholder="0 for free" required />
+              <label className="label" htmlFor="price">General ticket price (₹)</label>
+              <input id="price" name="price" type="number" inputMode="decimal" className="input" min={0} step="1" value={form.price} onChange={set} placeholder="0 for free" required />
               <span className="help">VIP tickets are priced at double this amount.</span>
             </div>
             {editing && (

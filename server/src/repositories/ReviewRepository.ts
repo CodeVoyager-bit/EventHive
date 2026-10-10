@@ -13,6 +13,16 @@ class ReviewRepository {
       .sort({ createdAt: -1 });
   }
 
+  // Newest reviews whose event and author still exist (deleted events leave orphaned reviews)
+  async findRecent(limit: number): Promise<IReview[]> {
+    const rows = await Review.find()
+      .sort({ createdAt: -1 })
+      .limit(limit * 3)
+      .populate("userId", "name")
+      .populate("eventId", "title category");
+    return rows.filter((r) => r.eventId && r.userId).slice(0, limit);
+  }
+
   async getStats(eventId: string): Promise<{ averageRating: number; reviewCount: number }> {
     const [row] = await Review.aggregate([
       { $match: { eventId: new mongoose.Types.ObjectId(eventId) } },

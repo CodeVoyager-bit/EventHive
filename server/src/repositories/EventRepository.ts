@@ -1,4 +1,4 @@
-import { FilterQuery } from "mongoose";
+import { FilterQuery, SortOrder } from "mongoose";
 import Event, { IEvent } from "../models/Event";
 
 class EventRepository {
@@ -14,12 +14,13 @@ class EventRepository {
   async findPaged(
     filter: FilterQuery<IEvent>,
     page: number,
-    limit: number
+    limit: number,
+    sort: Record<string, SortOrder> = { date: 1 }
   ): Promise<{ items: IEvent[]; total: number }> {
     const [items, total] = await Promise.all([
       Event.find(filter)
         .populate("organizerId", "name email")
-        .sort({ date: 1 })
+        .sort({ ...sort, _id: 1 })
         .skip((page - 1) * limit)
         .limit(limit),
       Event.countDocuments(filter),

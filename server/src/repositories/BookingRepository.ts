@@ -54,6 +54,25 @@ class BookingRepository {
     return result[0]?.total ?? 0;
   }
 
+  async dailyTotals(
+    eventIds: mongoose.Types.ObjectId[],
+    since: Date,
+    timezone: string
+  ): Promise<{ _id: string; bookings: number; revenue: number }[]> {
+    if (eventIds.length === 0) return [];
+    return Booking.aggregate([
+      { $match: { eventId: { $in: eventIds }, status: "confirmed", bookingDate: { $gte: since } } },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$bookingDate", timezone } },
+          bookings: { $sum: 1 },
+          revenue: { $sum: "$amount" },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+  }
+
   async cancelAllByEvent(eventId: string): Promise<void> {
     await Booking.updateMany(
       { eventId, status: "confirmed" },

@@ -27,6 +27,10 @@ class ReviewService {
     }
   }
 
+  async getRecent(limit: number): Promise<IReview[]> {
+    return ReviewRepository.findRecent(limit);
+  }
+
   async getEventReviews(
     eventId: string
   ): Promise<{ reviews: IReview[]; averageRating: number; reviewCount: number }> {

@@ -8,7 +8,9 @@ export const formatTime = (iso: string) => new Date(iso).toLocaleTimeString("en-
 export const formatDateTime = (iso: string) =>
   new Date(iso).toLocaleString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" });
 
-export const formatPrice = (n: number) => (n === 0 ? "Free" : `$${n.toLocaleString("en-US")}`);
+// Prices are in Indian rupees, with Indian digit grouping (₹1,19,999)
+const inr = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", minimumFractionDigits: 0, maximumFractionDigits: 2 });
+export const formatPrice = (n: number) => (n === 0 ? "Free" : inr.format(n));
 
 export const isPast = (iso: string) => new Date(iso).getTime() <= Date.now();
 

@@ -37,7 +37,7 @@ export default function HowItWorks({ sampleCode }: { sampleCode: string }) {
         <div className={s.ticket}>
           <div className={`${s.ticketTop} notch-b`}>
             <span className={s.small}>VIP ticket</span>
-            <span className={s.price}>$70</span>
+            <span className={s.price}>₹2,398</span>
             <span className={s.toggle}>
               <span>General</span>
               <span className={s.on}>

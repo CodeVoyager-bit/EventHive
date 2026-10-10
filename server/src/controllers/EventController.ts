@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { BaseController } from "./BaseController";
 import EventService from "../services/EventService";
 import { requireUser } from "../middleware/auth";
-import { createEventSchema, updateEventSchema, listEventsQuery, objectId } from "../schemas";
+import { createEventSchema, updateEventSchema, listEventsQuery, objectId, statsQuery } from "../schemas";
 
 class EventController extends BaseController {
   async create(req: Request, res: Response): Promise<void> {
@@ -24,6 +24,11 @@ class EventController extends BaseController {
 
   async getMyEvents(req: Request, res: Response): Promise<void> {
     this.sendSuccess(res, await EventService.getEventsByOrganizer(requireUser(req).id));
+  }
+
+  async getMyStats(req: Request, res: Response): Promise<void> {
+    const { days } = statsQuery.parse(req.query);
+    this.sendSuccess(res, await EventService.getOrganizerStats(requireUser(req).id, days));
   }
 
   async update(req: Request, res: Response): Promise<void> {

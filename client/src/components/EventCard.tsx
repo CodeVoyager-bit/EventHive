@@ -18,7 +18,18 @@ export default function EventCard({ event, priority = false, saved = false, sign
   const date = new Date(event.date);
   const left = Math.max(event.capacity - event.bookedCount, 0);
   const past = isPast(event.date);
-  const status = past ? "Ended" : left === 0 ? "Sold out" : left <= Math.max(5, event.capacity * 0.1) ? `${left} left` : null;
+  const filled = event.bookedCount / event.capacity;
+  const status = past
+    ? "Ended"
+    : left === 0
+      ? "Sold out"
+      : left <= 3
+        ? `Only ${left} left`
+        : filled >= 0.75
+          ? "Almost full"
+          : filled >= 0.5
+            ? "Selling fast"
+            : null;
 
   return (
     <div className={s.card} data-tone={meta.tone} data-spotlight data-tilt>

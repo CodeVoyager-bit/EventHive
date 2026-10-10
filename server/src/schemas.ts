@@ -28,7 +28,7 @@ const eventFields = z.object({
   date: z.coerce.date(),
   location: z.string().trim().min(1).max(120),
   capacity: z.coerce.number().int().min(1).max(100000),
-  price: z.coerce.number().min(0).max(100000),
+  price: z.coerce.number().min(0).max(1_000_000), // rupees
   category: z.enum(CATEGORIES),
   imageUrl: z.union([z.literal(""), z.url()]).default(""),
   eventType: z.enum(EVENT_TYPES),
@@ -67,12 +67,22 @@ export const checkInSchema = z.object({
     .transform((c) => c.replace(/\s+/g, "").toUpperCase()),
 });
 
+export const statsQuery = z.object({
+  days: z.coerce.number().int().min(7).max(90).default(30),
+});
+
+export const recentQuery = z.object({
+  limit: z.coerce.number().int().min(1).max(20).default(6),
+});
+
 export const listEventsQuery = z.object({
   q: z.string().trim().max(100).optional(),
   category: z.enum(CATEGORIES).optional(),
   eventType: z.enum(EVENT_TYPES).optional(),
   from: z.coerce.date().optional(),
   to: z.coerce.date().optional(),
+  maxPrice: z.coerce.number().min(0).optional(), // rupees; 0 = free only
+  sort: z.enum(["date", "price-asc", "price-desc", "popular"]).default("date"),
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(50).default(12),
 });

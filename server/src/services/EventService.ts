@@ -7,6 +7,17 @@ import { HttpError } from "../middleware/errorHandler";
 import { AuthUser } from "../middleware/auth";
 import { CreateEventInput, UpdateEventInput, ListEventsQuery } from "../schemas";
 
+// Day boundaries for organizer stats (the app sells in rupees to an Indian audience)
+const TIME_ZONE = process.env.APP_TIMEZONE || "Asia/Kolkata";
+const dayKey = (d: Date) => new Intl.DateTimeFormat("en-CA", { timeZone: TIME_ZONE }).format(d); // YYYY-MM-DD
+
+const SORTS = {
+  date: { date: 1 },
+  "price-asc": { price: 1, date: 1 },
+  "price-desc": { price: -1, date: 1 },
+  popular: { bookedCount: -1, date: 1 },
+} as const;
+
 class EventService {
   async createEvent(data: CreateEventInput, organizerId: string): Promise<IEvent> {
     return EventRepository.create({ ...data, organizerId: new Types.ObjectId(organizerId) });
@@ -42,7 +53,8 @@ class EventService {
       const rx = new RegExp(escapeRegex(q.q), "i");
       filter.$or = [{ title: rx }, { description: rx }, { location: rx }, { category: rx }];
     }
-    return EventRepository.findPaged(filter, q.page, q.limit);
+    if (q.maxPrice !== undefined) filter.price = { $lte: q.maxPrice };
+    return EventRepository.findPaged(filter, q.page, q.limit, { ...SORTS[q.sort] });
   }
 
   async getEventsByOrganizer(organizerId: string): Promise<(IEvent & { revenue: number })[]> {
@@ -53,6 +65,25 @@ class EventService {
         return Object.assign(event.toObject(), { revenue }) as IEvent & { revenue: number };
       })
     );
+  }
+
+  // Bookings and revenue per day over the last `days` days, zero-filled, across the organizer's events
+  async getOrganizerStats(organizerId: string, days: number) {
+    const events = await EventRepository.findByOrganizer(organizerId);
+    const since = new Date(Date.now() - (days - 1) * 86_400_000);
+    since.setUTCHours(0, 0, 0, 0);
+    const rows = await BookingRepository.dailyTotals(
+      events.map((e) => e._id),
+      since,
+      TIME_ZONE
+    );
+    const byDay = new Map(rows.map((r) => [r._id, r]));
+    const daily = Array.from({ length: days }, (_, i) => {
+      const date = dayKey(new Date(Date.now() - (days - 1 - i) * 86_400_000));
+      const row = byDay.get(date);
+      return { date, bookings: row?.bookings ?? 0, revenue: row?.revenue ?? 0 };
+    });
+    return { timeZone: TIME_ZONE, daily };
   }
 
   async updateEvent(id: string, user: AuthUser, data: UpdateEventInput): Promise<IEvent | null> {
