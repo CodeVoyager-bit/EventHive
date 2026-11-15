@@ -1,0 +1,144 @@
+.page {
+  display: grid;
+  gap: 24px;
+  padding-block: 16px 24px;
+  min-height: calc(100dvh - var(--nav-h));
+}
+@media (min-width: 900px) {
+  .page {
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: stretch;
+  }
+}
+.visual {
+  position: relative;
+  min-height: 220px;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  background: #111;
+}
+:global([data-theme="light"]) .visual {
+  background: linear-gradient(135deg, #ff3d8b, #7a4df5 55%, #2f5bff);
+}
+.visual img {
+  object-fit: cover;
+  animation: settle 1.6s var(--ease-out) backwards;
+}
+@keyframes settle {
+  from {
+    transform: scale(1.08);
+  }
+}
+.visual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 35%, rgba(8, 8, 12, 0.85));
+}
+.visualText {
+  position: relative;
+  z-index: 1;
+  padding: 32px;
+}
+.visualTitle {
+  color: #fff;
+  font-size: clamp(2.4rem, 5vw, 4.4rem);
+  line-height: 0.92;
+  max-width: 11ch;
+}
+@media (max-width: 899px) {
+  .visualText {
+    padding: 20px 24px;
+  }
+  .visualTitle {
+    font-size: 2.4rem;
+  }
+}
+.formSide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 0 24px;
+}
+.form {
+  width: 100%;
+  max-width: 420px;
+  display: grid;
+  gap: 18px;
+}
+.form h1 {
+  margin-bottom: 4px;
+}
+.sub {
+  color: var(--text-3);
+  margin-top: -8px;
+}
+.passwordWrap {
+  position: relative;
+}
+.passwordWrap input {
+  padding-right: 52px;
+}
+.eye {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  color: var(--text-3);
+  border-radius: var(--radius-sm);
+  transition: color var(--dur-fast);
+}
+.eye:hover {
+  color: var(--text);
+}
+.roles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.role {
+  padding: 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  text-align: left;
+  display: grid;
+  gap: 4px;
+  transition: border-color var(--dur-fast), background-color var(--dur-fast), transform var(--dur) var(--ease-spring);
+}
+.role:hover {
+  border-color: var(--text-3);
+}
+.role:active {
+  transform: scale(0.98);
+}
+.role[aria-checked="true"] {
+  border-color: var(--accent-ink);
+  background: var(--accent-soft);
+}
+.role strong {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.93rem;
+}
+.role span {
+  font-size: 0.8rem;
+  color: var(--text-3);
+}
+.switch {
+  text-align: center;
+  font-size: 0.93rem;
+  color: var(--text-3);
+}
+.switch a {
+  color: var(--accent-ink);
+  font-weight: 600;
+}

@@ -1,0 +1,77 @@
+.button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 600;
+  transition: background-color var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast), transform var(--dur) var(--ease-spring);
+}
+.button:active {
+  transform: scale(0.9);
+}
+.button span {
+  display: inline-flex;
+}
+.overlay {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  color: #14111f;
+  background: rgba(255, 255, 255, 0.86);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 6px 16px -6px rgba(0, 0, 0, 0.4);
+}
+.overlay:hover {
+  background: #fff;
+}
+.inline {
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  font-size: 0.85rem;
+}
+.inline:hover {
+  border-color: var(--text-3);
+}
+.on {
+  color: #e11d63;
+}
+.inline.on {
+  border-color: #e11d63;
+  background: color-mix(in srgb, #e11d63 10%, var(--surface));
+}
+/* Heart pops, and a ring bursts out, when something gets saved */
+.pop {
+  animation: heartPop 520ms var(--ease-spring);
+}
+.pop::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid #e11d63;
+  animation: ring 520ms var(--ease-out) forwards;
+  pointer-events: none;
+}
+@keyframes heartPop {
+  0% {
+    transform: scale(0.6);
+  }
+  50% {
+    transform: scale(1.35);
+  }
+}
+@keyframes ring {
+  from {
+    opacity: 1;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.4);
+  }
+}

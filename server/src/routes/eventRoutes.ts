@@ -7,7 +7,6 @@ const router = Router();
 
 // Public routes
 router.get("/", (req, res) => EventController.getAll(req, res));
-router.get("/search", (req, res) => EventController.search(req, res));
 router.get("/:id", (req, res) => EventController.getById(req, res));
 
 // Protected routes (organizer only)
@@ -23,6 +22,13 @@ router.get(
   authenticate,
   authorize("organizer", "admin"),
   (req, res) => EventController.getMyEvents(req, res)
+);
+
+router.get(
+  "/my/stats",
+  authenticate,
+  authorize("organizer", "admin"),
+  (req, res) => EventController.getMyStats(req, res)
 );
 
 router.put(

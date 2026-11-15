@@ -1,4 +1,5 @@
 import User, { IUser } from "../models/User";
+import { IEvent } from "../models/Event";
 
 class UserRepository {
   async create(data: Partial<IUser>): Promise<IUser> {
@@ -24,6 +25,27 @@ class UserRepository {
 
   async delete(id: string): Promise<IUser | null> {
     return User.findByIdAndDelete(id);
+  }
+
+  async addSaved(userId: string, eventId: string): Promise<void> {
+    await User.updateOne({ _id: userId }, { $addToSet: { saved: eventId } });
+  }
+
+  async removeSaved(userId: string, eventId: string): Promise<void> {
+    await User.updateOne({ _id: userId }, { $pull: { saved: eventId } });
+  }
+
+  async getSavedIds(userId: string): Promise<string[]> {
+    const user = await User.findById(userId).select("saved").lean();
+    return (user?.saved ?? []).map(String);
+  }
+
+  async getSavedEvents(userId: string): Promise<IEvent[]> {
+    const user = await User.findById(userId)
+      .select("saved")
+      .populate<{ saved: IEvent[] }>({ path: "saved", options: { sort: { date: 1 } } });
+    // populate drops ids whose event was deleted
+    return (user?.saved ?? []).filter(Boolean);
   }
 }
 

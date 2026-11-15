@@ -1,20 +1,28 @@
 import { Request, Response, NextFunction } from "express";
 import AuthService from "../services/AuthService";
+import { HttpError } from "./errorHandler";
 
-// JWT authentication middleware
-export function authenticate(req: Request, res: Response, next: NextFunction): void {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    res.status(401).json({ success: false, error: "Authentication required" });
+export type Role = "attendee" | "organizer" | "admin";
+export type AuthUser = { id: string; email: string; role: Role };
+
+// JWT authentication middleware: attaches req.user or fails with 401
+export function authenticate(req: Request, _res: Response, next: NextFunction): void {
+  const header = req.headers.authorization;
+  if (!header?.startsWith("Bearer ")) {
+    next(new HttpError(401, "Authentication required"));
     return;
   }
-
   try {
-    const token = authHeader.split(" ")[1];
-    const decoded = AuthService.verifyToken(token);
-    (req as any).user = decoded;
+    const decoded = AuthService.verifyToken(header.slice("Bearer ".length));
+    req.user = { id: String(decoded.id), email: String(decoded.email), role: decoded.role as Role };
     next();
-  } catch (error) {
-    res.status(401).json({ success: false, error: "Invalid or expired token" });
+  } catch {
+    next(new HttpError(401, "Invalid or expired token"));
   }
+}
+
+// For handlers behind authenticate(): returns the user without optional-chaining noise
+export function requireUser(req: Request): AuthUser {
+  if (!req.user) throw new HttpError(401, "Authentication required");
+  return req.user;
 }

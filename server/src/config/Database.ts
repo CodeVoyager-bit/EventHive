@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
-// Singleton Pattern: ensures only one database connection instance exists
+// Singleton Pattern: one shared connection, reused across requests and serverless invocations
 class Database {
   private static instance: Database;
-  private isConnected: boolean = false;
+  private connecting?: Promise<void>;
 
   private constructor() {}
 
@@ -14,26 +14,25 @@ class Database {
     return Database.instance;
   }
 
-  public async connect(uri: string): Promise<void> {
-    if (this.isConnected) {
-      console.log("Database already connected");
-      return;
+  public connect(uri: string): Promise<void> {
+    if (mongoose.connection.readyState === 1) return Promise.resolve();
+    if (!this.connecting) {
+      this.connecting = mongoose
+        .connect(uri)
+        .then(() => {
+          console.log("MongoDB connected successfully");
+        })
+        .catch((error) => {
+          this.connecting = undefined; // allow the next request to retry
+          throw error;
+        });
     }
-
-    try {
-      await mongoose.connect(uri);
-      this.isConnected = true;
-      console.log("MongoDB connected successfully");
-    } catch (error) {
-      console.error("MongoDB connection error:", error);
-      process.exit(1);
-    }
+    return this.connecting;
   }
 
   public async disconnect(): Promise<void> {
-    if (!this.isConnected) return;
     await mongoose.disconnect();
-    this.isConnected = false;
+    this.connecting = undefined;
     console.log("MongoDB disconnected");
   }
 }

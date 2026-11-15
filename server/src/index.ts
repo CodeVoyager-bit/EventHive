@@ -1,52 +1,41 @@
+import "dotenv/config";
 import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
 import Database from "./config/Database";
+import { errorHandler } from "./middleware/errorHandler";
 
 import authRoutes from "./routes/authRoutes";
 import eventRoutes from "./routes/eventRoutes";
 import bookingRoutes from "./routes/bookingRoutes";
 import reviewRoutes from "./routes/reviewRoutes";
-
-dotenv.config();
+import meRoutes from "./routes/meRoutes";
 
 const app = express();
-const PORT = process.env.PORT || 5001;
 
-// Middleware
-app.use(cors({
-  origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(",") : true,
-  credentials: true,
-}));
+// The browser never calls this API directly (the Next.js server proxies it), so no CORS layer.
 app.use(express.json());
 
-
-app.use(async (req, res, next) => {
-  try {
-    const mongoUri = process.env.MONGODB_URI || "mongodb://localhost:27017/eventhive";
-    await Database.getInstance().connect(mongoUri);
-    next();
-  } catch (err) {
-    res.status(500).json({ success: false, error: "Database Connection Failed" });
-  }
+// Ensure a DB connection before handling any request (serverless-safe: the connection is cached)
+app.use(async (_req, _res, next) => {
+  await Database.getInstance().connect(process.env.MONGODB_URI || "mongodb://localhost:27017/eventhive");
+  next();
 });
 
 // Routes
-app.use("/auth", authRoutes);
-app.use("/events", eventRoutes);
-app.use("/bookings", bookingRoutes);
-app.use("/reviews", reviewRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/events", eventRoutes);
+app.use("/api/bookings", bookingRoutes);
+app.use("/api/reviews", reviewRoutes);
+app.use("/api/me", meRoutes);
 
 // Health check
-app.get("/health", (_req, res) => {
+app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
-// Only listen locally, Vercel handles the exported app
-if (process.env.NODE_ENV !== "production") {
-  app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
-}
+app.use((_req, res) => {
+  res.status(404).json({ success: false, error: "Not found" });
+});
+app.use(errorHandler);
 
+// Exported for Vercel (serverless) and tests; src/server.ts listens locally
 export default app;

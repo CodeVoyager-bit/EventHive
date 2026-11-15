@@ -1,0 +1,151 @@
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-block: 40px 28px;
+}
+.stats {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 28px;
+}
+@media (min-width: 900px) {
+  .stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.stat {
+  display: grid;
+  gap: 4px;
+  padding: 20px 22px;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+.statPrimary {
+  background: var(--accent);
+  border-color: transparent;
+  color: #fff;
+}
+.statIcon {
+  color: var(--accent-ink);
+  margin-bottom: 10px;
+}
+.statPrimary .statIcon {
+  color: #fff;
+}
+.statValue {
+  font-family: var(--font-display);
+  font-stretch: 75%;
+  font-weight: 800;
+  font-size: 2.4rem;
+  line-height: 1;
+}
+.statLabel {
+  font-size: 0.85rem;
+  color: var(--text-3);
+}
+.statPrimary .statLabel {
+  color: rgba(255, 255, 255, 0.85);
+}
+.tableCard {
+  overflow: hidden;
+}
+.tableHead {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.evTitle {
+  font-weight: 600;
+}
+.evTitle:hover {
+  color: var(--accent-ink);
+}
+.evLoc {
+  font-size: 0.8rem;
+  color: var(--text-3);
+}
+.bar {
+  width: 80px;
+  height: 3px;
+  border-radius: 2px;
+  margin-top: 6px;
+  overflow: hidden;
+  background: var(--surface-2);
+}
+.bar span {
+  display: block;
+  height: 100%;
+  background: var(--accent-ink);
+}
+.revenue {
+  font-weight: 700;
+}
+.actions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+.summary {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.summary div {
+  display: grid;
+}
+.summary strong {
+  font-family: var(--font-display);
+  font-stretch: 75%;
+  font-weight: 800;
+  font-size: 2.2rem;
+  line-height: 1.05;
+}
+.summary span {
+  font-size: 0.85rem;
+  color: var(--text-3);
+}
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 24px;
+  color: var(--text-3);
+  font-size: 0.9rem;
+  transition: color var(--dur-fast), gap var(--dur) var(--ease-out);
+}
+.back:hover {
+  color: var(--text);
+  gap: 10px;
+}
+
+/* ---------- Light theme: colour-coded stat tiles and categories ---------- */
+:global([data-theme="light"]) .stat {
+  background: var(--tone-tint);
+  border-color: transparent;
+}
+:global([data-theme="light"]) .stat .statIcon {
+  color: var(--tone-deep);
+}
+:global([data-theme="light"]) .statPrimary {
+  background: var(--tone);
+  color: var(--tone-on);
+}
+:global([data-theme="light"]) .statPrimary .statIcon,
+:global([data-theme="light"]) .statPrimary .statLabel {
+  color: var(--tone-on);
+}
+:global([data-theme="light"]) .catBadge {
+  background: var(--tone-tint);
+  color: var(--tone-deep);
+}
+:global([data-theme="light"]) .bar span {
+  background: var(--accent);
+}

@@ -1,0 +1,152 @@
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-block: 40px 32px;
+}
+.list {
+  display: grid;
+  gap: 18px;
+  max-width: 940px;
+}
+.ticket {
+  display: grid;
+  grid-template-columns: 1fr;
+  filter: drop-shadow(0 16px 30px rgba(0, 0, 0, 0.22));
+}
+@media (min-width: 720px) {
+  .ticket {
+    grid-template-columns: 1fr 168px;
+  }
+}
+.past {
+  opacity: 0.7;
+}
+.main {
+  display: grid;
+  grid-template-columns: 1fr;
+  background: var(--surface);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  overflow: hidden;
+  -webkit-mask: radial-gradient(circle var(--notch) at 0 100%, #0000 97%, #000) 0 0 / 51% 100% no-repeat, radial-gradient(circle var(--notch) at 100% 100%, #0000 97%, #000) 100% 0 / 51% 100% no-repeat;
+  mask: radial-gradient(circle var(--notch) at 0 100%, #0000 97%, #000) 0 0 / 51% 100% no-repeat, radial-gradient(circle var(--notch) at 100% 100%, #0000 97%, #000) 100% 0 / 51% 100% no-repeat;
+}
+.stub {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 10px;
+  padding: 20px;
+  background: var(--surface);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  border-top: 1px dashed var(--line-strong);
+  -webkit-mask: radial-gradient(circle var(--notch) at 0 0, #0000 97%, #000) 0 0 / 51% 100% no-repeat, radial-gradient(circle var(--notch) at 100% 0, #0000 97%, #000) 100% 0 / 51% 100% no-repeat;
+  mask: radial-gradient(circle var(--notch) at 0 0, #0000 97%, #000) 0 0 / 51% 100% no-repeat, radial-gradient(circle var(--notch) at 100% 0, #0000 97%, #000) 100% 0 / 51% 100% no-repeat;
+}
+@media (min-width: 720px) {
+  .main {
+    grid-template-columns: 160px 1fr;
+    border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+    -webkit-mask: radial-gradient(circle var(--notch) at 100% 0, #0000 97%, #000) 0 0 / 100% 51% no-repeat, radial-gradient(circle var(--notch) at 100% 100%, #0000 97%, #000) 0 100% / 100% 51% no-repeat;
+    mask: radial-gradient(circle var(--notch) at 100% 0, #0000 97%, #000) 0 0 / 100% 51% no-repeat, radial-gradient(circle var(--notch) at 100% 100%, #0000 97%, #000) 0 100% / 100% 51% no-repeat;
+  }
+  .stub {
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+    border-top: 0;
+    border-left: 1px dashed var(--line-strong);
+    -webkit-mask: radial-gradient(circle var(--notch) at 0 0, #0000 97%, #000) 0 0 / 100% 51% no-repeat, radial-gradient(circle var(--notch) at 0 100%, #0000 97%, #000) 0 100% / 100% 51% no-repeat;
+    mask: radial-gradient(circle var(--notch) at 0 0, #0000 97%, #000) 0 0 / 100% 51% no-repeat, radial-gradient(circle var(--notch) at 0 100%, #0000 97%, #000) 0 100% / 100% 51% no-repeat;
+  }
+}
+.thumb {
+  position: relative;
+  min-height: 140px;
+  background: var(--surface-2);
+}
+.thumb img {
+  object-fit: cover;
+}
+.thumbIcon {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--accent-ink);
+}
+.info {
+  min-width: 0;
+  padding: 20px 22px;
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+.badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.title {
+  font-family: var(--font-display);
+  font-stretch: 75%;
+  font-weight: 800;
+  font-size: 1.75rem;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+.title a:hover {
+  color: var(--accent-ink);
+}
+.rows {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-size: 0.875rem;
+  color: var(--text-2);
+}
+.rows span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+.qr {
+  display: block;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  background: #fff;
+}
+.code {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-2);
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+.groupTitle {
+  margin: 48px 0 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-3);
+}
+
+/* ---------- Light theme: stub tinted with the event's category colour ---------- */
+:global([data-theme="light"]) .ticket {
+  filter: drop-shadow(0 16px 28px color-mix(in srgb, var(--tone) 22%, transparent));
+}
+:global([data-theme="light"]) .stub {
+  background: var(--tone-tint);
+  border-color: color-mix(in srgb, var(--tone-deep) 35%, transparent);
+}
+:global([data-theme="light"]) .code {
+  color: var(--tone-deep);
+}
+:global([data-theme="light"]) .title a:hover {
+  color: var(--tone-deep);
+}

@@ -19,7 +19,7 @@ export class MockStripeGateway implements IPaymentGateway {
     return {
       success: true,
       transactionId,
-      message: `Payment of $${amount} processed via Stripe`,
+      message: `Payment of ₹${amount} processed via Stripe`,
     };
   }
 
@@ -36,7 +36,7 @@ export class MockPayPalGateway implements IPaymentGateway {
     return {
       success: true,
       transactionId,
-      message: `Payment of $${amount} processed via PayPal`,
+      message: `Payment of ₹${amount} processed via PayPal`,
     };
   }
 

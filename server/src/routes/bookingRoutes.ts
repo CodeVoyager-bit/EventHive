@@ -14,6 +14,14 @@ router.patch(
   (req, res) => BookingController.cancel(req, res)
 );
 
+// Organizer: admit a ticket at the door by its code
+router.post(
+  "/check-in",
+  authenticate,
+  authorize("organizer", "admin"),
+  (req, res) => BookingController.checkIn(req, res)
+);
+
 // Organizer: view attendees for an event
 router.get(
   "/event/:eventId",

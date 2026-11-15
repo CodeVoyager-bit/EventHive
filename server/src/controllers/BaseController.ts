@@ -1,13 +1,10 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 
-// Encapsulation: BaseController handles common response patterns
+// Encapsulation: BaseController handles common response patterns.
+// Errors are thrown (HttpError/ZodError) and shaped by middleware/errorHandler.
 export class BaseController {
   protected sendSuccess(res: Response, data: unknown, statusCode: number = 200): void {
     res.status(statusCode).json({ success: true, data });
-  }
-
-  protected sendError(res: Response, message: string, statusCode: number = 400): void {
-    res.status(statusCode).json({ success: false, error: message });
   }
 
   protected sendPaginated(

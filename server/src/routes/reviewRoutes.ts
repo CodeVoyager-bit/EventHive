@@ -5,6 +5,7 @@ import { authenticate } from "../middleware/auth";
 const router = Router();
 
 // Public: get reviews for an event
+router.get("/recent", (req, res) => ReviewController.getRecent(req, res));
 router.get("/event/:eventId", (req, res) => ReviewController.getByEvent(req, res));
 
 // Protected: create a review
