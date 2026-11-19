@@ -13,7 +13,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   if (await getSessionUser()) redirect(next);
 
   return (
-    <AuthShell image={PHOTOS.login} title="Your tickets are waiting.">
+    <AuthShell image={PHOTOS.login} title="Your tickets are waiting." tone="pink">
       <LoginForm next={next} />
     </AuthShell>
   );

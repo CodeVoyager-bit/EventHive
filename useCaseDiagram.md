@@ -1,6 +1,6 @@
 # Use Case Diagram
 
-The following diagram illustrates the interactions between the **Attendee**, **Organizer**, and **System** actors within the EventHive application.
+What each actor can do in EventHive v2.
 
 ![Use Case Diagram](./useCaseDiagram.png)
 
@@ -8,71 +8,42 @@ The following diagram illustrates the interactions between the **Attendee**, **O
 <summary>Mermaid Source</summary>
 
 ```mermaid
-graph TD
-    %% Actors
-    A[👤 Attendee]
-    O[👤 Organizer]
-    AD[👤 Admin]
+graph LR
+    Guest([Guest])
+    Host([Host])
+    Admin([Admin])
 
-    %% System Boundary
-    subgraph EventHive_System [EventHive System]
+    subgraph EventHive
         direction TB
-        UC1([Register / Login])
-        
-        UC2([Browse & Search Events])
-        UC3([View Event Details])
-        UC4([Book Ticket])
-        UC5([View My Bookings])
-        UC6([Cancel Booking])
-        UC7([Leave Review])
-        UC8([View Reviews])
+        D1[Browse by city, category, date and price]
+        D2[Save events and follow hosts]
+        B1[Book tickets: tiers, quantity, promo code]
+        B2[Add Refund Protection]
+        B3[Request to join an approval event]
+        B4[Join a waitlist]
+        T1[Show a live rotating QR ticket]
+        T2[Send a ticket to a friend]
+        T3[Cancel with a refund per policy]
+        T4[Download a GST invoice]
+        S1[Share a referral link]
+        S2[Review an event]
+        N1[Get notifications and reminders]
 
-        UC9([Create Event])
-        UC10([Update Event])
-        UC11([Delete Event])
-        UC12([View My Events])
-        UC13([View Event Bookings])
+        H1[Create events with tiers, codes and questions]
+        H2[Publish after the checklist]
+        H3[Approve or decline requests]
+        H4[Check guests in at the door]
+        H5[Post updates to ticket holders]
+        H6[See sales, tiers, referrers and check-in rate]
+        H7[Reply to reviews]
+        H8[Cancel an event and refund everyone]
 
-        UC14([Ban User])
-        UC15([Approve Event])
+        A1[See platform totals]
+        A2[Verify hosts]
     end
 
-    %% Relationships
-    A --> UC1
-    A --> UC2
-    A --> UC3
-    A --> UC4
-    A --> UC5
-    A --> UC6
-    A --> UC7
-    A --> UC8
-
-    O --> UC1
-    O --> UC9
-    O --> UC10
-    O --> UC11
-    O --> UC12
-    O --> UC13
-    
-    AD --> UC1
-    AD --> UC14
-    AD --> UC15
-
-    %% Includes
-    UC4 -.->|include| UC1
-    UC6 -.->|include| UC1
-    UC7 -.->|include| UC1
-    UC9 -.->|include| UC1
-    UC10 -.->|include| UC1
-    UC11 -.->|include| UC1
-    UC12 -.->|include| UC1
-    UC13 -.->|include| UC1
-
-    %% Styling
-    classDef actor fill:#fff,stroke:#333,stroke-width:2px;
-    classDef usecase fill:#f9f9f9,stroke:#333,stroke-width:2px,rx:20,ry:20;
-    
-    class A,O,AD actor;
-    class UC1,UC2,UC3,UC4,UC5,UC6,UC7,UC8,UC9,UC10,UC11,UC12,UC13,UC14,UC15 usecase;
+    Guest --- D1 & D2 & B1 & B2 & B3 & B4 & T1 & T2 & T3 & T4 & S1 & S2 & N1
+    Host --- H1 & H2 & H3 & H4 & H5 & H6 & H7 & H8 & N1
+    Admin --- A1 & A2
 ```
 </details>

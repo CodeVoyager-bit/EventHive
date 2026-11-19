@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import EventForm from "@/components/EventForm";
+import EventTabs from "../EventTabs";
 import { apiFetch, ApiError, getSessionUser } from "@/lib/server";
 import { refId } from "@/lib/format";
 import type { Event } from "@/types";
@@ -18,5 +19,5 @@ export default async function EditEventPage({ params }: { params: Promise<{ id: 
   ]);
   if (!user || (user.role !== "admin" && refId(event.organizerId) !== user.id)) notFound();
 
-  return <EventForm initial={event} />;
+  return <EventForm initial={event} tabs={<EventTabs eventId={id} current="edit" />} />;
 }

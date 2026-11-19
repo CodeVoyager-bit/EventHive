@@ -1,0 +1,334 @@
+/* The checkout reads like a ticket counter: a hive-yellow band, tier stubs, a receipt */
+.panel {
+  background: var(--card);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+[data-theme="dark"] .panel {
+  border-color: var(--edge);
+}
+.band {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 18px;
+  background: var(--hive);
+  color: var(--ink-fixed);
+  border-bottom: 1px solid var(--edge);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.3rem;
+  font-stretch: 80%;
+  border-radius: calc(var(--radius-lg) - 1px) calc(var(--radius-lg) - 1px) 0 0;
+}
+.steps {
+  margin-left: auto;
+  display: flex;
+  gap: 4px;
+}
+.steps span {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-full);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+}
+.steps span[aria-current="true"] {
+  background: var(--ink-fixed);
+  color: var(--hive);
+}
+.body {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+}
+
+.tiers {
+  display: grid;
+  gap: 10px;
+  border: 0;
+}
+.tier {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: start;
+  padding: 12px;
+  border: var(--bw) solid var(--edge);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background-color var(--dur-fast), box-shadow var(--dur-fast), translate var(--dur-fast);
+}
+.tier:hover {
+  background: var(--paper-2);
+}
+.tier:has(input:checked) {
+  background: var(--tone-tint, var(--paper-2));
+  box-shadow: var(--shadow-sm);
+  translate: 0 -1px;
+}
+.tier[data-disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.tier input {
+  width: 18px;
+  height: 18px;
+  margin-top: 3px;
+  accent-color: var(--text);
+}
+.tierMain {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.tierDesc {
+  font-size: 0.85rem;
+  color: var(--text-2);
+}
+.tierMeta {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-3);
+}
+.tierPrice {
+  font-weight: 700;
+}
+
+.qtyRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.stepper {
+  display: flex;
+  align-items: center;
+  border: var(--bw) solid var(--edge);
+  border-radius: var(--radius);
+}
+.stepper button {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+}
+.stepper button:hover:not(:disabled) {
+  background: var(--paper-2);
+}
+.stepper button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.stepper output {
+  min-width: 40px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  border-inline: var(--bw) solid var(--edge);
+  line-height: 40px;
+}
+
+.promo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 4px 4px 12px;
+  border: 1px dashed var(--edge-strong);
+  border-radius: var(--radius);
+}
+.promoInput {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  min-height: 36px;
+}
+.promoError {
+  margin-top: -8px;
+  font-size: 0.85rem;
+  color: var(--danger-text);
+}
+.protect strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.protectText {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-2);
+}
+
+/* Receipt lines with dotted leaders */
+.breakdown {
+  display: grid;
+  gap: 6px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--edge-strong);
+  font-size: 0.9rem;
+}
+.breakdown div {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.breakdown dt {
+  color: var(--text-2);
+}
+.breakdown dt::after {
+  content: "";
+  display: inline-block;
+  width: 0;
+}
+.breakdown div::before {
+  content: none;
+}
+.breakdown dd {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.discount dd {
+  color: var(--success-text);
+}
+.total {
+  padding-top: 8px;
+  margin-top: 4px;
+  border-top: 1px solid var(--line);
+  font-size: 1.05rem;
+}
+.total dt {
+  color: var(--text);
+  font-weight: 800;
+}
+.note {
+  font-size: 0.88rem;
+}
+.small {
+  font-size: 0.8rem;
+  color: var(--text-3);
+}
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-decoration: underline;
+  text-decoration-color: var(--hive);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+.names {
+  display: grid;
+  gap: 8px;
+  border: 0;
+}
+.payLine {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-top: 12px;
+  border-top: 1px dashed var(--edge-strong);
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+.state {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+}
+.state p {
+  color: var(--text-2);
+}
+.stateIcon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  background: var(--hive);
+  color: var(--ink-fixed);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+}
+
+/* One-step checkout pieces */
+.oneTier {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--tone-tint, var(--paper-2));
+  border-radius: var(--radius);
+}
+.oneTier > span:first-child {
+  display: grid;
+}
+.extras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin-top: -6px;
+}
+.extraLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--text-2);
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--edge-strong);
+  text-underline-offset: 3px;
+}
+.extraLink:hover {
+  color: var(--text);
+}
+.namesBox {
+  width: 100%;
+}
+.namesBox summary {
+  list-style: none;
+}
+.namesBox summary::-webkit-details-marker {
+  display: none;
+}
+.namesBox[open] .names {
+  margin-top: 10px;
+}
+.follow {
+  font-size: 0.86rem;
+  color: var(--text-2);
+}
+
+/* "Bring 2 more friends and save 10%" under the quantity stepper */
+.groupHint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px dashed var(--edge-strong);
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-2);
+}
+.groupHint[data-on] {
+  border-style: solid;
+  border-color: transparent;
+  background: color-mix(in srgb, var(--success-text) 12%, transparent);
+  color: var(--success-text);
+}

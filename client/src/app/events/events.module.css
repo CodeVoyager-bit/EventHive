@@ -1,130 +1,209 @@
 .head {
   display: flex;
+  align-items: baseline;
   justify-content: space-between;
-  align-items: flex-end;
+  gap: 16px;
   flex-wrap: wrap;
-  gap: 8px 24px;
-  padding-block: 40px 28px;
+  padding-block: 40px 24px;
 }
-.toolbar {
+.head p {
+  color: var(--text-3);
+}
+
+/* Category stories: square ink stamps, scrollable on small screens */
+.stories {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  padding: 4px 4px 14px;
+  scrollbar-width: none;
+}
+.story {
   display: grid;
-  gap: 14px;
-  margin-bottom: 32px;
-}
-@media (min-width: 1024px) {
-  .toolbar {
-    position: sticky;
-    top: calc(var(--nav-h) + 4px);
-    z-index: 10;
-  }
-}
-.filters {
-  display: grid;
+  justify-items: center;
   gap: 8px;
-  padding: 8px;
+  flex: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+.storyIcon {
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  background: var(--tone);
+  color: var(--tone-on);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.3rem;
+  transition: rotate var(--dur) var(--ease-spring), translate var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
+}
+.story:hover .storyIcon {
+  translate: 0 -2px;
+  box-shadow: var(--shadow-md);
+}
+.story[aria-current="true"] .storyIcon {
+  translate: 0 -2px;
+  box-shadow: var(--shadow-md);
+}
+.story[aria-current="true"] span:last-child {
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-decoration-color: var(--hive);
+  text-underline-offset: 4px;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 12px;
+  padding: 12px;
+  border: var(--bw) solid var(--edge);
   border-radius: var(--radius-lg);
+  background: var(--card);
 }
-@media (min-width: 900px) {
-  .filters {
-    grid-template-columns: minmax(0, 1fr) 150px auto auto auto;
-    align-items: center;
-    border-radius: var(--radius-full);
-  }
+.searchBox {
+  flex: 1 1 260px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 0 12px;
+  border: var(--bw) solid var(--edge);
+  border-radius: var(--radius);
+  background: var(--paper);
 }
-.searchBox,
+.searchBox:focus-within {
+  box-shadow: var(--shadow-sm);
+}
+.searchBox input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+}
 .field {
   display: flex;
   align-items: center;
   gap: 8px;
-  min-height: 44px;
-  padding: 0 14px;
-  border-radius: var(--radius-full);
-  background: var(--surface);
-  border: 1px solid var(--line);
-  color: var(--text-3);
-  transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
 }
-.searchBox:focus-within,
-.field:focus-within {
-  border-color: var(--accent-ink);
-  box-shadow: 0 0 0 3px var(--accent-soft);
-}
-.searchBox input,
-.field input,
-.field select {
-  flex: 1;
-  min-width: 0;
-  min-height: 42px;
-  background: transparent;
-  border: 0;
-  outline: none;
-  color: var(--text);
-}
-.field select {
-  appearance: none;
-  cursor: pointer;
-  background-color: var(--surface);
-}
-.searchBox input::placeholder {
-  color: var(--text-3);
+.field :global(.input) {
+  width: auto;
+  background-color: var(--paper);
 }
 .fieldLabel {
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-3);
 }
-.chips {
+.quick {
   display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding: 2px 2px 6px;
-  scrollbar-width: none;
-  scroll-snap-type: x proximity;
-}
-.chips::-webkit-scrollbar {
-  display: none;
-}
-.chip {
-  display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 7px;
-  min-height: 40px;
-  padding: 0 16px;
-  border-radius: var(--radius-full);
-  border: 1px solid var(--line);
-  background: var(--surface);
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--text-2);
-  white-space: nowrap;
-  scroll-snap-align: start;
-  transition: background-color var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast), transform var(--dur) var(--ease-spring);
+  gap: 8px;
+  margin-block: 18px 32px;
 }
-.chip:hover {
-  border-color: var(--line-strong);
-  color: var(--text);
-}
-.chip:active {
-  transform: scale(0.96);
-}
-.chip[aria-current="true"] {
-  background: var(--text);
-  border-color: var(--text);
-  color: var(--bg);
+@media (max-width: 760px) {
+  .field {
+    flex: 1 1 140px;
+  }
+  .field :global(.input) {
+    width: 100%;
+  }
 }
 
-/* ---------- Light theme: each category chip carries its colour ---------- */
-:global([data-theme="light"]) .chip[data-tone] svg {
-  color: var(--tone-deep);
+/* Custom dates live in a small popover-like panel under the chip */
+.dates {
+  position: relative;
 }
-:global([data-theme="light"]) .chip[data-tone]:hover {
-  border-color: var(--tone);
-  background: var(--tone-tint);
+.dates summary {
+  list-style: none;
+  cursor: pointer;
 }
-:global([data-theme="light"]) .chip[data-tone][aria-current="true"] {
-  background: var(--tone);
-  border-color: var(--tone);
-  color: var(--tone-on);
+.dates summary::-webkit-details-marker {
+  display: none;
 }
-:global([data-theme="light"]) .chip[data-tone][aria-current="true"] svg {
-  color: currentColor;
+.dates[open] summary {
+  background: var(--text);
+  color: var(--paper);
+  border-color: var(--text);
+}
+.datePanel {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 30;
+  display: grid;
+  gap: 12px;
+  width: 260px;
+  padding: 16px;
+  background: var(--card);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+.active {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: -16px 0 28px;
+}
+.activeChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background: var(--hive);
+  color: var(--ink-fixed);
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+.activeChip:hover {
+  background: var(--hive-hover);
+}
+@media (max-width: 760px) {
+  .datePanel {
+    position: fixed;
+    left: 16px;
+    right: 16px;
+    top: auto;
+    bottom: calc(80px + env(safe-area-inset-bottom));
+    width: auto;
+  }
+}
+
+/* List / Calendar switch */
+.viewToggle {
+  display: inline-flex;
+  padding: 3px;
+  margin-left: auto;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-full);
+  background: var(--card);
+}
+.viewToggle a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-weight: 650;
+  font-size: 0.88rem;
+  color: var(--text-2);
+}
+.viewToggle a[aria-current="page"] {
+  background: var(--text);
+  color: var(--paper);
+}
+.head {
+  align-items: center;
 }

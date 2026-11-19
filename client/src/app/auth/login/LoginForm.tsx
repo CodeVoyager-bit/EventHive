@@ -7,6 +7,12 @@ import { Eye, EyeSlash, WarningCircle } from "@phosphor-icons/react";
 import { api } from "@/lib/api";
 import s from "../auth.module.css";
 
+const DEMO = [
+  { label: "Guest", email: "attendee@eventhive.dev" },
+  { label: "Host", email: "organizer@eventhive.dev" },
+  { label: "Admin", email: "admin@eventhive.dev" },
+];
+
 export default function LoginForm({ next }: { next: string }) {
   const router = useRouter();
   const [form, setForm] = useState({ email: "", password: "" });
@@ -51,8 +57,19 @@ export default function LoginForm({ next }: { next: string }) {
         </div>
       </div>
       <button type="submit" className="btn btn-primary btn-lg btn-block" disabled={busy}>
-        {busy ? "Logging In…" : "Log In"}
+        {busy ? "Logging in…" : "Log in"}
       </button>
+      {/* Demo accounts from the seed script (server/src/seed.ts), so reviewers can try every role */}
+      <div className={s.demo}>
+        <span className="small muted">Exploring? Sign in as</span>
+        <div className={s.demoRow}>
+          {DEMO.map((d) => (
+            <button key={d.email} type="button" className="chip" onClick={() => setForm({ email: d.email, password: "password123" })}>
+              {d.label}
+            </button>
+          ))}
+        </div>
+      </div>
       <p className={s.switch}>
         New here? <Link href={`/auth/register${next !== "/" ? `?next=${encodeURIComponent(next)}` : ""}`}>Create an account</Link>
       </p>

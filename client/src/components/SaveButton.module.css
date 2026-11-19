@@ -4,74 +4,58 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font-weight: 600;
-  transition: background-color var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast), transform var(--dur) var(--ease-spring);
-}
-.button:active {
-  transform: scale(0.9);
+  font-weight: 700;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  transition: translate var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast), background-color var(--dur-fast);
 }
 .button span {
   display: inline-flex;
 }
+.button:active {
+  translate: 2px 2px;
+  box-shadow: none;
+}
 .overlay {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  color: #14111f;
-  background: rgba(255, 255, 255, 0.86);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  box-shadow: 0 6px 16px -6px rgba(0, 0, 0, 0.4);
+  width: 40px;
+  height: 40px;
+  background: #ffffff;
+  color: var(--ink-fixed);
+  box-shadow: var(--shadow-sm);
 }
 .overlay:hover {
-  background: #fff;
+  background: var(--hive);
+}
+.overlay.on {
+  background: #ff4fa3;
 }
 .inline {
-  min-height: 36px;
+  min-height: 40px;
   padding: 0 14px;
-  border-radius: var(--radius-full);
-  border: 1px solid var(--line-strong);
-  background: var(--surface);
-  font-size: 0.85rem;
+  border-color: var(--edge);
+  background: var(--card);
+  font-size: 0.9rem;
+  box-shadow: var(--shadow-sm);
 }
 .inline:hover {
-  border-color: var(--text-3);
-}
-.on {
-  color: #e11d63;
+  background: var(--paper-2);
 }
 .inline.on {
-  border-color: #e11d63;
-  background: color-mix(in srgb, #e11d63 10%, var(--surface));
+  background: #ff4fa3;
+  color: var(--ink-fixed);
+  border-color: var(--edge);
 }
-/* Heart pops, and a ring bursts out, when something gets saved */
 .pop {
-  animation: heartPop 520ms var(--ease-spring);
+  animation: pop 420ms var(--ease-spring);
 }
-.pop::after {
-  content: "";
-  position: absolute;
-  inset: -6px;
-  border-radius: 50%;
-  border: 2px solid #e11d63;
-  animation: ring 520ms var(--ease-out) forwards;
-  pointer-events: none;
-}
-@keyframes heartPop {
+@keyframes pop {
   0% {
-    transform: scale(0.6);
+    scale: 1;
   }
-  50% {
-    transform: scale(1.35);
+  40% {
+    scale: 1.45;
   }
-}
-@keyframes ring {
-  from {
-    opacity: 1;
-    transform: scale(0.4);
-  }
-  to {
-    opacity: 0;
-    transform: scale(1.4);
+  100% {
+    scale: 1;
   }
 }

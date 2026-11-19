@@ -43,7 +43,7 @@ export default function SurpriseMe({ events }: { events: Pick[] }) {
   if (events.length === 0) return null;
   return (
     <div className={s.wrap}>
-      <button ref={button} type="button" className={s.button} onClick={spin} disabled={spinning} data-magnetic>
+      <button ref={button} type="button" className={`btn btn-secondary btn-lg ${s.button}`} onClick={spin} disabled={spinning}>
         <DiceFive size={20} weight="fill" className={spinning ? s.rolling : undefined} aria-hidden="true" />
         Surprise Me
       </button>
@@ -53,7 +53,7 @@ export default function SurpriseMe({ events }: { events: Pick[] }) {
             {label}
           </span>
         ) : (
-          <span className={s.hint}>Not sure? Let us pick.</span>
+          <span className={s.hint}>Can&apos;t decide? Let us pick.</span>
         )}
       </span>
     </div>

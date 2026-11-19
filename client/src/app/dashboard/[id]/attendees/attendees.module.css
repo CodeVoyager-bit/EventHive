@@ -1,0 +1,180 @@
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 24px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-2);
+}
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding-block: 24px 8px;
+}
+.counter {
+  display: grid;
+  justify-items: center;
+  padding: 10px 20px;
+  background: var(--hive);
+  color: var(--ink-fixed);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+.counter strong {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-stretch: 75%;
+  line-height: 1;
+}
+.counter strong span {
+  font-size: 1.6rem;
+}
+.section {
+  margin-top: 40px;
+}
+.section > h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+/* Door team: helpers who can check guests in */
+.team {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+.member {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--card);
+  border: var(--bw) solid var(--edge);
+  border-radius: var(--radius);
+}
+.member > div {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+.member > div span {
+  overflow-wrap: anywhere;
+}
+.memberAvatar {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--hive);
+  color: var(--ink-fixed);
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+.teamForm {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+.teamForm :global(.input) {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+.requests {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+.request {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 16px;
+  background: var(--card);
+  border: var(--bw) solid var(--edge);
+  border-left: 8px solid var(--hive);
+  border-radius: var(--radius-lg);
+}
+.request > div:first-child {
+  display: grid;
+  gap: 4px;
+}
+.reqName {
+  font-size: 1.1rem;
+}
+.answer {
+  font-size: 0.92rem;
+}
+.answer span {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.guests {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+}
+.guestTools {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.search {
+  flex: 1 1 280px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 12px;
+  border: var(--bw) solid var(--edge);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+.search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+}
+.answers {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-3);
+  max-width: 44ch;
+}
+.closed {
+  margin-top: 40px;
+  padding: 16px;
+  border: 1px dashed var(--edge-strong);
+  border-radius: var(--radius-lg);
+}
+.closed summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+.closed ul {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+.closed li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}

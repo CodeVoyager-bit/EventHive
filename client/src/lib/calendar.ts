@@ -20,7 +20,7 @@ export function googleCalendarUrl(e: Event, pageUrl: string) {
 }
 
 // RFC 5545 text escaping and 75-octet line folding
-const esc = (s: string) => s.replace(/\\/g, "\\\\").replace(/;/g, "\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
+const esc = (s: string) => s.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
 const fold = (line: string) => line.match(/.{1,73}/g)?.join("\r\n ") ?? line;
 
 export function toIcs(e: Event, pageUrl: string) {

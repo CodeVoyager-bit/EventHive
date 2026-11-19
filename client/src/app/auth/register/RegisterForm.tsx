@@ -7,9 +7,9 @@ import { CalendarPlus, Eye, EyeSlash, Ticket, WarningCircle } from "@phosphor-ic
 import { api } from "@/lib/api";
 import s from "../auth.module.css";
 
-export default function RegisterForm({ next }: { next: string }) {
+export default function RegisterForm({ next, role }: { next: string; role: "attendee" | "organizer" }) {
   const router = useRouter();
-  const [form, setForm] = useState({ name: "", email: "", password: "", role: "attendee" });
+  const [form, setForm] = useState({ name: "", email: "", password: "", role: role as string });
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -39,7 +39,7 @@ export default function RegisterForm({ next }: { next: string }) {
       )}
       <div className="field">
         <label className="label" htmlFor="name">Full name</label>
-        <input id="name" name="name" autoComplete="name" className="input" placeholder="Priya Sharma" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required maxLength={80} />
+        <input id="name" name="name" autoComplete="name" className="input" placeholder="Your name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required maxLength={80} />
       </div>
       <div className="field">
         <label className="label" htmlFor="email">Email</label>
@@ -68,7 +68,7 @@ export default function RegisterForm({ next }: { next: string }) {
         </div>
       </div>
       <button type="submit" className="btn btn-primary btn-lg btn-block" disabled={busy}>
-        {busy ? "Creating Account…" : "Create Account"}
+        {busy ? "Creating account…" : "Create account"}
       </button>
       <p className={s.switch}>
         Already have an account? <Link href={`/auth/login${next !== "/" ? `?next=${encodeURIComponent(next)}` : ""}`}>Log in</Link>

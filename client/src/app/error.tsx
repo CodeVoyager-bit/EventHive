@@ -6,10 +6,10 @@ export default function ErrorPage({ error, reset }: { error: Error & { digest?: 
   return (
     <div className="container section">
       <div className="empty">
-        <WarningCircle size={40} weight="duotone" aria-hidden="true" />
+        <span className="empty-art"><WarningCircle size={32} weight="bold" aria-hidden="true" /></span>
         <h2 className="h3">Something went wrong</h2>
-        <p className="muted">{error.message || "Please try again in a moment."}</p>
-        <button className="btn btn-primary" onClick={reset}>Try Again</button>
+        <p>{error.message || "Please try again in a moment."}</p>
+        <button className="btn btn-primary" onClick={reset}>Try again</button>
       </div>
     </div>
   );

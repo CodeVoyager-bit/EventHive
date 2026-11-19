@@ -10,9 +10,7 @@
   overscroll-behavior: contain;
 }
 .palette::backdrop {
-  background: rgba(10, 8, 18, 0.45);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
+  background: var(--scrim);
   animation: fade 200ms ease-out;
 }
 .panel {
@@ -20,9 +18,9 @@
   flex-direction: column;
   max-height: 72vh;
   border-radius: var(--radius-lg);
-  background: var(--surface);
-  border: 1px solid var(--line);
-  box-shadow: 0 40px 80px -30px rgba(20, 10, 40, 0.55);
+  background: var(--card);
+  border: var(--bw) solid var(--edge);
+  box-shadow: var(--shadow-lg);
   overflow: hidden;
   animation: dropIn 260ms var(--ease-spring);
 }
@@ -65,8 +63,8 @@
   padding: 0 6px;
   margin-right: 3px;
   border-radius: 6px;
-  border: 1px solid var(--line-strong);
-  background: var(--surface-2);
+  border: 1px solid var(--edge);
+  background: var(--paper-2);
   font-family: var(--font-mono);
   font-size: 0.72rem;
   color: var(--text-2);
@@ -87,11 +85,12 @@
   align-items: center;
   gap: 12px;
   padding: 10px;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius);
   cursor: pointer;
 }
 .option[aria-selected="true"] {
-  background: var(--surface-2);
+  background: var(--hive);
+  color: var(--ink-fixed);
 }
 .icon {
   display: grid;
@@ -99,16 +98,17 @@
   width: 40px;
   height: 40px;
   flex-shrink: 0;
-  border-radius: var(--radius-sm);
-  background: var(--surface-2);
+  border-radius: var(--radius);
+  background: var(--paper-2);
   color: var(--text-2);
 }
 .option[aria-selected="true"] .icon {
-  background: var(--surface);
+  border-color: var(--edge);
 }
-:global([data-theme="light"]) .option[data-tone] .icon {
-  background: var(--tone-tint);
-  color: var(--tone-deep);
+.option[data-tone] .icon {
+  background: var(--tone);
+  color: var(--tone-on);
+  border: 1px solid var(--edge);
 }
 .date {
   display: grid;
@@ -151,7 +151,7 @@
 .option[aria-selected="true"] .go {
   opacity: 1;
   transform: none;
-  color: var(--accent-ink);
+  color: var(--text);
 }
 .none {
   padding: 28px 18px;

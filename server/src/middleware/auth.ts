@@ -26,3 +26,18 @@ export function requireUser(req: Request): AuthUser {
   if (!req.user) throw new HttpError(401, "Authentication required");
   return req.user;
 }
+
+// For public routes that show more to signed-in users (e.g. a secret address to ticket holders).
+// A missing or bad token just means "anonymous" here.
+export function optionalAuth(req: Request, _res: Response, next: NextFunction): void {
+  const header = req.headers.authorization;
+  if (header?.startsWith("Bearer ")) {
+    try {
+      const decoded = AuthService.verifyToken(header.slice("Bearer ".length));
+      req.user = { id: String(decoded.id), email: String(decoded.email), role: decoded.role as Role };
+    } catch {
+      // anonymous
+    }
+  }
+  next();
+}

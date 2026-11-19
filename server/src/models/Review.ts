@@ -5,6 +5,7 @@ export interface IReview extends Document {
   userId: mongoose.Types.ObjectId;
   rating: number;
   comment: string;
+  reply?: { body: string; createdAt: Date }; // the host's public answer
   createdAt: Date;
 }
 
@@ -13,6 +14,7 @@ const ReviewSchema: Schema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
   rating: { type: Number, required: true, min: 1, max: 5 },
   comment: { type: String, required: true, trim: true },
+  reply: { body: { type: String, trim: true }, createdAt: Date },
   createdAt: { type: Date, default: Date.now },
 });
 

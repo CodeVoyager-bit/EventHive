@@ -1,0 +1,40 @@
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-3);
+  cursor: pointer;
+}
+.trigger:hover {
+  color: var(--danger-text);
+  text-decoration: underline;
+}
+.body {
+  display: grid;
+  gap: 14px;
+}
+.title {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-stretch: 80%;
+  font-weight: 800;
+}
+.reasons {
+  display: grid;
+  gap: 8px;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}

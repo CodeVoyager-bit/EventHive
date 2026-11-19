@@ -1,68 +1,76 @@
+/* Flat poster masthead: paper, a 2px ink rule underneath, everything on one line */
 .header {
   position: sticky;
   top: 0;
   z-index: var(--z-nav);
-  padding-top: 10px;
-  height: var(--nav-h);
-}
-.wrap {
-  position: relative;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-bottom: var(--bw) solid var(--edge);
 }
 .bar {
-  height: 58px;
+  height: var(--nav-h);
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 0 8px 0 10px;
-  border-radius: var(--radius-full);
+  gap: 18px;
 }
-/* At the top of the page the bar sits flat on the page; scrolling turns it into a floating glass pill */
-@supports (animation-timeline: scroll()) {
-  .bar {
-    animation: settle linear both;
-    animation-timeline: scroll(root);
-    animation-range: 0px 90px;
-  }
-}
-@keyframes settle {
-  from {
-    background-color: transparent;
-    border-color: transparent;
-    box-shadow: none;
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-    padding-inline: 0;
-  }
-}
-
 .logo {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-right: 20px;
+  gap: 8px;
   font-family: var(--font-display);
-  font-stretch: 85%;
   font-weight: 800;
-  font-size: 1.35rem;
-  letter-spacing: -0.01em;
-  flex-shrink: 0;
+  font-size: 1.5rem;
+  font-stretch: 80%;
+  letter-spacing: -0.02em;
+  flex: none;
 }
-.logo b {
-  color: var(--accent-ink);
-  font-weight: inherit;
+.logo svg {
+  transition: rotate 500ms var(--ease-spring);
 }
-.logoMark {
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  background: var(--accent-soft);
-  transition: rotate 600ms var(--ease-spring), scale 600ms var(--ease-spring);
+.logo:hover svg {
+  rotate: 60deg;
 }
-.logo:hover .logoMark {
-  rotate: -14deg;
-  scale: 1.08;
+
+.city {
+  anchor-name: --city;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 12px;
+  border: var(--bw) solid var(--edge);
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: 0.85rem;
+  background: var(--card);
+  flex: none;
+}
+.city:hover {
+  background: var(--hive);
+  color: var(--ink-fixed);
+  border-color: var(--edge);
+}
+.cityName {
+  max-width: 11ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@supports (anchor-name: --x) {
+  .cityMenu {
+    position-anchor: --city;
+    top: calc(anchor(bottom) + 8px);
+    left: anchor(left);
+  }
+}
+.cityMenu :global(.pop-item) {
+  justify-content: space-between;
+}
+.count {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-3);
 }
 
 .links {
@@ -72,208 +80,206 @@
 }
 .link {
   position: relative;
-  display: inline-flex;
-  align-items: center;
-  min-height: 40px;
-  padding: 0 12px;
-  font-weight: 550;
+  padding: 8px 10px;
+  font-weight: 700;
   font-size: 0.95rem;
-  color: var(--text-2);
-  transition: color var(--dur-fast);
+  white-space: nowrap;
 }
-/* Underline grows from the left on hover; stays full on the current page */
 .link::after {
   content: "";
   position: absolute;
-  left: 12px;
-  right: 12px;
-  bottom: 6px;
-  height: 2px;
-  border-radius: 2px;
-  background: var(--accent-ink);
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform 380ms var(--ease-out);
-}
-.link:hover {
-  color: var(--text);
+  left: 10px;
+  right: 10px;
+  bottom: 2px;
+  height: 4px;
+  background: var(--hive);
+  scale: 0 1;
+  transform-origin: left;
+  transition: scale var(--dur) var(--ease-out);
 }
 .link:hover::after,
 .link[aria-current="page"]::after {
-  transform: scaleX(1);
-}
-.link[aria-current="page"] {
-  color: var(--text);
-  font-weight: 650;
+  scale: 1 1;
 }
 
 .right {
-  display: flex;
-  align-items: center;
-  gap: 4px;
   margin-left: auto;
-  flex-shrink: 0;
-}
-.divider {
-  width: 1px;
-  height: 22px;
-  margin: 0 6px;
-  background: var(--line-strong);
-}
-.desktopOnly {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
-.login {
+.search {
   display: inline-flex;
   align-items: center;
+  gap: 10px;
   min-height: 40px;
-  padding: 0 12px;
+  padding: 0 10px 0 12px;
+  border: var(--bw) solid var(--edge);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--text-2);
+  font-size: 0.9rem;
+  min-width: 220px;
+  transition: box-shadow var(--dur-fast);
+}
+.search:hover {
+  box-shadow: var(--shadow-sm);
+}
+.searchText {
+  flex: 1;
+  text-align: left;
+}
+.kbd {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 1px 6px;
+  border: 1px solid var(--edge);
+  border-radius: 3px;
+  color: var(--text-3);
+}
+.bell {
+  position: relative;
+}
+.dot {
+  position: absolute;
+  top: 2px;
+  right: 0;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-full);
+  background: var(--hive);
+  color: var(--ink-fixed);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.account {
+  anchor-name: --account;
+  border-radius: var(--radius);
+}
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  background: var(--hive);
+  color: var(--ink-fixed);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.85rem;
+  transition: translate var(--dur-fast), box-shadow var(--dur-fast);
+}
+.account:hover .avatar {
+  translate: 0 -1px;
+  box-shadow: var(--shadow-sm);
+}
+@supports (anchor-name: --x) {
+  .accountMenu {
+    position-anchor: --account;
+    top: calc(anchor(bottom) + 8px);
+    right: anchor(right);
+  }
+}
+.who {
+  display: grid;
+  padding: 8px 10px 4px;
+}
+.who span {
+  font-size: 0.8rem;
+  color: var(--text-3);
+}
+.desktopOnly {
+  display: inline-flex;
+}
+
+/* Phones: an app-style tab bar along the bottom (the top bar keeps logo, city, search, account) */
+.tabbar {
+  display: none;
+}
+.tab {
+  flex: 1;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 8px 4px 6px;
+  font-size: 0.7rem;
   font-weight: 600;
-  font-size: 0.93rem;
+  color: var(--text-3);
+  border-radius: var(--radius);
+}
+.tab[aria-current="page"] {
   color: var(--text);
+}
+.tab[aria-current="page"] .tabIcon {
+  background: var(--hive);
+  color: var(--ink-fixed);
+}
+.tabIcon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 30px;
   border-radius: var(--radius-full);
   transition: background-color var(--dur-fast);
 }
-.login:hover {
-  background: var(--surface-2);
-}
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 3px 12px 3px 3px;
-  border-radius: var(--radius-full);
-  background: var(--surface-2);
-  font-size: 0.88rem;
-  font-weight: 600;
-}
-.avatar {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
+.tabBadge {
+  position: absolute;
+  top: -2px;
+  right: 4px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
   display: grid;
   place-items: center;
-  background: var(--accent);
-  color: #fff;
-  font-size: 0.78rem;
+  border-radius: var(--radius-full);
+  background: #f2483b;
+  color: var(--ink-fixed);
+  font-size: 0.62rem;
   font-weight: 700;
 }
-.iconBtn {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  color: var(--text-2);
-  transition: background-color var(--dur-fast), color var(--dur-fast), rotate 500ms var(--ease-spring);
-}
-.iconBtn:hover {
-  background: var(--surface-2);
-  color: var(--text);
-}
-.iconBtn:hover svg {
-  rotate: 18deg;
-  transition: rotate 500ms var(--ease-spring);
-}
-.burger,
-.mobile {
-  display: none;
-}
 
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
+  .search {
+    min-width: 0;
+  }
+  .searchText,
+  .kbd {
+    display: none;
+  }
+}
+@media (max-width: 860px) {
   .links,
-  .desktopOnly,
-  .divider {
+  .desktopOnly {
     display: none;
   }
-  .burger {
-    display: grid;
+  .bar {
+    gap: 10px;
   }
-  .mobile {
-    position: absolute;
-    top: 66px;
-    left: 16px;
-    right: 16px;
+  .tabbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: var(--z-nav);
     display: flex;
-    flex-direction: column;
     gap: 2px;
-    padding: 12px;
-    border-radius: var(--radius-lg);
-    animation: drop var(--dur) var(--ease-out);
-  }
-  .mobile .link {
-    min-height: 48px;
-    font-size: 1.05rem;
-  }
-  .mobile .link::after {
-    display: none;
-  }
-  .mobileAuth {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 8px;
-    padding-top: 12px;
-    border-top: 1px solid var(--line);
+    padding: 4px 8px calc(4px + env(safe-area-inset-bottom));
+    background: color-mix(in srgb, var(--card) 94%, transparent);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--edge);
   }
 }
 @media (max-width: 480px) {
-  .logo {
-    margin-right: 0;
-  }
-}
-@keyframes drop {
-  from {
-    opacity: 0;
-    transform: translateY(-8px) scale(0.98);
-  }
-}
-
-/* Search pill opens the ⌘K palette */
-.searchPill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 40px;
-  padding: 0 8px 0 12px;
-  margin-right: 2px;
-  border-radius: var(--radius-full);
-  border: 1px solid var(--line);
-  background: var(--surface);
-  color: var(--text-3);
-  font-size: 0.88rem;
-  transition: border-color var(--dur-fast), color var(--dur-fast);
-}
-.searchPill:hover {
-  border-color: var(--line-strong);
-  color: var(--text);
-}
-.searchText {
-  min-width: 64px;
-  text-align: left;
-}
-.searchKbd {
-  padding: 2px 7px;
-  border-radius: 6px;
-  border: 1px solid var(--line-strong);
-  background: var(--surface-2);
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: var(--text-2);
-}
-@media (max-width: 1100px) {
-  .searchText,
-  .searchKbd {
+  .logo span {
     display: none;
-  }
-  .searchPill {
-    width: 40px;
-    padding: 0;
-    justify-content: center;
-    border-color: transparent;
-    background: transparent;
   }
 }

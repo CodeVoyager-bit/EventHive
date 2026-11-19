@@ -1,0 +1,92 @@
+.head {
+  padding-block: 40px 24px;
+}
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 14px;
+  margin-bottom: 12px;
+}
+.tile {
+  display: grid;
+  gap: 4px;
+  padding: 16px 18px;
+  background: var(--card);
+  border: var(--bw) solid var(--edge);
+  border-radius: var(--radius-lg);
+}
+.tile:first-child {
+  background: var(--hive);
+  color: var(--ink-fixed);
+  border-color: var(--edge);
+}
+.tile:first-child :global(.muted) {
+  color: var(--ink-fixed);
+}
+.tile strong {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-stretch: 78%;
+  line-height: 1.05;
+}
+.section {
+  margin-top: 48px;
+}
+.name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+}
+.name svg {
+  color: #2a44d6;
+}
+
+/* Report queue */
+.clear {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  color: var(--success-text);
+  font-weight: 600;
+}
+.reports {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+}
+.report {
+  display: grid;
+  gap: 10px;
+  padding: 16px 18px;
+  background: var(--card);
+  border: var(--bw) solid var(--edge);
+  border-left: 5px solid var(--danger-text);
+  border-radius: var(--radius-lg);
+}
+.reportHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.quote {
+  margin: 0;
+  padding-left: 12px;
+  border-left: 3px solid var(--edge-strong);
+  font-style: italic;
+  overflow-wrap: anywhere;
+}
+.reasonList {
+  display: grid;
+  gap: 4px;
+  font-size: 0.9rem;
+}
+.reasonList li {
+  overflow-wrap: anywhere;
+}
+.reportActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}

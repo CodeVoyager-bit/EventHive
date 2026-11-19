@@ -3,12 +3,13 @@
 import { useState } from "react";
 import { Check, ShareNetwork } from "@phosphor-icons/react";
 
-// Native share sheet where available; otherwise copy the link
-export default function ShareButton({ title }: { title: string }) {
+// Native share sheet where available; otherwise copy the link.
+// Signed-in visitors share their personal referral link (?ref=), which the host sees in analytics.
+export default function ShareButton({ title, path, label = "Share" }: { title: string; path?: string; label?: string }) {
   const [copied, setCopied] = useState(false);
 
   async function share() {
-    const url = location.href;
+    const url = path ? new URL(path, location.origin).toString() : location.href;
     if (navigator.share) {
       try {
         await navigator.share({ title, url });
@@ -28,8 +29,8 @@ export default function ShareButton({ title }: { title: string }) {
 
   return (
     <button type="button" className="btn btn-secondary btn-sm" onClick={share}>
-      {copied ? <Check size={16} weight="bold" aria-hidden="true" /> : <ShareNetwork size={16} aria-hidden="true" />}
-      <span aria-live="polite">{copied ? "Link Copied" : "Share"}</span>
+      {copied ? <Check size={16} weight="bold" aria-hidden="true" /> : <ShareNetwork size={16} weight="bold" aria-hidden="true" />}
+      <span aria-live="polite">{copied ? "Link copied" : label}</span>
     </button>
   );
 }

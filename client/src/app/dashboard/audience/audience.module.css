@@ -1,0 +1,100 @@
+.wrap {
+  margin-top: 8px;
+}
+.tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.filters {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  flex: 1 1 auto;
+}
+.search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 1 260px;
+  min-width: 0;
+  padding: 0 12px;
+  height: 38px;
+  background: var(--card);
+  border: var(--bw) solid var(--edge-strong);
+  border-radius: var(--radius);
+  color: var(--text-3);
+}
+.search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--text);
+  outline: none;
+}
+.search:focus-within {
+  box-shadow: var(--ring);
+}
+.people {
+  display: grid;
+  gap: 8px;
+}
+.person {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1.4fr) minmax(0, 0.9fr) minmax(0, 1.2fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  background: var(--card);
+  border: var(--bw) solid var(--edge);
+  border-radius: var(--radius-lg);
+}
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--hive);
+  color: var(--ink-fixed);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+.who,
+.stats,
+.last {
+  display: grid;
+  min-width: 0;
+}
+.who span,
+.last span {
+  overflow-wrap: anywhere;
+}
+.badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+@media (max-width: 860px) {
+  .person {
+    grid-template-columns: 40px minmax(0, 1fr);
+    gap: 6px 12px;
+  }
+  .stats,
+  .last,
+  .badges {
+    grid-column: 2;
+  }
+  .badges {
+    justify-content: flex-start;
+  }
+  .search {
+    flex: 1 1 100%;
+  }
+}

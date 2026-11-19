@@ -42,6 +42,11 @@ class AuthService {
     return { user: this.publicUser(user), token: this.generateToken(user) };
   }
 
+  // Profile edits change the name inside the token, so the session cookie is re-issued
+  tokenFor(user: IUser): string {
+    return this.generateToken(user);
+  }
+
   verifyToken(token: string): jwt.JwtPayload {
     return jwt.verify(token, this.jwtSecret) as jwt.JwtPayload;
   }

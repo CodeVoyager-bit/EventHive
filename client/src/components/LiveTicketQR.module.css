@@ -1,0 +1,98 @@
+.wrap {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+}
+.qr {
+  position: relative;
+  padding: 12px;
+  background: #ffffff;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.qr svg {
+  display: block;
+}
+/* A diagonal band of hive yellow keeps sweeping across: a screenshot can't do that */
+.sheen {
+  position: absolute;
+  inset: -40%;
+  background: linear-gradient(115deg, transparent 42%, rgba(255, 210, 63, 0.55) 50%, transparent 58%);
+  mix-blend-mode: multiply;
+  animation: sweep 2.6s linear infinite;
+  pointer-events: none;
+}
+@keyframes sweep {
+  from {
+    translate: -60% 0;
+  }
+  to {
+    translate: 60% 0;
+  }
+}
+.code {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.digits {
+  font-size: 1.3rem;
+}
+.timerRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 240px;
+}
+.secs {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+.timer {
+  flex: 1;
+  height: 6px;
+  border: 1.5px solid var(--edge);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.bar {
+  display: block;
+  height: 100%;
+  background: var(--hive);
+  transform-origin: left;
+  animation: drain 30s linear forwards;
+}
+@keyframes drain {
+  from {
+    scale: 1 1;
+  }
+  to {
+    scale: 0 1;
+  }
+}
+.placeholder {
+  border: 1px dashed var(--edge-strong);
+  border-radius: var(--radius);
+  background: var(--paper-2);
+}
+@media (prefers-reduced-motion: reduce) {
+  .sheen {
+    animation: none;
+    display: none;
+  }
+}
+.unsupported {
+  max-width: 260px;
+  padding: 14px;
+  border: 1px dashed var(--edge-strong);
+  border-radius: var(--radius);
+  font-size: 0.88rem;
+  text-align: center;
+}

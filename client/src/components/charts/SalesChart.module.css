@@ -1,0 +1,100 @@
+.figure {
+  display: grid;
+  gap: 12px;
+}
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.title {
+  display: grid;
+  gap: 2px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.4rem;
+  font-stretch: 80%;
+}
+.title span {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 0.78rem;
+  color: var(--text-3);
+}
+.toggle {
+  display: flex;
+  gap: 6px;
+}
+.plot {
+  position: relative;
+}
+.svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.grid {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+.base {
+  stroke: var(--text);
+  stroke-width: 1.5;
+}
+.axis {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  fill: var(--text-3);
+}
+.hit {
+  fill: transparent;
+}
+.bar {
+  fill: var(--hive);
+  stroke: var(--ink-fixed);
+  stroke-width: 1.5;
+  transition: fill var(--dur-fast);
+}
+.bar.on {
+  fill: var(--hive-hover);
+}
+.mark {
+  outline: none;
+  cursor: default;
+}
+.mark:focus-visible .hit {
+  fill: var(--line);
+}
+.tip {
+  position: absolute;
+  translate: -50% calc(-100% - 10px);
+  display: grid;
+  gap: 1px;
+  padding: 8px 10px;
+  background: var(--card);
+  color: var(--text);
+  border: var(--bw) solid var(--edge);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  font-size: 0.8rem;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 2;
+}
+.tip span {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-2);
+}
+.tableTwin summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-2);
+  width: fit-content;
+}
+.tableTwin[open] summary {
+  margin-bottom: 8px;
+}

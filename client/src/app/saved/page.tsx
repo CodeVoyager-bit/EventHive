@@ -19,7 +19,7 @@ export default async function SavedPage() {
       <header className={s.head}>
         <h1 className="h1">Saved</h1>
         {events.length > 0 && (
-          <p className="muted num">
+          <p className="mono muted">
             {upcoming.length} upcoming{past.length > 0 && `, ${past.length} past`}
           </p>
         )}
@@ -27,23 +27,23 @@ export default async function SavedPage() {
 
       {events.length === 0 ? (
         <div className="empty">
-          <Heart size={40} weight="duotone" aria-hidden="true" />
+          <span className="empty-art"><Heart size={32} weight="bold" aria-hidden="true" /></span>
           <h2 className="h3">Nothing saved yet</h2>
-          <p className="muted">Tap the heart on any event to keep it here for later.</p>
-          <Link href="/events" className="btn btn-primary">Browse Events</Link>
+          <p>Tap the heart on any event to keep it here, and to count yourself as interested.</p>
+          <Link href="/events" className="btn btn-primary">Browse events</Link>
         </div>
       ) : (
         <>
           {upcoming.length > 0 && (
             <div className="grid-cards">
-              {upcoming.map((event) => (
-                <EventCard key={event._id} event={event} saved signedIn />
+              {upcoming.map((event, i) => (
+                <EventCard key={event._id} event={event} eager={i < 3} saved signedIn />
               ))}
             </div>
           )}
           {past.length > 0 && (
             <>
-              <h2 className={s.group}>Already happened</h2>
+              <h2 className={`h2 ${s.group}`}>Already happened</h2>
               <div className="grid-cards">
                 {past.map((event) => (
                   <EventCard key={event._id} event={event} saved signedIn />

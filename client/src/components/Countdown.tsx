@@ -13,11 +13,11 @@ const pad = (n: number) => String(n).padStart(2, "0");
 
 // Live time-to-start. Renders a placeholder on the server, then ticks on the client;
 // each digit that changes re-mounts and flips in.
-export default function Countdown({ to }: { to: string }) {
+export default function Countdown({ to, doneLabel = "Happening now" }: { to: string; doneLabel?: string }) {
   const now = useSyncExternalStore(subscribe, nowSeconds, () => null);
   const left = now === null ? null : Math.max(0, Math.floor(new Date(to).getTime() / 1000) - now);
 
-  if (left === 0) return <span className={s.live}>Happening now</span>;
+  if (left === 0) return <span className={s.live}>{doneLabel}</span>;
 
   const text =
     left === null

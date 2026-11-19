@@ -15,6 +15,7 @@
   white-space: pre;
 }
 .live {
+  font-family: var(--font-mono);
   font-weight: 700;
 }
 @keyframes flip {

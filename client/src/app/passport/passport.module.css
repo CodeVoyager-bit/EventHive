@@ -1,0 +1,240 @@
+.wrap {
+  padding-top: 32px;
+}
+
+/* The cover: always ink and hive yellow, like a real passport */
+.cover {
+  display: grid;
+  gap: 28px;
+  padding: 28px;
+  background: var(--ink-fixed);
+  color: #f6f6f3;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+.coverTop {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.emblem {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--hive);
+  color: var(--ink-fixed);
+  outline: 2px dashed var(--hive);
+  outline-offset: 4px;
+}
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--hive);
+}
+.name {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 6vw, 3.2rem);
+  font-stretch: 78%;
+  font-weight: 800;
+  line-height: 1.02;
+  overflow-wrap: anywhere;
+}
+.since {
+  opacity: 0.75;
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  border-top: 1px dashed rgba(246, 246, 243, 0.25);
+  padding-top: 20px;
+}
+.stats dt {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+.stats dd {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-stretch: 78%;
+  font-weight: 800;
+  line-height: 1.05;
+  color: var(--hive);
+}
+
+.section {
+  margin-top: 48px;
+}
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+/* Rubber stamps, inked in the event's category colour */
+.stamps {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+}
+.stamp {
+  display: grid;
+  gap: 4px;
+  align-content: center;
+  justify-items: center;
+  min-height: 150px;
+  padding: 18px 14px;
+  text-align: center;
+  color: var(--tone-deep);
+  border: 3px solid currentColor;
+  outline: 1.5px solid currentColor;
+  outline-offset: -9px;
+  border-radius: 14px;
+  transform: rotate(var(--tilt, 0deg));
+  transition: transform var(--dur) var(--ease-out);
+}
+.stamp:hover,
+.stamp:focus-visible {
+  transform: rotate(0deg) scale(1.03);
+}
+.stampDate {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.stampTitle {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-stretch: 78%;
+  font-weight: 800;
+  line-height: 1.05;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+.stampPlace {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* Badges: earned ones light up in hive yellow */
+.badges {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+.badge {
+  display: flex;
+  gap: 14px;
+  padding: 16px;
+  background: var(--card);
+  border: var(--bw) solid var(--edge);
+  border-radius: var(--radius-lg);
+}
+.badgeIcon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--line);
+  color: var(--text-3);
+}
+.badge[data-earned="true"] .badgeIcon {
+  background: var(--hive);
+  color: var(--ink-fixed);
+}
+.badgeBody {
+  display: grid;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+.meter,
+.bar {
+  flex: 1;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--line);
+  overflow: hidden;
+}
+.meter span,
+.bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--text-3);
+}
+.badge[data-earned="true"] .meter span {
+  background: var(--hive);
+}
+
+/* Scenes: how often you go out for each category */
+.scenes {
+  display: grid;
+  gap: 12px;
+  max-width: 640px;
+}
+.scenes li {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr) 2ch;
+  align-items: center;
+  gap: 14px;
+}
+.sceneLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+.bar {
+  height: 12px;
+}
+.bar span {
+  background: var(--tone);
+}
+
+@media (max-width: 640px) {
+  .cover {
+    padding: 22px 18px;
+  }
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .stamps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .stamp {
+    min-height: 130px;
+  }
+  .scenes li {
+    grid-template-columns: 96px minmax(0, 1fr) 2ch;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stamp {
+    transition: none;
+  }
+}
