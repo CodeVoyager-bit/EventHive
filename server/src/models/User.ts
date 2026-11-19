@@ -6,7 +6,12 @@ export interface IUser extends Document {
   email: string;
   password: string;
   role: "attendee" | "organizer" | "admin";
+  city?: string;
+  bio?: string;
+  verified: boolean; // hosts verified by an admin get a badge
   saved: mongoose.Types.ObjectId[];
+  following: mongoose.Types.ObjectId[]; // hosts this user follows
+  calendarToken?: string; // secret in the private calendar feed URL (resettable)
   createdAt: Date;
 }
 
@@ -20,10 +25,20 @@ const UserSchema: Schema = new Schema({
     enum: ["attendee", "organizer", "admin"],
     default: "attendee",
   },
+  city: { type: String, trim: true, maxlength: 60 },
+  bio: { type: String, trim: true, maxlength: 400 },
+  verified: { type: Boolean, default: false },
   // Events the user bookmarked (hearted)
   saved: [{ type: Schema.Types.ObjectId, ref: "Event" }],
+  following: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  calendarToken: { type: String, select: false },
   createdAt: { type: Date, default: Date.now },
 });
+
+// "Interested" counts and follower counts are lookups on these arrays
+UserSchema.index({ saved: 1 });
+UserSchema.index({ following: 1 });
+UserSchema.index({ calendarToken: 1 }, { unique: true, sparse: true });
 
 // Encapsulation: instance method hidden behind the model
 UserSchema.methods.getPublicProfile = function (): Partial<IUser> {

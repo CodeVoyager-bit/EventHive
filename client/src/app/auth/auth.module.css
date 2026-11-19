@@ -1,61 +1,40 @@
 .page {
   display: grid;
   gap: 24px;
-  padding-block: 16px 24px;
+  padding-block: 24px;
   min-height: calc(100dvh - var(--nav-h));
 }
 @media (min-width: 900px) {
   .page {
     grid-template-columns: 1fr 1fr;
-    gap: 48px;
+    gap: 56px;
     align-items: stretch;
   }
 }
 .visual {
-  position: relative;
-  min-height: 220px;
-  border-radius: var(--radius-xl);
-  overflow: hidden;
+  min-height: 240px;
   display: flex;
   align-items: flex-end;
-  background: #111;
-}
-:global([data-theme="light"]) .visual {
-  background: linear-gradient(135deg, #ff3d8b, #7a4df5 55%, #2f5bff);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
 }
 .visual img {
-  object-fit: cover;
-  animation: settle 1.6s var(--ease-out) backwards;
-}
-@keyframes settle {
-  from {
-    transform: scale(1.08);
-  }
-}
-.visual::after {
-  content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 35%, rgba(8, 8, 12, 0.85));
-}
-.visualText {
-  position: relative;
-  z-index: 1;
-  padding: 32px;
 }
 .visualTitle {
-  color: #fff;
-  font-size: clamp(2.4rem, 5vw, 4.4rem);
+  position: relative;
+  z-index: 2;
+  margin: 28px;
+  padding: 10px 14px;
+  background: var(--hive);
+  color: var(--ink-fixed);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  font-size: clamp(2.4rem, 4.6vw, 4.2rem);
   line-height: 0.92;
-  max-width: 11ch;
-}
-@media (max-width: 899px) {
-  .visualText {
-    padding: 20px 24px;
-  }
-  .visualTitle {
-    font-size: 2.4rem;
-  }
+  max-width: 10ch;
 }
 .formSide {
   display: flex;
@@ -69,11 +48,8 @@
   display: grid;
   gap: 18px;
 }
-.form h1 {
-  margin-bottom: 4px;
-}
 .sub {
-  color: var(--text-3);
+  color: var(--text-2);
   margin-top: -8px;
 }
 .passwordWrap {
@@ -87,13 +63,12 @@
   right: 4px;
   top: 50%;
   transform: translateY(-50%);
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   display: grid;
   place-items: center;
-  color: var(--text-3);
-  border-radius: var(--radius-sm);
-  transition: color var(--dur-fast);
+  color: var(--text-2);
+  border-radius: var(--radius);
 }
 .eye:hover {
   color: var(--text);
@@ -101,44 +76,61 @@
 .roles {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: 10px;
 }
 .role {
   padding: 14px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--line-strong);
-  background: var(--surface);
+  border-radius: var(--radius);
+  border: var(--bw) solid var(--edge);
+  background: var(--card);
   text-align: left;
   display: grid;
   gap: 4px;
-  transition: border-color var(--dur-fast), background-color var(--dur-fast), transform var(--dur) var(--ease-spring);
+  transition: translate var(--dur-fast), box-shadow var(--dur-fast), background-color var(--dur-fast);
 }
 .role:hover {
-  border-color: var(--text-3);
-}
-.role:active {
-  transform: scale(0.98);
+  background: var(--paper-2);
 }
 .role[aria-checked="true"] {
-  border-color: var(--accent-ink);
-  background: var(--accent-soft);
+  background: var(--hive);
+  color: var(--ink-fixed);
+  border-color: var(--edge);
+  translate: 0 -2px;
+  box-shadow: var(--shadow-sm);
 }
 .role strong {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.93rem;
+  font-size: 0.95rem;
 }
 .role span {
-  font-size: 0.8rem;
-  color: var(--text-3);
+  font-size: 0.82rem;
+  opacity: 0.8;
 }
 .switch {
   text-align: center;
-  font-size: 0.93rem;
-  color: var(--text-3);
+  font-size: 0.95rem;
+  color: var(--text-2);
 }
 .switch a {
-  color: var(--accent-ink);
-  font-weight: 600;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: var(--hive);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 4px;
+  color: var(--text);
+}
+.demo {
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  padding-top: 14px;
+  border-top: 1px dashed var(--edge-strong);
+}
+.demoRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
 }

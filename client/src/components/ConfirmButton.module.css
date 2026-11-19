@@ -3,17 +3,20 @@
   gap: 12px;
 }
 .icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius);
   display: grid;
   place-items: center;
-  background: color-mix(in srgb, var(--danger-text) 14%, transparent);
-  color: var(--danger-text);
+  background: #f2483b;
+  color: var(--ink-fixed);
+  border: 1px solid var(--edge);
 }
 .title {
-  font-size: 1.2rem;
-  font-weight: 650;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-stretch: 80%;
+  font-weight: 800;
 }
 .desc {
   color: var(--text-2);

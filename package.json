@@ -1,0 +1,12 @@
+{
+  "name": "eventhive",
+  "private": true,
+  "description": "EventHive: event discovery and ticketing (Express API in server/, Next.js app in client/)",
+  "scripts": {
+    "setup": "npm install --prefix server && npm install --prefix client",
+    "dev": "npm run dev --prefix server & npm run dev --prefix client & wait",
+    "seed": "npm run seed --prefix server",
+    "test": "npm test --prefix server",
+    "check": "npm run typecheck --prefix server && npm test --prefix server && npm run lint --prefix client && cd client && npx tsc --noEmit"
+  }
+}

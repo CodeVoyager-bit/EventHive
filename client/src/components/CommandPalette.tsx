@@ -4,6 +4,7 @@ import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type R
 import { useRouter } from "next/navigation";
 import { ArrowRight, ClockCounterClockwise, Compass, GridFour, Heart, House, MagnifyingGlass, PlusCircle, SignIn, Ticket, UserPlus } from "@phosphor-icons/react";
 import { CATEGORY_META } from "@/lib/categories";
+import { formatDate, todayInIndia } from "@/lib/format";
 import type { Event, SessionUser } from "@/types";
 import s from "./CommandPalette.module.css";
 
@@ -45,21 +46,20 @@ export default function CommandPalette({ user, onClose }: { user: SessionUser | 
     const needle = q.trim().toLowerCase();
     const match = (text: string) => !needle || text.toLowerCase().includes(needle);
     const organizer = user?.role === "organizer" || user?.role === "admin";
-    const today = new Date().toISOString().slice(0, 10);
+    const today = todayInIndia();
 
     const eventItems: Item[] = events.map((e) => {
-      const d = new Date(e.date);
       return {
         key: `e-${e._id}`,
         group: needle ? "Events" : "Coming up",
         label: e.title,
-        hint: `${d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })} · ${e.location}`,
+        hint: `${formatDate(e.date)} · ${e.location}`,
         href: `/events/${e._id}`,
         tone: CATEGORY_META[e.category]?.tone,
         icon: (
           <span className={s.date}>
-            <b>{d.getDate()}</b>
-            {d.toLocaleDateString("en-US", { month: "short" })}
+            <b>{formatDate(e.date, { day: "numeric" })}</b>
+            {formatDate(e.date, { month: "short" })}
           </span>
         ),
       };

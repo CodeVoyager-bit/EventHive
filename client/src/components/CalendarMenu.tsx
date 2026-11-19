@@ -9,13 +9,13 @@ export default function CalendarMenu({ event, pageUrl }: { event: Event; pageUrl
   return (
     <>
       <button type="button" className={`btn btn-secondary btn-sm ${s.trigger}`} popoverTarget={id}>
-        <CalendarPlus size={16} aria-hidden="true" /> Add to Calendar
+        <CalendarPlus size={16} weight="bold" aria-hidden="true" /> Add to calendar
       </button>
-      <div id={id} popover="auto" className={s.menu}>
-        <a href={googleCalendarUrl(event, pageUrl)} target="_blank" rel="noreferrer" className={s.item}>
+      <div id={id} popover="auto" className={`pop ${s.menu}`}>
+        <a href={googleCalendarUrl(event, pageUrl)} target="_blank" rel="noreferrer" className="pop-item">
           <GoogleLogo size={18} aria-hidden="true" /> Google Calendar
         </a>
-        <a href={`/events/${event._id}/calendar.ics`} download className={s.item}>
+        <a href={`/events/${event._id}/calendar.ics`} download className="pop-item">
           <DownloadSimple size={18} aria-hidden="true" /> Apple or Outlook (.ics)
         </a>
       </div>

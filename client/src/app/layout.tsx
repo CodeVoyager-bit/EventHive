@@ -1,30 +1,33 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, Geist, Geist_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Geist_Mono, Instrument_Sans } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import PointerFX from "@/components/PointerFX";
+import ServiceWorker from "@/components/ServiceWorker";
 
-// Archivo's width axis gives poster-style condensed display type; Geist carries body and UI.
-const archivo = Archivo({ subsets: ["latin"], axes: ["wdth"], variable: "--font-archivo", display: "swap" });
-const geist = Geist({ subsets: ["latin"], variable: "--font-geist", display: "swap" });
-const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", display: "swap", preload: false }); // ticket codes only
+// Hive Print type: Bricolage Grotesque (condensed, heavy) for headlines, Instrument Sans for reading
+// and UI, Geist Mono for ticket codes and figures.
+const bricolage = Bricolage_Grotesque({ subsets: ["latin"], axes: ["opsz", "wdth"], variable: "--font-bricolage", display: "swap" });
+const instrument = Instrument_Sans({ subsets: ["latin"], axes: ["wdth"], variable: "--font-instrument", display: "swap" });
+const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", display: "swap" });
 
 export const metadata: Metadata = {
-  title: { default: "EventHive: Discover & Book Events", template: "%s · EventHive" },
+  title: { default: "EventHive: gigs, meetups and more across India", template: "%s · EventHive" },
   description:
-    "EventHive is your gateway to discovering, organizing, and attending unforgettable events. Browse concerts, tech meetups, sports, and more.",
+    "Find gigs, meetups, runs, workshops and supper clubs across India. Book in seconds and get in with a live ticket that can't be screenshotted.",
+  appleWebApp: { capable: true, title: "EventHive", statusBarStyle: "default" },
+  icons: { apple: "/icons/apple-touch-icon.png" },
 };
 
-// Light (colourful) by default; dark only when the visitor picks it
+// Light (day print) by default; dark (night print) when the visitor picks it
 async function getTheme() {
   return (await cookies()).get("theme")?.value === "dark" ? "dark" : "light";
 }
 
 export async function generateViewport(): Promise<Viewport> {
   const theme = await getTheme();
-  return { themeColor: theme === "light" ? "#f7f6fb" : "#0b0b0f", colorScheme: theme };
+  return { themeColor: theme === "light" ? "#f6f6f3" : "#111113", colorScheme: theme };
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -32,15 +35,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const theme = await getTheme();
 
   return (
-    <html lang="en" data-theme={theme} data-scroll-behavior="smooth" className={`${archivo.variable} ${geist.variable} ${geistMono.variable}`}>
+    <html lang="en-IN" data-theme={theme} data-scroll-behavior="smooth" className={`${bricolage.variable} ${instrument.variable} ${geistMono.variable}`}>
       <body>
-        <a href="#main" className="skip-link">Skip to Content</a>
+        <a href="#main" className="skip-link">Skip to content</a>
         <Navbar theme={theme} />
         <main id="main" className="main">
           {children}
         </main>
         <Footer />
-        <PointerFX />
+        <ServiceWorker />
       </body>
     </html>
   );

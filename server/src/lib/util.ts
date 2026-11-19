@@ -6,3 +6,6 @@ export const idOf = (ref: unknown): string => {
 
 // Make user input safe to embed in a RegExp.
 export const escapeRegex = (s: string): string => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+// Shorten text for a notification preview.
+export const clip = (s: string, max = 140): string => (s.length > max ? `${s.slice(0, max - 3)}...` : s);

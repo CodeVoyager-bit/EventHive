@@ -8,6 +8,10 @@ import eventRoutes from "./routes/eventRoutes";
 import bookingRoutes from "./routes/bookingRoutes";
 import reviewRoutes from "./routes/reviewRoutes";
 import meRoutes from "./routes/meRoutes";
+import ticketRoutes from "./routes/ticketRoutes";
+import hostRoutes from "./routes/hostRoutes";
+import calendarRoutes from "./routes/calendarRoutes";
+import adminRoutes from "./routes/adminRoutes";
 
 const app = express();
 
@@ -26,6 +30,10 @@ app.use("/api/events", eventRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/me", meRoutes);
+app.use("/api/tickets", ticketRoutes);
+app.use("/api/hosts", hostRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/calendar", calendarRoutes);
 
 // Health check
 app.get("/api/health", (_req, res) => {

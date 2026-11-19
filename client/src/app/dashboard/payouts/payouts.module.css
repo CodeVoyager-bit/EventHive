@@ -1,0 +1,14 @@
+/* On phones the amount drops under the title, so event names aren't cut short */
+@media (max-width: 640px) {
+  .row {
+    grid-template-columns: 56px minmax(0, 1fr);
+    align-items: start;
+  }
+  .title {
+    white-space: normal;
+  }
+  .nums {
+    grid-column: 2;
+    text-align: left;
+  }
+}

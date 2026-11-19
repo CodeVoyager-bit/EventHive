@@ -1,0 +1,52 @@
+.wrap {
+  max-width: 720px;
+  padding-bottom: 24px;
+}
+.head {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-block: 36px 24px;
+}
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  flex: none;
+  border-radius: 20px;
+  background: var(--hive);
+  color: var(--ink-fixed);
+  font-weight: 700;
+  font-size: 1.3rem;
+}
+.links {
+  display: grid;
+  background: var(--card);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  font-weight: 600;
+}
+.link + .link {
+  border-top: 1px solid var(--line);
+}
+.link:hover {
+  background: var(--paper-2);
+}
+.caret {
+  margin-left: auto;
+  color: var(--text-3);
+}
+.sub {
+  margin: 32px 0 12px;
+}
+.out {
+  margin-top: 24px;
+}

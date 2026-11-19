@@ -18,6 +18,8 @@ export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
     res.status(400).json({ success: false, error });
   } else if (err instanceof mongoose.Error.ValidationError) {
     res.status(400).json({ success: false, error: err.message });
+  } else if (err instanceof mongoose.Error.VersionError) {
+    res.status(409).json({ success: false, error: "Someone booked while you were editing. Reload and try again." });
   } else if (err instanceof mongoose.Error.CastError) {
     res.status(404).json({ success: false, error: "Not found" });
   } else if ((err as { code?: number })?.code === 11000) {

@@ -1,59 +1,64 @@
 .footer {
-  margin-top: 64px;
-  border-top: 1px solid var(--line);
-  background: var(--bg-2);
+  margin-top: 72px;
+  border-top: var(--bw) solid var(--edge);
+  background: var(--paper-2);
 }
 .inner {
   display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: 40px;
   padding-block: 56px 40px;
 }
-@media (min-width: 768px) {
-  .inner {
-    grid-template-columns: 2fr 1fr 1fr;
-  }
+.brand p {
+  margin-top: 14px;
+  color: var(--text-2);
+  max-width: 36ch;
 }
 .logo {
   display: inline-flex;
   align-items: center;
   gap: 10px;
   font-family: var(--font-display);
-  font-stretch: 85%;
   font-weight: 800;
-  font-size: 1.5rem;
+  font-stretch: 75%;
+  font-size: 2.6rem;
+  line-height: 1;
+  letter-spacing: -0.02em;
 }
-.brand p {
-  margin-top: 12px;
-  color: var(--text-3);
-  max-width: 40ch;
+.col {
+  display: grid;
+  align-content: start;
+  gap: 8px;
 }
 .col h2 {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: 12px;
+  color: var(--text-3);
+  margin-bottom: 4px;
 }
 .col a {
-  display: block;
-  padding: 5px 0;
-  color: var(--text-3);
-  font-size: 0.93rem;
-  transition: color var(--dur-fast);
+  font-weight: 600;
+  width: fit-content;
 }
 .col a:hover {
-  color: var(--accent-ink);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-decoration-color: var(--hive);
+  text-underline-offset: 4px;
 }
 .bottom {
-  padding-block: 20px 28px;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-block: 18px;
   border-top: 1px solid var(--line);
   font-size: 0.85rem;
   color: var(--text-3);
 }
-
-/* ---------- Light theme: the category palette as a stripe ---------- */
-:global([data-theme="light"]) .footer {
-  border-top: 0;
-  background-image: linear-gradient(90deg, #ff3d8b 0 14.28%, #ff7a1a 0 28.57%, #ffc83d 0 42.85%, #8edb4f 0 57.14%, #14c8b4 0 71.42%, #2f5bff 0 85.71%, #7a4df5 0);
-  background-size: 100% 6px;
-  background-repeat: no-repeat;
+@media (max-width: 860px) {
+  .inner {
+    grid-template-columns: 1fr 1fr;
+  }
+  .brand {
+    grid-column: 1 / -1;
+  }
 }

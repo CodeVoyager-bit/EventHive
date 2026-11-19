@@ -17,12 +17,12 @@
   display: grid;
   place-items: center;
   color: var(--text-3);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius);
   transition: color var(--dur-fast), transform var(--dur) var(--ease-spring);
 }
 .star:hover {
   transform: scale(1.12);
 }
 .on {
-  color: var(--accent-ink);
+  color: var(--tone-deep, var(--text));
 }

@@ -1,86 +1,99 @@
 .head {
   display: flex;
+  align-items: baseline;
   justify-content: space-between;
-  align-items: flex-end;
+  gap: 16px;
   flex-wrap: wrap;
-  gap: 12px;
   padding-block: 40px 32px;
+}
+.head p {
+  color: var(--text-3);
 }
 .list {
   display: grid;
-  gap: 18px;
-  max-width: 940px;
+  gap: 24px;
 }
-.ticket {
+
+/* Door duty: events this person helps check guests in at */
+.duty {
+  margin-bottom: 24px;
+  padding: 16px 18px;
+  background: var(--card);
+  border: var(--bw) solid var(--edge);
+  border-left: 6px solid var(--hive);
+  border-radius: var(--radius-lg);
+}
+.duty h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.duty ul {
   display: grid;
-  grid-template-columns: 1fr;
-  filter: drop-shadow(0 16px 30px rgba(0, 0, 0, 0.22));
+  gap: 10px;
 }
-@media (min-width: 720px) {
-  .ticket {
-    grid-template-columns: 1fr 168px;
-  }
+.duty li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
 }
-.past {
-  opacity: 0.7;
-}
-.main {
+.duty li > div {
   display: grid;
-  grid-template-columns: 1fr;
-  background: var(--surface);
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-  overflow: hidden;
-  -webkit-mask: radial-gradient(circle var(--notch) at 0 100%, #0000 97%, #000) 0 0 / 51% 100% no-repeat, radial-gradient(circle var(--notch) at 100% 100%, #0000 97%, #000) 100% 0 / 51% 100% no-repeat;
-  mask: radial-gradient(circle var(--notch) at 0 100%, #0000 97%, #000) 0 0 / 51% 100% no-repeat, radial-gradient(circle var(--notch) at 100% 100%, #0000 97%, #000) 100% 0 / 51% 100% no-repeat;
+  min-width: 0;
 }
-.stub {
+
+/* A wallet entry: poster on the left, the stubs you hold on the right */
+.card {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  background: var(--card);
+  border: var(--bw) solid var(--edge);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+.media {
+  position: relative;
+  min-height: 200px;
+  border-right: var(--bw) solid var(--edge);
+}
+.stamp {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  z-index: 2;
   display: grid;
   justify-items: center;
-  align-content: center;
-  gap: 10px;
-  padding: 20px;
-  background: var(--surface);
-  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-  border-top: 1px dashed var(--line-strong);
-  -webkit-mask: radial-gradient(circle var(--notch) at 0 0, #0000 97%, #000) 0 0 / 51% 100% no-repeat, radial-gradient(circle var(--notch) at 100% 0, #0000 97%, #000) 100% 0 / 51% 100% no-repeat;
-  mask: radial-gradient(circle var(--notch) at 0 0, #0000 97%, #000) 0 0 / 51% 100% no-repeat, radial-gradient(circle var(--notch) at 100% 0, #0000 97%, #000) 100% 0 / 51% 100% no-repeat;
+  padding: 6px 10px;
+  background: var(--tone);
+  color: var(--tone-on);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 1;
 }
-@media (min-width: 720px) {
-  .main {
-    grid-template-columns: 160px 1fr;
-    border-radius: var(--radius-lg) 0 0 var(--radius-lg);
-    -webkit-mask: radial-gradient(circle var(--notch) at 100% 0, #0000 97%, #000) 0 0 / 100% 51% no-repeat, radial-gradient(circle var(--notch) at 100% 100%, #0000 97%, #000) 0 100% / 100% 51% no-repeat;
-    mask: radial-gradient(circle var(--notch) at 100% 0, #0000 97%, #000) 0 0 / 100% 51% no-repeat, radial-gradient(circle var(--notch) at 100% 100%, #0000 97%, #000) 0 100% / 100% 51% no-repeat;
-  }
-  .stub {
-    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
-    border-top: 0;
-    border-left: 1px dashed var(--line-strong);
-    -webkit-mask: radial-gradient(circle var(--notch) at 0 0, #0000 97%, #000) 0 0 / 100% 51% no-repeat, radial-gradient(circle var(--notch) at 0 100%, #0000 97%, #000) 0 100% / 100% 51% no-repeat;
-    mask: radial-gradient(circle var(--notch) at 0 0, #0000 97%, #000) 0 0 / 100% 51% no-repeat, radial-gradient(circle var(--notch) at 0 100%, #0000 97%, #000) 0 100% / 100% 51% no-repeat;
-  }
-}
-.thumb {
-  position: relative;
-  min-height: 140px;
-  background: var(--surface-2);
-}
-.thumb img {
-  object-fit: cover;
-}
-.thumbIcon {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  color: var(--accent-ink);
+.stamp strong {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-stretch: 75%;
 }
 .info {
-  min-width: 0;
-  padding: 20px 22px;
   display: grid;
-  gap: 8px;
   align-content: start;
+  gap: 10px;
+  padding: 20px;
+  min-width: 0;
+}
+.top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 .badges {
   display: flex;
@@ -89,64 +102,274 @@
 }
 .title {
   font-family: var(--font-display);
-  font-stretch: 75%;
   font-weight: 800;
-  font-size: 1.75rem;
-  line-height: 1.05;
-  overflow-wrap: anywhere;
+  font-stretch: 78%;
+  font-size: 2rem;
+  line-height: 1;
 }
 .title a:hover {
-  color: var(--accent-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--hive);
+  text-decoration-thickness: 3px;
 }
-.rows {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 16px;
-  font-size: 0.875rem;
+.when {
   color: var(--text-2);
+  font-weight: 600;
 }
-.rows span {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-.actions {
-  display: flex;
-  flex-wrap: wrap;
+.stubs {
+  display: grid;
   gap: 8px;
   margin-top: 6px;
 }
-.qr {
-  display: block;
-  padding: 8px;
-  border-radius: var(--radius-sm);
-  background: #fff;
+.stub {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 10px 12px;
+  background: var(--paper);
+  border: 1px dashed var(--edge-strong);
+  border-radius: var(--radius);
 }
-.code {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--text-2);
-  overflow-wrap: anywhere;
+.stubName {
+  display: grid;
+  min-width: 0;
+}
+.stubActions {
+  display: flex;
+  gap: 8px;
+}
+.order {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-top: 12px;
+  margin-top: 4px;
+  border-top: 1px solid var(--line);
+}
+.orderActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.section {
+  margin-top: 64px;
+}
+.section > h2 {
+  margin-bottom: 20px;
+}
+.waitlist {
+  display: grid;
+  gap: 12px;
+}
+.waitItem {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 14px;
+  align-items: center;
+  padding: 16px;
+  background: var(--tone-tint);
+  border: var(--bw) solid var(--edge);
+  border-radius: var(--radius-lg);
+}
+.waitTitle {
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+.history {
+  margin-top: 48px;
+  padding: 16px;
+  border: 1px dashed var(--edge-strong);
+  border-radius: var(--radius-lg);
+}
+.history summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+.history ul {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+.history li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Full-screen ticket dialog */
+.ticketDialog {
+  max-width: 400px;
+  padding: 24px 24px 28px;
+}
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+.bigTicket {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
   text-align: center;
 }
-.groupTitle {
-  margin: 48px 0 16px;
-  font-size: 1rem;
-  font-weight: 600;
+.bigTitle {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-stretch: 78%;
+  line-height: 1;
+  margin-block: 4px;
+}
+.bigTear {
+  width: calc(100% + 48px);
+  margin-block: 14px;
+}
+.holder {
+  display: grid;
+  margin-top: 8px;
+}
+.admitted {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 24px 32px;
+  background: #14b26a;
+  color: var(--ink-fixed);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+}
+.sendForm {
+  display: grid;
+  gap: 14px;
+}
+.sendActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+@media (max-width: 720px) {
+  .card {
+    grid-template-columns: 1fr;
+  }
+  .media {
+    min-height: 150px;
+    border-right: 0;
+    border-bottom: 1px solid var(--edge);
+  }
+  .waitItem {
+    grid-template-columns: auto 1fr;
+  }
+  .waitItem > :last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--edge);
+  scrollbar-width: none;
+}
+.tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px 12px;
+  font-weight: 650;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+.tab:hover,
+.tab[aria-current="page"] {
+  color: var(--text);
+}
+.tab[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: -1px;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: var(--hive);
+}
+.tabCount {
+  min-width: 22px;
+  padding: 1px 7px;
+  border-radius: var(--radius-full);
+  background: var(--paper-2);
+  font-size: 0.75rem;
+  text-align: center;
+}
+.tab[aria-current="page"] .tabCount {
+  background: var(--hive);
+  color: var(--ink-fixed);
+}
+
+.offline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: -16px 0 20px;
+  font-size: 0.86rem;
   color: var(--text-3);
 }
 
-/* ---------- Light theme: stub tinted with the event's category colour ---------- */
-:global([data-theme="light"]) .ticket {
-  filter: drop-shadow(0 16px 28px color-mix(in srgb, var(--tone) 22%, transparent));
+.headLinks {
+  display: flex;
+  gap: 8px 20px;
+  flex-wrap: wrap;
 }
-:global([data-theme="light"]) .stub {
-  background: var(--tone-tint);
-  border-color: color-mix(in srgb, var(--tone-deep) 35%, transparent);
+.headLinks :global(.text-link) {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
 }
-:global([data-theme="light"]) .code {
-  color: var(--tone-deep);
+
+/* Calendar sync dialog */
+.sync {
+  display: grid;
+  gap: 14px;
 }
-:global([data-theme="light"]) .title a:hover {
-  color: var(--tone-deep);
+.syncTitle {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-stretch: 80%;
+  font-weight: 800;
+}
+.syncLinks {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.syncCopy {
+  display: flex;
+  gap: 8px;
+}
+.syncCopy :global(.input) {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.8rem;
+}
+.syncActions {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
 }

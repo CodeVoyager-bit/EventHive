@@ -37,6 +37,22 @@ export async function getSavedIds(): Promise<Set<string>> {
   return new Set(await apiFetch<string[]>("/me/saved/ids").catch(() => [] as string[]));
 }
 
+// Unread notification count for the navbar bell (0 when signed out or on error)
+export async function getUnread(): Promise<number> {
+  if (!(await getSessionUser())) return 0;
+  return (await apiFetch<{ unread: number }>("/me/notifications/unread").catch(() => ({ unread: 0 }))).unread;
+}
+
+export type City = { city: string; count: number };
+export async function getCities(): Promise<City[]> {
+  return apiFetch<City[]>("/events/cities").catch(() => []);
+}
+
+// The visitor's chosen city (cookie set by the city picker); "" means everywhere
+export async function getCity(): Promise<string> {
+  return decodeURIComponent((await cookies()).get("city")?.value ?? "");
+}
+
 export async function apiFetchPaged<T>(path: string): Promise<{ items: T[]; pagination: Pagination }> {
   const json = await call(path);
   return { items: json.data as T[], pagination: json.pagination! };

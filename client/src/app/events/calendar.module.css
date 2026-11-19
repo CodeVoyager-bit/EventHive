@@ -1,0 +1,126 @@
+.wrap {
+  display: grid;
+  gap: 14px;
+}
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav {
+  display: flex;
+  gap: 4px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+.weekday {
+  padding: 4px 8px;
+  font-size: 0.72rem;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-3);
+}
+.blank {
+  min-height: 112px;
+}
+.day {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 112px;
+  padding: 8px;
+  background: var(--card);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  min-width: 0;
+}
+.busy {
+  transition: box-shadow var(--dur) var(--ease-out), translate var(--dur) var(--ease-out);
+}
+.busy:hover {
+  translate: 0 -2px;
+  box-shadow: var(--shadow-md);
+}
+.past {
+  background: transparent;
+  opacity: 0.5;
+}
+.num {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+.today {
+  background: var(--hive);
+  color: var(--ink-fixed);
+}
+.events {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.chip {
+  display: block;
+  padding: 3px 6px;
+  border-radius: 6px;
+  background: var(--tone-tint);
+  border-left: 3px solid var(--tone);
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.chipTime {
+  color: var(--text-3);
+  font-weight: 500;
+}
+.more {
+  font-size: 0.72rem;
+  font-weight: 650;
+  color: var(--text-2);
+  padding-left: 4px;
+}
+.dots {
+  display: none;
+}
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--tone);
+}
+/* Phones: dots instead of titles; tap a day for its list */
+@media (max-width: 760px) {
+  .grid {
+    gap: 4px;
+  }
+  .day,
+  .blank {
+    min-height: 58px;
+    padding: 6px 4px;
+    align-items: center;
+  }
+  .events {
+    display: none;
+  }
+  .dots {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 3px;
+  }
+  .weekday {
+    padding: 4px 2px;
+    text-align: center;
+    font-size: 0.65rem;
+  }
+}

@@ -2,7 +2,7 @@
 
 export interface IPaymentGateway {
   processPayment(amount: number, userId: string): Promise<PaymentResult>;
-  refundPayment(transactionId: string): Promise<boolean>;
+  refundPayment(transactionId: string, amount: number): Promise<boolean>;
 }
 
 export interface PaymentResult {
@@ -23,8 +23,8 @@ export class MockStripeGateway implements IPaymentGateway {
     };
   }
 
-  async refundPayment(transactionId: string): Promise<boolean> {
-    console.log(`Refund processed for transaction: ${transactionId}`);
+  async refundPayment(transactionId: string, amount: number): Promise<boolean> {
+    console.log(`Refund of ₹${amount} processed for transaction: ${transactionId}`);
     return true;
   }
 }
@@ -40,8 +40,8 @@ export class MockPayPalGateway implements IPaymentGateway {
     };
   }
 
-  async refundPayment(transactionId: string): Promise<boolean> {
-    console.log(`PayPal refund for: ${transactionId}`);
+  async refundPayment(transactionId: string, amount: number): Promise<boolean> {
+    console.log(`PayPal refund of ₹${amount} for: ${transactionId}`);
     return true;
   }
 }

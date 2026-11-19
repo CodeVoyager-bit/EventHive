@@ -1,0 +1,82 @@
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 24px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding-block: 16px 24px;
+}
+.head h1 {
+  overflow-wrap: anywhere;
+}
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.counter {
+  display: grid;
+  justify-items: center;
+  padding: 10px 20px;
+  background: var(--hive);
+  color: var(--ink-fixed);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+.counter strong {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-stretch: 75%;
+  line-height: 1;
+}
+.counter strong span {
+  font-size: 1.6rem;
+}
+.section {
+  margin-top: 40px;
+}
+.listHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.listHead :global(.input) {
+  flex: 0 1 320px;
+  min-width: 0;
+}
+.guests {
+  display: grid;
+  gap: 8px;
+}
+.guest {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--card);
+  border: var(--bw) solid var(--edge);
+  border-radius: var(--radius);
+}
+.guest[data-in="true"] {
+  opacity: 0.7;
+}
+.guest > div {
+  display: grid;
+  min-width: 0;
+}
+.guest strong {
+  overflow-wrap: anywhere;
+}
